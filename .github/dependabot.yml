@@ -1,0 +1,59 @@
+version: 2
+updates:
+  - package-ecosystem: 'npm'
+    directory: '/'
+    cooldown:
+      default-days: 7
+    schedule:
+      interval: 'weekly'
+      day: 'monday'
+    open-pull-requests-limit: 10
+    reviewers:
+      - 'usbryanchlam'
+    labels:
+      - 'dependencies'
+    groups:
+      production-deps:
+        patterns:
+          - '*'
+        update-types:
+          - 'minor'
+          - 'patch'
+
+  - package-ecosystem: 'npm'
+    directory: '/apps/web'
+    cooldown:
+      default-days: 7
+    schedule:
+      interval: 'weekly'
+      day: 'monday'
+    open-pull-requests-limit: 5
+    reviewers:
+      - 'usbryanchlam'
+    labels:
+      - 'dependencies'
+      - 'frontend'
+
+  - package-ecosystem: 'npm'
+    directory: '/apps/api'
+    cooldown:
+      default-days: 7
+    schedule:
+      interval: 'weekly'
+      day: 'monday'
+    open-pull-requests-limit: 5
+    reviewers:
+      - 'usbryanchlam'
+    labels:
+      - 'dependencies'
+      - 'backend'
+
+  - package-ecosystem: 'github-actions'
+    directory: '/'
+    cooldown:
+      default-days: 7
+    schedule:
+      interval: 'weekly'
+    labels:
+      - 'dependencies'
+      - 'ci'
