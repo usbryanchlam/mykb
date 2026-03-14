@@ -6,15 +6,15 @@ All PRs are managed and submitted using [Graphite](https://graphite.dev/). Graph
 
 ### CLI Commands Reference
 
-| Command | Purpose |
-|---|---|
-| `gt create -m "feat: description"` | Create a new branch and PR from current changes |
-| `gt stack submit` | Submit all PRs in the current stack |
-| `gt stack restack` | Rebase the entire stack after a base branch update |
-| `gt modify -c` | Amend current branch and restack dependents |
-| `gt checkout <branch>` | Switch to a branch in the stack |
-| `gt log` | View the current stack |
-| `gt trunk` | Switch back to main |
+| Command                            | Purpose                                            |
+| ---------------------------------- | -------------------------------------------------- |
+| `gt create -m "feat: description"` | Create a new branch and PR from current changes    |
+| `gt stack submit`                  | Submit all PRs in the current stack                |
+| `gt stack restack`                 | Rebase the entire stack after a base branch update |
+| `gt modify -c`                     | Amend current branch and restack dependents        |
+| `gt checkout <branch>`             | Switch to a branch in the stack                    |
+| `gt log`                           | View the current stack                             |
+| `gt trunk`                         | Switch back to main                                |
 
 ---
 
@@ -50,10 +50,10 @@ Each PR is reviewed and merged bottom-up. Graphite handles rebasing the stack au
 
 Every PR must pass all CI checks before it can be approved and merged. No exceptions.
 
-| Check | Command | What It Validates |
-|---|---|---|
-| Lint | `npm run lint` | Code style, import ordering, no unused variables |
-| Test | `npm run test` | Unit + integration tests pass, coverage threshold met |
+| Check | Command         | What It Validates                                              |
+| ----- | --------------- | -------------------------------------------------------------- |
+| Lint  | `npm run lint`  | Code style, import ordering, no unused variables               |
+| Test  | `npm run test`  | Unit + integration tests pass, coverage threshold met          |
 | Build | `npm run build` | TypeScript compiles, no type errors, production build succeeds |
 
 ### Rules
