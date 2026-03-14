@@ -8,22 +8,22 @@ MyKB is a personal knowledge base web application for bookmarking, summarizing, 
 
 ## Tech Stack
 
-| Decision | Choice |
-|---|---|
-| Frontend | Next.js (latest) + React + Tailwind + Shadcn/ui |
-| Backend | AdonisJS (latest) |
-| ORM | Lucid (AdonisJS built-in) |
-| Database | SQLite (better-sqlite3) + WAL mode |
-| AI | Google Gemini API |
-| Auth | Auth0 (Google OAuth + email allowlist via Actions + RBAC) |
-| Roles | Admin, Editor, Viewer |
-| Search | SQLite FTS5 |
-| Infra | Oracle OCI free tier, single ARM VM |
-| Assets | OCI Object Storage |
-| Domain | mykb.bryanlam.dev |
-| SSL | Let's Encrypt (Caddy) |
-| Repo | Monorepo (Turborepo) |
-| CI/CD | GitHub Actions |
+| Decision    | Choice                                                          |
+| ----------- | --------------------------------------------------------------- |
+| Frontend    | Next.js (latest) + React + Tailwind + Shadcn/ui                 |
+| Backend     | AdonisJS (latest)                                               |
+| ORM         | Lucid (AdonisJS built-in)                                       |
+| Database    | SQLite (better-sqlite3) + WAL mode                              |
+| AI          | Google Gemini API                                               |
+| Auth        | Auth0 (Google OAuth + email allowlist via Actions + RBAC)       |
+| Roles       | Admin, Editor, Viewer                                           |
+| Search      | SQLite FTS5                                                     |
+| Infra       | Oracle OCI free tier, single ARM VM                             |
+| Assets      | OCI Object Storage                                              |
+| Domain      | mykb.bryanlam.dev                                               |
+| SSL         | Let's Encrypt (Caddy)                                           |
+| Repo        | Monorepo (Turborepo)                                            |
+| CI/CD       | GitHub Actions                                                  |
 | PR Workflow | Graphite (stacked PRs) — see [PR_PRACTICE.md](./PR_PRACTICE.md) |
 
 ---
@@ -280,17 +280,17 @@ All tables use `INTEGER PRIMARY KEY` (SQLite auto-increment alias). Timestamps a
 
 ### Table: `users`
 
-| Column | Type | Constraints | Notes |
-|---|---|---|---|
-| id | INTEGER | PK, autoincrement | |
-| auth0_sub | TEXT | NOT NULL, UNIQUE | Auth0 subject ID (e.g., `google-oauth2|123`) |
-| email | TEXT | NOT NULL, UNIQUE | Gmail address (from Auth0 profile) |
-| name | TEXT | NOT NULL | From Auth0 profile |
-| avatar_url | TEXT | NULLABLE | Auth0 profile picture |
-| role | TEXT | NOT NULL, DEFAULT 'viewer' | Synced from Auth0 RBAC roles |
-| last_login_at | TEXT | NULLABLE | ISO-8601 |
-| created_at | TEXT | NOT NULL | |
-| updated_at | TEXT | NOT NULL | |
+| Column        | Type    | Constraints                | Notes                                  |
+| ------------- | ------- | -------------------------- | -------------------------------------- | ----- |
+| id            | INTEGER | PK, autoincrement          |                                        |
+| auth0_sub     | TEXT    | NOT NULL, UNIQUE           | Auth0 subject ID (e.g., `google-oauth2 | 123`) |
+| email         | TEXT    | NOT NULL, UNIQUE           | Gmail address (from Auth0 profile)     |
+| name          | TEXT    | NOT NULL                   | From Auth0 profile                     |
+| avatar_url    | TEXT    | NULLABLE                   | Auth0 profile picture                  |
+| role          | TEXT    | NOT NULL, DEFAULT 'viewer' | Synced from Auth0 RBAC roles           |
+| last_login_at | TEXT    | NULLABLE                   | ISO-8601                               |
+| created_at    | TEXT    | NOT NULL                   |                                        |
+| updated_at    | TEXT    | NOT NULL                   |                                        |
 
 **Indexes:** `idx_users_email` on `email`, `idx_users_auth0_sub` on `auth0_sub`
 
@@ -300,32 +300,33 @@ All tables use `INTEGER PRIMARY KEY` (SQLite auto-increment alias). Timestamps a
 
 ### Table: `bookmarks`
 
-| Column | Type | Constraints | Notes |
-|---|---|---|---|
-| id | INTEGER | PK, autoincrement | |
-| user_id | INTEGER | FK -> users.id, NOT NULL | Creator |
-| url | TEXT | NOT NULL | Original URL |
-| title | TEXT | NULLABLE | Extracted or manual |
-| description | TEXT | NULLABLE | Meta description or manual |
-| summary | TEXT | NULLABLE | AI-generated summary |
-| content | TEXT | NULLABLE | Reader-view cleaned HTML |
-| plain_text | TEXT | NULLABLE | Plain text for FTS indexing |
-| favicon_url | TEXT | NULLABLE | Site favicon URL |
-| og_image_url | TEXT | NULLABLE | OpenGraph image URL |
-| thumbnail_key | TEXT | NULLABLE | OCI Object Storage key |
-| screenshot_key | TEXT | NULLABLE | OCI Object Storage key |
-| is_favorite | INTEGER | NOT NULL, DEFAULT 0 | Boolean (0/1) |
-| is_archived | INTEGER | NOT NULL, DEFAULT 0 | Boolean (0/1) |
-| scrape_status | TEXT | NOT NULL, DEFAULT 'pending' | 'pending','processing','completed','failed' |
-| ai_status | TEXT | NOT NULL, DEFAULT 'pending' | 'pending','processing','completed','failed','skipped' |
-| safety_status | TEXT | NOT NULL, DEFAULT 'pending' | 'pending','safe','flagged','skipped' |
-| safety_reasons | TEXT | NULLABLE | JSON array of flagged reasons |
-| scrape_error | TEXT | NULLABLE | Error message if scrape failed |
-| ai_error | TEXT | NULLABLE | Error message if AI failed |
-| created_at | TEXT | NOT NULL | |
-| updated_at | TEXT | NOT NULL | |
+| Column         | Type    | Constraints                 | Notes                                                 |
+| -------------- | ------- | --------------------------- | ----------------------------------------------------- |
+| id             | INTEGER | PK, autoincrement           |                                                       |
+| user_id        | INTEGER | FK -> users.id, NOT NULL    | Creator                                               |
+| url            | TEXT    | NOT NULL                    | Original URL                                          |
+| title          | TEXT    | NULLABLE                    | Extracted or manual                                   |
+| description    | TEXT    | NULLABLE                    | Meta description or manual                            |
+| summary        | TEXT    | NULLABLE                    | AI-generated summary                                  |
+| content        | TEXT    | NULLABLE                    | Reader-view cleaned HTML                              |
+| plain_text     | TEXT    | NULLABLE                    | Plain text for FTS indexing                           |
+| favicon_url    | TEXT    | NULLABLE                    | Site favicon URL                                      |
+| og_image_url   | TEXT    | NULLABLE                    | OpenGraph image URL                                   |
+| thumbnail_key  | TEXT    | NULLABLE                    | OCI Object Storage key                                |
+| screenshot_key | TEXT    | NULLABLE                    | OCI Object Storage key                                |
+| is_favorite    | INTEGER | NOT NULL, DEFAULT 0         | Boolean (0/1)                                         |
+| is_archived    | INTEGER | NOT NULL, DEFAULT 0         | Boolean (0/1)                                         |
+| scrape_status  | TEXT    | NOT NULL, DEFAULT 'pending' | 'pending','processing','completed','failed'           |
+| ai_status      | TEXT    | NOT NULL, DEFAULT 'pending' | 'pending','processing','completed','failed','skipped' |
+| safety_status  | TEXT    | NOT NULL, DEFAULT 'pending' | 'pending','safe','flagged','skipped'                  |
+| safety_reasons | TEXT    | NULLABLE                    | JSON array of flagged reasons                         |
+| scrape_error   | TEXT    | NULLABLE                    | Error message if scrape failed                        |
+| ai_error       | TEXT    | NULLABLE                    | Error message if AI failed                            |
+| created_at     | TEXT    | NOT NULL                    |                                                       |
+| updated_at     | TEXT    | NOT NULL                    |                                                       |
 
 **Indexes:**
+
 - `idx_bookmarks_user_id` on `user_id`
 - `idx_bookmarks_url` on `(user_id, url)` UNIQUE
 - `idx_bookmarks_created_at` on `created_at`
@@ -334,80 +335,80 @@ All tables use `INTEGER PRIMARY KEY` (SQLite auto-increment alias). Timestamps a
 
 ### Table: `tags`
 
-| Column | Type | Constraints | Notes |
-|---|---|---|---|
-| id | INTEGER | PK, autoincrement | |
-| name | TEXT | NOT NULL | Display name |
-| slug | TEXT | NOT NULL | URL-safe lowercase |
-| user_id | INTEGER | FK -> users.id, NOT NULL | Tag owner |
-| is_ai_generated | INTEGER | NOT NULL, DEFAULT 0 | Whether AI created it |
-| created_at | TEXT | NOT NULL | |
+| Column          | Type    | Constraints              | Notes                 |
+| --------------- | ------- | ------------------------ | --------------------- |
+| id              | INTEGER | PK, autoincrement        |                       |
+| name            | TEXT    | NOT NULL                 | Display name          |
+| slug            | TEXT    | NOT NULL                 | URL-safe lowercase    |
+| user_id         | INTEGER | FK -> users.id, NOT NULL | Tag owner             |
+| is_ai_generated | INTEGER | NOT NULL, DEFAULT 0      | Whether AI created it |
+| created_at      | TEXT    | NOT NULL                 |                       |
 
 **Indexes:** `idx_tags_slug` on `(user_id, slug)` UNIQUE
 
 ### Table: `bookmark_tags` (join table)
 
-| Column | Type | Constraints |
-|---|---|---|
+| Column      | Type    | Constraints                           |
+| ----------- | ------- | ------------------------------------- |
 | bookmark_id | INTEGER | FK -> bookmarks.id, ON DELETE CASCADE |
-| tag_id | INTEGER | FK -> tags.id, ON DELETE CASCADE |
-| created_at | TEXT | NOT NULL |
+| tag_id      | INTEGER | FK -> tags.id, ON DELETE CASCADE      |
+| created_at  | TEXT    | NOT NULL                              |
 
 **PK:** composite `(bookmark_id, tag_id)`
 
 ### Table: `collections`
 
-| Column | Type | Constraints | Notes |
-|---|---|---|---|
-| id | INTEGER | PK, autoincrement | |
-| user_id | INTEGER | FK -> users.id, NOT NULL | Owner |
-| name | TEXT | NOT NULL | |
-| description | TEXT | NULLABLE | |
-| icon | TEXT | NULLABLE | Emoji or icon name |
-| sort_order | INTEGER | NOT NULL, DEFAULT 0 | For manual ordering |
-| created_at | TEXT | NOT NULL | |
-| updated_at | TEXT | NOT NULL | |
+| Column      | Type    | Constraints              | Notes               |
+| ----------- | ------- | ------------------------ | ------------------- |
+| id          | INTEGER | PK, autoincrement        |                     |
+| user_id     | INTEGER | FK -> users.id, NOT NULL | Owner               |
+| name        | TEXT    | NOT NULL                 |                     |
+| description | TEXT    | NULLABLE                 |                     |
+| icon        | TEXT    | NULLABLE                 | Emoji or icon name  |
+| sort_order  | INTEGER | NOT NULL, DEFAULT 0      | For manual ordering |
+| created_at  | TEXT    | NOT NULL                 |                     |
+| updated_at  | TEXT    | NOT NULL                 |                     |
 
 **Indexes:** `idx_collections_user_id` on `user_id`
 
 ### Table: `bookmark_collections` (join table)
 
-| Column | Type | Constraints |
-|---|---|---|
-| bookmark_id | INTEGER | FK -> bookmarks.id, ON DELETE CASCADE |
+| Column        | Type    | Constraints                             |
+| ------------- | ------- | --------------------------------------- |
+| bookmark_id   | INTEGER | FK -> bookmarks.id, ON DELETE CASCADE   |
 | collection_id | INTEGER | FK -> collections.id, ON DELETE CASCADE |
-| sort_order | INTEGER | NOT NULL, DEFAULT 0 |
-| created_at | TEXT | NOT NULL |
+| sort_order    | INTEGER | NOT NULL, DEFAULT 0                     |
+| created_at    | TEXT    | NOT NULL                                |
 
 **PK:** composite `(bookmark_id, collection_id)`
 
 ### Table: `smart_lists`
 
-| Column | Type | Constraints | Notes |
-|---|---|---|---|
-| id | INTEGER | PK, autoincrement | |
-| user_id | INTEGER | FK -> users.id, NOT NULL | Owner |
-| name | TEXT | NOT NULL | |
-| description | TEXT | NULLABLE | |
-| icon | TEXT | NULLABLE | |
-| filter_query | TEXT | NOT NULL | JSON: serialized filter conditions |
-| created_at | TEXT | NOT NULL | |
-| updated_at | TEXT | NOT NULL | |
+| Column       | Type    | Constraints              | Notes                              |
+| ------------ | ------- | ------------------------ | ---------------------------------- |
+| id           | INTEGER | PK, autoincrement        |                                    |
+| user_id      | INTEGER | FK -> users.id, NOT NULL | Owner                              |
+| name         | TEXT    | NOT NULL                 |                                    |
+| description  | TEXT    | NULLABLE                 |                                    |
+| icon         | TEXT    | NULLABLE                 |                                    |
+| filter_query | TEXT    | NOT NULL                 | JSON: serialized filter conditions |
+| created_at   | TEXT    | NOT NULL                 |                                    |
+| updated_at   | TEXT    | NOT NULL                 |                                    |
 
 `filter_query` example: `{"tags":["typescript","react"],"is_favorite":true,"date_range":"last_30_days"}`
 
 ### Table: `job_logs`
 
-| Column | Type | Constraints | Notes |
-|---|---|---|---|
-| id | INTEGER | PK, autoincrement | |
-| job_type | TEXT | NOT NULL | 'scrape', 'summarize', 'generate_tags' |
-| bookmark_id | INTEGER | FK -> bookmarks.id, ON DELETE CASCADE | |
-| status | TEXT | NOT NULL | 'queued','running','completed','failed' |
-| error_message | TEXT | NULLABLE | |
-| started_at | TEXT | NULLABLE | |
-| completed_at | TEXT | NULLABLE | |
-| created_at | TEXT | NOT NULL | |
+| Column        | Type    | Constraints                           | Notes                                   |
+| ------------- | ------- | ------------------------------------- | --------------------------------------- |
+| id            | INTEGER | PK, autoincrement                     |                                         |
+| job_type      | TEXT    | NOT NULL                              | 'scrape', 'summarize', 'generate_tags'  |
+| bookmark_id   | INTEGER | FK -> bookmarks.id, ON DELETE CASCADE |                                         |
+| status        | TEXT    | NOT NULL                              | 'queued','running','completed','failed' |
+| error_message | TEXT    | NULLABLE                              |                                         |
+| started_at    | TEXT    | NULLABLE                              |                                         |
+| completed_at  | TEXT    | NULLABLE                              |                                         |
+| created_at    | TEXT    | NOT NULL                              |                                         |
 
 **Indexes:** `idx_job_logs_status` on `status`, `idx_job_logs_bookmark_id` on `bookmark_id`
 
@@ -455,71 +456,71 @@ All endpoints return the standard envelope:
 
 ### Auth (handled by Auth0 SDK on Next.js side)
 
-| Method | Path | Handler | Description |
-|---|---|---|---|
-| GET | `/api/auth/login` | `@auth0/nextjs-auth0` | Redirect to Auth0 Universal Login |
-| GET | `/api/auth/callback` | `@auth0/nextjs-auth0` | Auth0 callback, sets session cookies |
-| GET | `/api/auth/logout` | `@auth0/nextjs-auth0` | Logout and clear session |
-| GET | `/api/auth/me` | `@auth0/nextjs-auth0` | Current user profile + role |
+| Method | Path                 | Handler               | Description                          |
+| ------ | -------------------- | --------------------- | ------------------------------------ |
+| GET    | `/api/auth/login`    | `@auth0/nextjs-auth0` | Redirect to Auth0 Universal Login    |
+| GET    | `/api/auth/callback` | `@auth0/nextjs-auth0` | Auth0 callback, sets session cookies |
+| GET    | `/api/auth/logout`   | `@auth0/nextjs-auth0` | Logout and clear session             |
+| GET    | `/api/auth/me`       | `@auth0/nextjs-auth0` | Current user profile + role          |
 
 > Auth routes are handled entirely by the Next.js Auth0 SDK. AdonisJS API validates
 > the JWT Access Token from the `Authorization` header on every request.
 
 ### Bookmarks
 
-| Method | Path | Auth | Role | Description |
-|---|---|---|---|---|
-| GET | `/api/bookmarks` | Yes | Any | List bookmarks (paginated, filterable) |
-| POST | `/api/bookmarks` | Yes | Editor+ | Create bookmark (triggers scrape job) |
-| GET | `/api/bookmarks/:id` | Yes | Any | Get bookmark detail |
-| PATCH | `/api/bookmarks/:id` | Yes | Editor+ | Update bookmark (title, description, etc.) |
-| DELETE | `/api/bookmarks/:id` | Yes | Editor+ | Soft or hard delete |
-| PATCH | `/api/bookmarks/:id/favorite` | Yes | Editor+ | Toggle favorite |
-| PATCH | `/api/bookmarks/:id/archive` | Yes | Editor+ | Toggle archive |
-| POST | `/api/bookmarks/:id/rescrape` | Yes | Editor+ | Re-trigger scrape + AI jobs |
-| GET | `/api/bookmarks/:id/reader` | Yes | Any | Get reader-view content |
+| Method | Path                          | Auth | Role    | Description                                |
+| ------ | ----------------------------- | ---- | ------- | ------------------------------------------ |
+| GET    | `/api/bookmarks`              | Yes  | Any     | List bookmarks (paginated, filterable)     |
+| POST   | `/api/bookmarks`              | Yes  | Editor+ | Create bookmark (triggers scrape job)      |
+| GET    | `/api/bookmarks/:id`          | Yes  | Any     | Get bookmark detail                        |
+| PATCH  | `/api/bookmarks/:id`          | Yes  | Editor+ | Update bookmark (title, description, etc.) |
+| DELETE | `/api/bookmarks/:id`          | Yes  | Editor+ | Soft or hard delete                        |
+| PATCH  | `/api/bookmarks/:id/favorite` | Yes  | Editor+ | Toggle favorite                            |
+| PATCH  | `/api/bookmarks/:id/archive`  | Yes  | Editor+ | Toggle archive                             |
+| POST   | `/api/bookmarks/:id/rescrape` | Yes  | Editor+ | Re-trigger scrape + AI jobs                |
+| GET    | `/api/bookmarks/:id/reader`   | Yes  | Any     | Get reader-view content                    |
 
 **Query params for GET `/api/bookmarks`:**
 `?page=1&limit=20&sort=created_at&order=desc&is_favorite=true&is_archived=false&tag=slug&collection_id=1&q=search+term`
 
 ### Tags
 
-| Method | Path | Auth | Role | Description |
-|---|---|---|---|---|
-| GET | `/api/tags` | Yes | Any | List all tags (with bookmark counts) |
-| POST | `/api/tags` | Yes | Editor+ | Create tag |
-| PATCH | `/api/tags/:id` | Yes | Editor+ | Rename tag |
-| DELETE | `/api/tags/:id` | Yes | Editor+ | Delete tag (removes from all bookmarks) |
-| POST | `/api/bookmarks/:id/tags` | Yes | Editor+ | Add tags to bookmark |
-| DELETE | `/api/bookmarks/:id/tags/:tagId` | Yes | Editor+ | Remove tag from bookmark |
+| Method | Path                             | Auth | Role    | Description                             |
+| ------ | -------------------------------- | ---- | ------- | --------------------------------------- |
+| GET    | `/api/tags`                      | Yes  | Any     | List all tags (with bookmark counts)    |
+| POST   | `/api/tags`                      | Yes  | Editor+ | Create tag                              |
+| PATCH  | `/api/tags/:id`                  | Yes  | Editor+ | Rename tag                              |
+| DELETE | `/api/tags/:id`                  | Yes  | Editor+ | Delete tag (removes from all bookmarks) |
+| POST   | `/api/bookmarks/:id/tags`        | Yes  | Editor+ | Add tags to bookmark                    |
+| DELETE | `/api/bookmarks/:id/tags/:tagId` | Yes  | Editor+ | Remove tag from bookmark                |
 
 ### Collections
 
-| Method | Path | Auth | Role | Description |
-|---|---|---|---|---|
-| GET | `/api/collections` | Yes | Any | List collections |
-| POST | `/api/collections` | Yes | Editor+ | Create collection |
-| GET | `/api/collections/:id` | Yes | Any | Get collection with bookmarks |
-| PATCH | `/api/collections/:id` | Yes | Editor+ | Update collection |
-| DELETE | `/api/collections/:id` | Yes | Editor+ | Delete collection (not bookmarks) |
-| POST | `/api/collections/:id/bookmarks` | Yes | Editor+ | Add bookmark to collection |
-| DELETE | `/api/collections/:id/bookmarks/:bookmarkId` | Yes | Editor+ | Remove bookmark |
+| Method | Path                                         | Auth | Role    | Description                       |
+| ------ | -------------------------------------------- | ---- | ------- | --------------------------------- |
+| GET    | `/api/collections`                           | Yes  | Any     | List collections                  |
+| POST   | `/api/collections`                           | Yes  | Editor+ | Create collection                 |
+| GET    | `/api/collections/:id`                       | Yes  | Any     | Get collection with bookmarks     |
+| PATCH  | `/api/collections/:id`                       | Yes  | Editor+ | Update collection                 |
+| DELETE | `/api/collections/:id`                       | Yes  | Editor+ | Delete collection (not bookmarks) |
+| POST   | `/api/collections/:id/bookmarks`             | Yes  | Editor+ | Add bookmark to collection        |
+| DELETE | `/api/collections/:id/bookmarks/:bookmarkId` | Yes  | Editor+ | Remove bookmark                   |
 
 ### Smart Lists
 
-| Method | Path | Auth | Role | Description |
-|---|---|---|---|---|
-| GET | `/api/smart-lists` | Yes | Any | List smart lists |
-| POST | `/api/smart-lists` | Yes | Editor+ | Create smart list |
-| GET | `/api/smart-lists/:id` | Yes | Any | Get smart list + resolved bookmarks |
-| PATCH | `/api/smart-lists/:id` | Yes | Editor+ | Update smart list |
-| DELETE | `/api/smart-lists/:id` | Yes | Editor+ | Delete smart list |
+| Method | Path                   | Auth | Role    | Description                         |
+| ------ | ---------------------- | ---- | ------- | ----------------------------------- |
+| GET    | `/api/smart-lists`     | Yes  | Any     | List smart lists                    |
+| POST   | `/api/smart-lists`     | Yes  | Editor+ | Create smart list                   |
+| GET    | `/api/smart-lists/:id` | Yes  | Any     | Get smart list + resolved bookmarks |
+| PATCH  | `/api/smart-lists/:id` | Yes  | Editor+ | Update smart list                   |
+| DELETE | `/api/smart-lists/:id` | Yes  | Editor+ | Delete smart list                   |
 
 ### Search
 
-| Method | Path | Auth | Role | Description |
-|---|---|---|---|---|
-| GET | `/api/search` | Yes | Any | FTS5 search with `?q=term&page=1&limit=20` |
+| Method | Path          | Auth | Role | Description                                |
+| ------ | ------------- | ---- | ---- | ------------------------------------------ |
+| GET    | `/api/search` | Yes  | Any  | FTS5 search with `?q=term&page=1&limit=20` |
 
 ### Admin
 
@@ -527,9 +528,9 @@ All endpoints return the standard envelope:
 > Dashboard** — no custom admin API endpoints needed. The admin page in the frontend
 > provides a link to the Auth0 Dashboard for convenience.
 
-| Method | Path | Auth | Role | Description |
-|---|---|---|---|---|
-| GET | `/api/admin/stats` | Yes | Admin | App statistics (bookmark count, storage usage, job status) |
+| Method | Path               | Auth | Role  | Description                                                |
+| ------ | ------------------ | ---- | ----- | ---------------------------------------------------------- |
+| GET    | `/api/admin/stats` | Yes  | Admin | App statistics (bookmark count, storage usage, job status) |
 
 ---
 
@@ -552,9 +553,11 @@ Auth0 replaces custom OAuth implementation, email allowlist table, session manag
 **API:** `https://mykb.bryanlam.dev/api` (AdonisJS API audience)
 
 **Connections:**
+
 - Google Social Connection (only connection enabled)
 
 **Roles (Auth0 RBAC):**
+
 - `admin` — permissions: `manage:users`
 - `editor` — permissions: `write:bookmarks`, `write:tags`, `write:collections`
 - `viewer` — permissions: `read:bookmarks`, `read:tags`, `read:collections`
@@ -618,11 +621,11 @@ The allowlist is managed by editing the `ALLOWED_EMAILS` secret in Auth0 Dashboa
 
 ### Auth0 SDK Integration Points
 
-| Component | SDK | Purpose |
-|---|---|---|
-| Next.js frontend | `@auth0/nextjs-auth0` | Login/logout, session, user context |
-| AdonisJS API | `jwks-rsa` + `jose` | JWT verification against Auth0 JWKS |
-| Auth0 Dashboard | — | Manage users, roles, allowlist Action |
+| Component        | SDK                   | Purpose                               |
+| ---------------- | --------------------- | ------------------------------------- |
+| Next.js frontend | `@auth0/nextjs-auth0` | Login/logout, session, user context   |
+| AdonisJS API     | `jwks-rsa` + `jose`   | JWT verification against Auth0 JWKS   |
+| Auth0 Dashboard  | —                     | Manage users, roles, allowlist Action |
 
 ---
 
@@ -731,23 +734,23 @@ User adds URL
 
 ### Routes
 
-| Route | Auth | Role | Description |
-|---|---|---|---|
-| `/` | No | - | Landing/welcome page with sign-in button |
-| `/login` | No | - | Sign in with Google via Auth0 |
-| `/dashboard` | Yes | Any | All bookmarks grid/list view |
-| `/dashboard/favorites` | Yes | Any | Bookmarks where is_favorite=true |
-| `/dashboard/archive` | Yes | Any | Bookmarks where is_archived=true |
-| `/dashboard/bookmarks/[id]` | Yes | Any | Full detail + reader view |
-| `/dashboard/bookmarks/[id]/edit` | Yes | Editor+ | Edit bookmark metadata |
-| `/dashboard/collections` | Yes | Any | Grid of all collections |
-| `/dashboard/collections/[id]` | Yes | Any | Bookmarks in a collection |
-| `/dashboard/smart-lists` | Yes | Any | List of smart lists |
-| `/dashboard/smart-lists/[id]` | Yes | Any | Resolved bookmarks |
-| `/dashboard/tags` | Yes | Any | Tag cloud / list with counts |
-| `/dashboard/tags/[slug]` | Yes | Any | Bookmarks with this tag |
-| `/dashboard/search` | Yes | Any | Full-text search results |
-| `/dashboard/admin` | Yes | Admin | Admin dashboard (stats + link to Auth0 Dashboard) |
+| Route                            | Auth | Role    | Description                                       |
+| -------------------------------- | ---- | ------- | ------------------------------------------------- |
+| `/`                              | No   | -       | Landing/welcome page with sign-in button          |
+| `/login`                         | No   | -       | Sign in with Google via Auth0                     |
+| `/dashboard`                     | Yes  | Any     | All bookmarks grid/list view                      |
+| `/dashboard/favorites`           | Yes  | Any     | Bookmarks where is_favorite=true                  |
+| `/dashboard/archive`             | Yes  | Any     | Bookmarks where is_archived=true                  |
+| `/dashboard/bookmarks/[id]`      | Yes  | Any     | Full detail + reader view                         |
+| `/dashboard/bookmarks/[id]/edit` | Yes  | Editor+ | Edit bookmark metadata                            |
+| `/dashboard/collections`         | Yes  | Any     | Grid of all collections                           |
+| `/dashboard/collections/[id]`    | Yes  | Any     | Bookmarks in a collection                         |
+| `/dashboard/smart-lists`         | Yes  | Any     | List of smart lists                               |
+| `/dashboard/smart-lists/[id]`    | Yes  | Any     | Resolved bookmarks                                |
+| `/dashboard/tags`                | Yes  | Any     | Tag cloud / list with counts                      |
+| `/dashboard/tags/[slug]`         | Yes  | Any     | Bookmarks with this tag                           |
+| `/dashboard/search`              | Yes  | Any     | Full-text search results                          |
+| `/dashboard/admin`               | Yes  | Admin   | Admin dashboard (stats + link to Auth0 Dashboard) |
 
 ### Key Components
 
@@ -875,7 +878,7 @@ User adds URL
 
 **Dependencies:** Phase 6
 
-1. Caddyfile (reverse proxy: /api/* -> :3333, /* -> :3000)
+1. Caddyfile (reverse proxy: /api/_ -> :3333, /_ -> :3000)
 2. PM2 config (manage AdonisJS + Next.js processes)
 3. VM setup script (Node.js, pnpm, Caddy, PM2, firewall)
 4. GitHub Actions CI (lint, typecheck, test on PR)
@@ -939,8 +942,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - SSH into OCI VM via appleboy/ssh-action
-      - Commands:
-          cd /opt/mykb
+      - Commands: cd /opt/mykb
           git pull origin main
           pnpm install --frozen-lockfile
           pnpm turbo build
@@ -957,67 +959,67 @@ Automated dependency updates and security vulnerability remediation.
 version: 2
 updates:
   # Root workspace + shared packages
-  - package-ecosystem: "npm"
-    directory: "/"
+  - package-ecosystem: 'npm'
+    directory: '/'
     cooldown:
       default-days: 7
     schedule:
-      interval: "weekly"
-      day: "monday"
+      interval: 'weekly'
+      day: 'monday'
     open-pull-requests-limit: 10
     reviewers:
-      - "usbryanchlam"
+      - 'usbryanchlam'
     labels:
-      - "dependencies"
+      - 'dependencies'
     groups:
       # Group minor/patch updates to reduce PR noise
       production-deps:
         patterns:
-          - "*"
+          - '*'
         update-types:
-          - "minor"
-          - "patch"
+          - 'minor'
+          - 'patch'
 
   # Next.js frontend
-  - package-ecosystem: "npm"
-    directory: "/apps/web"
+  - package-ecosystem: 'npm'
+    directory: '/apps/web'
     cooldown:
       default-days: 7
     schedule:
-      interval: "weekly"
-      day: "monday"
+      interval: 'weekly'
+      day: 'monday'
     open-pull-requests-limit: 5
     reviewers:
-      - "usbryanchlam"
+      - 'usbryanchlam'
     labels:
-      - "dependencies"
-      - "frontend"
+      - 'dependencies'
+      - 'frontend'
 
   # AdonisJS backend
-  - package-ecosystem: "npm"
-    directory: "/apps/api"
+  - package-ecosystem: 'npm'
+    directory: '/apps/api'
     cooldown:
       default-days: 7
     schedule:
-      interval: "weekly"
-      day: "monday"
+      interval: 'weekly'
+      day: 'monday'
     open-pull-requests-limit: 5
     reviewers:
-      - "usbryanchlam"
+      - 'usbryanchlam'
     labels:
-      - "dependencies"
-      - "backend"
+      - 'dependencies'
+      - 'backend'
 
   # GitHub Actions
-  - package-ecosystem: "github-actions"
-    directory: "/"
+  - package-ecosystem: 'github-actions'
+    directory: '/'
     cooldown:
       default-days: 7
     schedule:
-      interval: "weekly"
+      interval: 'weekly'
     labels:
-      - "dependencies"
-      - "ci"
+      - 'dependencies'
+      - 'ci'
 ```
 
 **Dependabot security updates** are enabled by default when Dependabot is configured. GitHub will automatically create PRs for known vulnerabilities (CVEs) in dependencies, separate from the scheduled weekly updates.
@@ -1034,50 +1036,52 @@ updates:
 
 When a user adds a URL, the content passes through a multi-layer safety pipeline before AI processing:
 
-| Layer | Tool | What It Catches | Cost |
-|---|---|---|---|
-| 1. URL Reputation | Google Safe Browsing API | Malware, phishing, unwanted software, social engineering | Free (10k lookups/day) |
-| 2. HTML Sanitization | DOMPurify (server-side) | `<script>` injection, event handlers (`onclick`, `onerror`), suspicious `<iframe>`, `data:` URIs, `javascript:` URIs | Free (library) |
-| 3. AI Content Analysis | Google Gemini API | Pornography, graphic violence, prompt injection, harmful content | Per-token (shared with summarization budget) |
+| Layer                  | Tool                     | What It Catches                                                                                                      | Cost                                         |
+| ---------------------- | ------------------------ | -------------------------------------------------------------------------------------------------------------------- | -------------------------------------------- |
+| 1. URL Reputation      | Google Safe Browsing API | Malware, phishing, unwanted software, social engineering                                                             | Free (10k lookups/day)                       |
+| 2. HTML Sanitization   | DOMPurify (server-side)  | `<script>` injection, event handlers (`onclick`, `onerror`), suspicious `<iframe>`, `data:` URIs, `javascript:` URIs | Free (library)                               |
+| 3. AI Content Analysis | Google Gemini API        | Pornography, graphic violence, prompt injection, harmful content                                                     | Per-token (shared with summarization budget) |
 
 **Decision logic:**
+
 - All layers pass → `safety_status = 'safe'`, proceed to AI summarization + tagging
 - Any layer fails → `safety_status = 'flagged'`, store reasons, halt AI pipeline, show warning in UI
 - Layer errors (API down) → `safety_status = 'skipped'`, proceed with caution
 
 **Prompt Injection Defense:**
+
 - AI content safety check specifically looks for prompt injection patterns in scraped content
 - Scraped content is never used as system prompts — always passed as user content with clear delimiters
 - AI responses are validated against expected JSON schema before processing
 
 ### Application Security
 
-| Category | Implementation |
-|---|---|
-| **Authentication** | Auth0 with Google OAuth; JWT validation on every API request via JWKS |
-| **Authorization** | Auth0 RBAC roles (admin/editor/viewer); `role_middleware.ts` enforces per-endpoint |
-| **Input Validation** | Vine validators on all API inputs; URL format validation (http/https only) |
-| **XSS Prevention** | DOMPurify sanitizes all HTML before storage and rendering; React's built-in escaping |
-| **CSRF Protection** | Auth0 SDK handles via state parameter; SameSite cookie attribute |
-| **SQL Injection** | Lucid ORM parameterized queries only; no raw string concatenation |
-| **SSRF Prevention** | Block private/internal IPs when scraping (127.0.0.1, 10.x, 172.16-31.x, 192.168.x, 169.254.x, fd00::/8) |
-| **Rate Limiting** | `@adonisjs/limiter` on all endpoints; stricter limits on write operations |
-| **Security Headers** | Helmet middleware: Content-Security-Policy, X-Frame-Options: DENY, X-Content-Type-Options: nosniff, Referrer-Policy: strict-origin-when-cross-origin, Permissions-Policy |
-| **Secrets Management** | All secrets in environment variables; validated at AdonisJS startup via `env.ts`; never logged or returned in API responses |
-| **Dependency Security** | `npm audit` in CI pipeline; Dependabot for automated updates + security PRs; GitHub security alerts enabled; lock file integrity check |
-| **Error Handling** | Production errors return generic messages; detailed errors logged server-side only; never expose stack traces |
+| Category                | Implementation                                                                                                                                                           |
+| ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **Authentication**      | Auth0 with Google OAuth; JWT validation on every API request via JWKS                                                                                                    |
+| **Authorization**       | Auth0 RBAC roles (admin/editor/viewer); `role_middleware.ts` enforces per-endpoint                                                                                       |
+| **Input Validation**    | Vine validators on all API inputs; URL format validation (http/https only)                                                                                               |
+| **XSS Prevention**      | DOMPurify sanitizes all HTML before storage and rendering; React's built-in escaping                                                                                     |
+| **CSRF Protection**     | Auth0 SDK handles via state parameter; SameSite cookie attribute                                                                                                         |
+| **SQL Injection**       | Lucid ORM parameterized queries only; no raw string concatenation                                                                                                        |
+| **SSRF Prevention**     | Block private/internal IPs when scraping (127.0.0.1, 10.x, 172.16-31.x, 192.168.x, 169.254.x, fd00::/8)                                                                  |
+| **Rate Limiting**       | `@adonisjs/limiter` on all endpoints; stricter limits on write operations                                                                                                |
+| **Security Headers**    | Helmet middleware: Content-Security-Policy, X-Frame-Options: DENY, X-Content-Type-Options: nosniff, Referrer-Policy: strict-origin-when-cross-origin, Permissions-Policy |
+| **Secrets Management**  | All secrets in environment variables; validated at AdonisJS startup via `env.ts`; never logged or returned in API responses                                              |
+| **Dependency Security** | `npm audit` in CI pipeline; Dependabot for automated updates + security PRs; GitHub security alerts enabled; lock file integrity check                                   |
+| **Error Handling**      | Production errors return generic messages; detailed errors logged server-side only; never expose stack traces                                                            |
 
 ### Scraper Security
 
-| Measure | Implementation |
-|---|---|
-| Request timeout | 15 seconds max |
-| Response size limit | 10MB max |
-| Redirect limit | Max 3 redirects |
-| Scheme restriction | Only `http://` and `https://` allowed |
-| IP blocking | Block requests to private/loopback/link-local addresses (SSRF prevention) |
-| User-Agent | Identify as MyKB bot (transparent, not deceptive) |
-| Resource cleanup | Abort fetch on timeout; close connections |
+| Measure             | Implementation                                                            |
+| ------------------- | ------------------------------------------------------------------------- |
+| Request timeout     | 15 seconds max                                                            |
+| Response size limit | 10MB max                                                                  |
+| Redirect limit      | Max 3 redirects                                                           |
+| Scheme restriction  | Only `http://` and `https://` allowed                                     |
+| IP blocking         | Block requests to private/loopback/link-local addresses (SSRF prevention) |
+| User-Agent          | Identify as MyKB bot (transparent, not deceptive)                         |
+| Resource cleanup    | Abort fetch on timeout; close connections                                 |
 
 ### Environment Variables (Secrets)
 
@@ -1114,6 +1118,7 @@ NODE_ENV                        # production
 ### API Tests (`apps/api/tests/`)
 
 **Unit tests** (repositories, services):
+
 - BookmarkRepository: CRUD, pagination, filtering
 - ScraperService: metadata extraction (mock HTTP responses)
 - ContentSafetyService: URL reputation check, HTML sanitization, AI safety analysis (mock APIs)
@@ -1122,6 +1127,7 @@ NODE_ENV                        # production
 - JobService: queue ordering, concurrency, retries
 
 **Integration tests** (controllers, full request lifecycle):
+
 - Auth: JWT validation, role enforcement (mock Auth0 JWKS)
 - Bookmark CRUD: create, read, update, delete with auth
 - Role enforcement: viewer cannot create, editor can
@@ -1133,6 +1139,7 @@ NODE_ENV                        # production
 ### Web Tests (`apps/web/`)
 
 **Unit tests** (components, hooks):
+
 - BookmarkCard rendering with various states
 - AddBookmarkDialog validation
 - useAuth hook behavior
@@ -1144,17 +1151,17 @@ NODE_ENV                        # production
 
 ## 11. Risks and Mitigations
 
-| Risk | Severity | Mitigation |
-|---|---|---|
-| Web scraping fails on complex sites (SPAs, paywalls) | Medium | Graceful degradation: show URL-only bookmark, allow manual metadata entry, re-scrape button |
-| Gemini API rate limits or outages | Medium | Retry with backoff, mark ai_status='failed', allow manual retry, app works without AI |
-| SQLite write contention under concurrent scrape jobs | Low | WAL mode + busy_timeout=5000 + max 2 concurrent jobs |
-| OCI free tier resource limits | Low | Monitor usage, SQLite is lightweight, asset storage within free tier |
-| FTS5 index grows large | Low | Personal use scale (thousands, not millions) — FTS5 handles this fine |
-| Auth0 service outage | Low | Users remain logged in via cached session; graceful error page if Auth0 is down |
-| Content safety false positives | Low | Flagged bookmarks are not deleted — user can review and override (future feature) |
-| Google Safe Browsing API quota | Low | 10k lookups/day is far beyond personal use; fallback to 'skipped' status if exhausted |
-| Single point of failure (one VM) | Medium | Acceptable for personal use; daily SQLite backup to OCI Object Storage |
+| Risk                                                 | Severity | Mitigation                                                                                  |
+| ---------------------------------------------------- | -------- | ------------------------------------------------------------------------------------------- |
+| Web scraping fails on complex sites (SPAs, paywalls) | Medium   | Graceful degradation: show URL-only bookmark, allow manual metadata entry, re-scrape button |
+| Gemini API rate limits or outages                    | Medium   | Retry with backoff, mark ai_status='failed', allow manual retry, app works without AI       |
+| SQLite write contention under concurrent scrape jobs | Low      | WAL mode + busy_timeout=5000 + max 2 concurrent jobs                                        |
+| OCI free tier resource limits                        | Low      | Monitor usage, SQLite is lightweight, asset storage within free tier                        |
+| FTS5 index grows large                               | Low      | Personal use scale (thousands, not millions) — FTS5 handles this fine                       |
+| Auth0 service outage                                 | Low      | Users remain logged in via cached session; graceful error page if Auth0 is down             |
+| Content safety false positives                       | Low      | Flagged bookmarks are not deleted — user can review and override (future feature)           |
+| Google Safe Browsing API quota                       | Low      | 10k lookups/day is far beyond personal use; fallback to 'skipped' status if exhausted       |
+| Single point of failure (one VM)                     | Medium   | Acceptable for personal use; daily SQLite backup to OCI Object Storage                      |
 
 ---
 
