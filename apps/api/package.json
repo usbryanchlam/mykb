@@ -56,12 +56,10 @@
     "youch": "^4.1.0"
   },
   "dependencies": {
-    "@adonisjs/auth": "^10.0.0",
     "@adonisjs/core": "^7.0.0",
     "@adonisjs/cors": "^3.0.0",
     "@adonisjs/lucid": "^22.0.0",
-    "@adonisjs/session": "^8.0.0",
-    "@adonisjs/shield": "^9.0.0",
+    "jose": "^6.0.11",
     "@japa/api-client": "^3.2.1",
     "@mykb/shared": "workspace:*",
     "@tuyau/core": "^1.0.0",
