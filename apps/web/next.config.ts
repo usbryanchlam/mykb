@@ -1,5 +1,7 @@
 import type { NextConfig } from 'next'
 
+const API_URL = process.env.API_URL ?? 'http://localhost:3333'
+
 const nextConfig: NextConfig = {
   transpilePackages: ['@mykb/shared'],
 
@@ -7,7 +9,7 @@ const nextConfig: NextConfig = {
     return [
       {
         source: '/api/:path*',
-        destination: 'http://localhost:3333/api/:path*',
+        destination: `${API_URL}/api/:path*`,
       },
     ]
   },
