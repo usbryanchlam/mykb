@@ -30,6 +30,7 @@ Thumbs.db
 
 # Temp
 tmp/
+progress-*
 
 # Debug logs
 npm-debug.log*
