@@ -1,12 +1,14 @@
 import { test } from '@japa/runner'
 import RoleMiddleware from '#middleware/role_middleware'
+import type { UserRole } from '@mykb/shared'
+import type { HttpContext } from '@adonisjs/core/http'
 
-function createMockContext(role?: string) {
+function createMockContext(role?: UserRole) {
   let statusCode = 200
   let responseBody: unknown = null
 
   const ctx = {
-    auth0User: role ? ({ role } as any) : undefined,
+    auth0User: role ? { role } : undefined,
     response: {
       unauthorized(body: unknown) {
         statusCode = 401
@@ -17,7 +19,7 @@ function createMockContext(role?: string) {
         responseBody = body
       },
     },
-  } as any
+  } as unknown as HttpContext
 
   return { ctx, getStatus: () => statusCode, getBody: () => responseBody }
 }
@@ -115,6 +117,37 @@ test.group('RoleMiddleware', () => {
     assert.isFalse(nextCalled)
     assert.equal(getStatus(), 401)
     assert.deepEqual(getBody(), { success: false, data: null, error: 'Authentication required' })
+  })
+
+  test('denies editor from admin-required route', async ({ assert }) => {
+    const { ctx, getStatus } = createMockContext('editor')
+    const middleware = new RoleMiddleware()
+    let nextCalled = false
+
+    await middleware.handle(
+      ctx,
+      () => {
+        nextCalled = true
+      },
+      { roles: ['admin'] }
+    )
+    assert.isFalse(nextCalled)
+    assert.equal(getStatus(), 403)
+  })
+
+  test('allows admin to access viewer-required route', async ({ assert }) => {
+    const { ctx } = createMockContext('admin')
+    const middleware = new RoleMiddleware()
+    let nextCalled = false
+
+    await middleware.handle(
+      ctx,
+      () => {
+        nextCalled = true
+      },
+      { roles: ['viewer'] }
+    )
+    assert.isTrue(nextCalled)
   })
 
   test('allows viewer to access viewer-required route', async ({ assert }) => {

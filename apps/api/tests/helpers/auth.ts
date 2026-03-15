@@ -19,7 +19,7 @@ export async function initTestKeys() {
 export async function startJwksServer(port = 3999): Promise<Server> {
   await initTestKeys()
 
-  return new Promise((resolve) => {
+  return new Promise((resolve, reject) => {
     jwksServer = createServer((req, res) => {
       if (req.url === '/.well-known/jwks.json') {
         res.writeHead(200, { 'Content-Type': 'application/json' })
@@ -30,6 +30,7 @@ export async function startJwksServer(port = 3999): Promise<Server> {
       }
     })
 
+    jwksServer.on('error', (err) => reject(err))
     jwksServer.listen(port, () => resolve(jwksServer!))
   })
 }
@@ -60,7 +61,7 @@ export async function createTestToken(options: TokenOptions = {}): Promise<strin
     expiresIn = '1h',
   } = options
 
-  const builder = new SignJWT({
+  let builder = new SignJWT({
     email,
     name,
     picture,
@@ -73,7 +74,7 @@ export async function createTestToken(options: TokenOptions = {}): Promise<strin
     .setIssuedAt()
 
   if (expiresIn) {
-    builder.setExpirationTime(expiresIn)
+    builder = builder.setExpirationTime(expiresIn)
   }
 
   return builder.sign(privateKey)
