@@ -1,3 +1,4 @@
+import { randomUUID } from 'node:crypto'
 import { test } from '@japa/runner'
 import { createTestToken } from '#tests/helpers/auth'
 
@@ -48,7 +49,7 @@ test.group('GET /api/me', () => {
   })
 
   test('creates user on first request and updates on subsequent', async ({ client, assert }) => {
-    const sub = `auth0|upsert-test-${Date.now()}`
+    const sub = `auth0|upsert-test-${randomUUID()}`
 
     const token1 = await createTestToken({
       sub,
@@ -78,7 +79,7 @@ test.group('GET /api/me', () => {
 
   test('defaults to viewer role when no roles in token', async ({ client, assert }) => {
     const token = await createTestToken({
-      sub: `auth0|no-role-${Date.now()}`,
+      sub: `auth0|no-role-${randomUUID()}`,
       roles: [],
     })
 
