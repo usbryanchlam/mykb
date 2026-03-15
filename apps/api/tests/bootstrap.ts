@@ -1,9 +1,11 @@
+import { mkdir } from 'node:fs/promises'
 import { assert } from '@japa/assert'
 import { apiClient } from '@japa/api-client'
 import app from '@adonisjs/core/services/app'
 import type { Config } from '@japa/runner/types'
 import { pluginAdonisJS } from '@japa/plugin-adonisjs'
 import testUtils from '@adonisjs/core/services/test_utils'
+import { startJwksServer, stopJwksServer } from '#tests/helpers/auth'
 import type { Registry } from '../.adonisjs/client/registry/schema.d.ts'
 
 declare module '@japa/api-client/types' {
@@ -19,13 +21,18 @@ export const plugins: Config['plugins'] = [assert(), pluginAdonisJS(app), apiCli
 /**
  * Configure lifecycle function to run before and after all the
  * tests.
- *
- * The setup functions are executed before all the tests
- * The teardown functions are executed after all the tests
  */
 export const runnerHooks: Required<Pick<Config, 'setup' | 'teardown'>> = {
-  setup: [],
-  teardown: [],
+  setup: [
+    async () => {
+      await startJwksServer()
+    },
+    async () => {
+      await mkdir(app.tmpPath(), { recursive: true })
+    },
+    () => testUtils.db().migrate(),
+  ],
+  teardown: [() => stopJwksServer(), () => testUtils.db().truncate()],
 }
 
 /**

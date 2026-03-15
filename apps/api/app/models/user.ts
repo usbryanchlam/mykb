@@ -6,7 +6,7 @@ export default class User extends BaseModel {
   @column({ isPrimary: true })
   declare id: number
 
-  @column()
+  @column({ columnName: 'auth0_sub' })
   declare auth0Sub: string
 
   @column()
