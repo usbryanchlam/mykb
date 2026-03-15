@@ -12,7 +12,10 @@ const navItems = [
 
 export function Sidebar() {
   return (
-    <aside className="flex w-64 flex-col border-r border-border bg-sidebar">
+    <aside
+      aria-label="Main navigation"
+      className="flex w-64 flex-col border-r border-border bg-sidebar"
+    >
       <div className="px-6 py-5">
         <span className="text-lg font-semibold text-sidebar-foreground">MyKB</span>
       </div>
