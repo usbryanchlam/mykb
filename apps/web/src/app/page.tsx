@@ -1,5 +1,6 @@
 import { auth0 } from '@/lib/auth0'
 import { redirect } from 'next/navigation'
+import { Header } from '@/components/layout/header'
 
 export default async function Home() {
   const session = await auth0.getSession()
@@ -9,15 +10,16 @@ export default async function Home() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center">
-      <main className="flex flex-col items-center gap-6 text-center">
-        <h1 className="text-4xl font-bold tracking-tight">MyKB</h1>
-        <p className="max-w-md text-lg text-zinc-600 dark:text-zinc-400">
+    <div className="flex min-h-screen flex-col">
+      <Header />
+      <main className="flex flex-1 flex-col items-center justify-center gap-6 text-center">
+        <h1 className="text-5xl font-bold tracking-tight">MyKB</h1>
+        <p className="max-w-md text-lg text-muted-foreground">
           Your personal knowledge base for bookmarking, summarizing, and organizing web content.
         </p>
         <a
           href="/auth/login"
-          className="rounded-full bg-foreground px-6 py-3 text-background transition-colors hover:bg-zinc-700 dark:hover:bg-zinc-300"
+          className="rounded-full bg-primary px-8 py-3 text-lg font-medium text-primary-foreground transition-colors hover:bg-primary/80"
         >
           Sign in with Google
         </a>
