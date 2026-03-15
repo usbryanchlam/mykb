@@ -9,6 +9,14 @@ export function useAuth() {
   const { user, isLoading, error } = useUser()
 
   const roles = (user?.[ROLES_CLAIM] as string[] | undefined) ?? []
+
+  if (process.env.NODE_ENV === 'development' && user && roles.length === 0) {
+    console.warn(
+      '[useAuth] No roles found in token claim "%s". Defaulting to "viewer".',
+      ROLES_CLAIM,
+    )
+  }
+
   const role = (roles[0] ?? 'viewer') as UserRole
 
   return {
