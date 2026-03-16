@@ -39,11 +39,11 @@ export function UserMenu() {
         </div>
       )}
       <span className="hidden text-sm font-medium md:inline">{user.name}</span>
-      <form action="/auth/logout" method="POST">
-        <Button type="submit" variant="ghost" size="icon-sm" aria-label="Sign out">
+      <a href="/auth/logout">
+        <Button variant="ghost" size="icon-sm" aria-label="Sign out">
           <LogOut className="size-4" />
         </Button>
-      </form>
+      </a>
     </div>
   )
 }
