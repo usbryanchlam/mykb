@@ -41,14 +41,16 @@ main
 
 ## PR 3: `phase6/error-pages` — Error pages
 
-| #   | Task                  | Details                                            |
-| --- | --------------------- | -------------------------------------------------- |
-| 1   | Update 404 page       | Styled not-found page matching app theme           |
-| 2   | Create 403 page       | Forbidden/unauthorized page                        |
-| 3   | Create 500 page       | Generic error page (no stack traces in production) |
-| 4   | Create error boundary | React error boundary for frontend crashes          |
+| #   | Task                                 | Details                                                                                           |
+| --- | ------------------------------------ | ------------------------------------------------------------------------------------------------- |
+| 1   | Update 404 page                      | Styled not-found page matching app theme                                                          |
+| 2   | Create 403 page                      | Forbidden/unauthorized page                                                                       |
+| 3   | Create 500 page                      | Generic error page (no stack traces in production)                                                |
+| 4   | Create error boundary                | React error boundary for frontend crashes                                                         |
+| 5   | Harden API error handler             | Verify production errors return generic messages only, no stack traces or internal details leaked |
+| 6   | Add error handling integration tests | Verify 404/403/500 responses don't expose sensitive info, test error boundary renders fallback UI |
 
-**Estimated files:** ~5
+**Estimated files:** ~7
 
 ## PR 4: `phase6/polish` — UI polish
 
@@ -56,10 +58,11 @@ main
 | --- | ------------------- | ---------------------------------------------------------------- |
 | 1   | Loading states      | Add skeleton loaders to all data-fetching pages                  |
 | 2   | Responsive design   | Sidebar collapses on mobile, grid adapts, touch-friendly actions |
-| 3   | Favicon + meta tags | Proper favicon, OG tags, description                             |
-| 4   | Accessibility pass  | Keyboard navigation, focus management, ARIA attributes           |
+| 3   | Create footer       | Minimal footer with version/copyright for dashboard layout       |
+| 4   | Favicon + meta tags | Proper favicon, OG tags, description                             |
+| 5   | Accessibility pass  | Keyboard navigation, focus management, ARIA attributes           |
 
-**Estimated files:** ~10
+**Estimated files:** ~11
 
 ## PR 5: `phase6/tests` — Tests
 
