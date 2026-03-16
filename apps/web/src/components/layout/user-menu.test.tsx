@@ -77,16 +77,15 @@ describe('UserMenu', () => {
     expect(container).toHaveTextContent('Test User')
   })
 
-  it('renders sign out button with POST form', () => {
+  it('renders sign out link to /auth/logout', () => {
     mockUseAuth.mockReturnValue({
       user: { name: 'Test', email: 'test@example.com', picture: null },
       isLoading: false,
     })
     const { container } = render(<UserMenu />)
-    const form = container.querySelector('form')
-    expect(form).toHaveAttribute('action', '/auth/logout')
-    expect(form).toHaveAttribute('method', 'POST')
-    const button = form?.querySelector('button[aria-label="Sign out"]')
+    const link = container.querySelector('a[href="/auth/logout"]')
+    expect(link).toBeInTheDocument()
+    const button = link?.querySelector('button[aria-label="Sign out"]')
     expect(button).toBeInTheDocument()
   })
 })
