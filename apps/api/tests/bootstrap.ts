@@ -6,11 +6,6 @@ import type { Config } from '@japa/runner/types'
 import { pluginAdonisJS } from '@japa/plugin-adonisjs'
 import testUtils from '@adonisjs/core/services/test_utils'
 import { startJwksServer, stopJwksServer } from '#tests/helpers/auth'
-import type { Registry } from '../.adonisjs/client/registry/schema.d.ts'
-
-declare module '@japa/api-client/types' {
-  interface RoutesRegistry extends Registry {}
-}
 
 /**
  * Configure Japa plugins in the plugins array.
