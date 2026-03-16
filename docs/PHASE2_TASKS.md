@@ -59,17 +59,18 @@ main
 
 **Goal:** Display bookmarks in a grid or list view with pagination controls.
 
-| #   | Task                          | Details                                                                                                                              |
-| --- | ----------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
-| 1   | Create BookmarkCard component | Thumbnail placeholder, title, domain, description snippet, tag badges placeholder, quick actions (favorite/archive/delete), time ago |
-| 2   | Create BookmarkGrid component | CSS grid layout, responsive columns                                                                                                  |
-| 3   | Create BookmarkList component | List layout alternative                                                                                                              |
-| 4   | Create pagination component   | Page numbers, prev/next, items per page selector                                                                                     |
-| 5   | Create useBookmarks hook      | Fetch bookmarks from API with pagination/filter params                                                                               |
-| 6   | Update dashboard page         | Replace empty state with bookmark grid, view toggle (grid/list)                                                                      |
-| 7   | Verify                        | Bookmarks display, pagination works, empty state shows when no bookmarks                                                             |
+| #   | Task                             | Details                                                                                     |
+| --- | -------------------------------- | ------------------------------------------------------------------------------------------- |
+| 1   | Create BookmarkCard component    | Thumbnail placeholder, title, domain, description snippet, tag badges placeholder, time ago |
+| 2   | Create BookmarkActions component | Dropdown/button group for favorite, archive, delete — reused in card and detail views       |
+| 3   | Create BookmarkGrid component    | CSS grid layout, responsive columns                                                         |
+| 4   | Create BookmarkList component    | List layout alternative                                                                     |
+| 5   | Create pagination component      | Page numbers, prev/next, items per page selector                                            |
+| 6   | Create useBookmarks hook         | Fetch bookmarks from API with pagination/filter params                                      |
+| 7   | Update dashboard page            | Replace empty state with bookmark grid, view toggle (grid/list)                             |
+| 8   | Verify                           | Bookmarks display, pagination works, empty state shows when no bookmarks                    |
 
-**Estimated files:** ~10
+**Estimated files:** ~11
 
 ---
 
@@ -93,15 +94,17 @@ main
 
 **Goal:** Full bookmark detail view with metadata display.
 
-| #   | Task                                        | Details                                                         |
-| --- | ------------------------------------------- | --------------------------------------------------------------- |
-| 1   | Create `/dashboard/bookmarks/[id]/page.tsx` | Bookmark detail with all metadata                               |
-| 2   | Create BookmarkDetail component             | Title, URL, description, timestamps, status indicators, actions |
-| 3   | Wire API call                               | GET /api/bookmarks/:id                                          |
-| 4   | Add navigation from grid                    | Click bookmark card → detail page                               |
-| 5   | Verify                                      | Detail page loads, back navigation works                        |
+| #   | Task                                             | Details                                                                 |
+| --- | ------------------------------------------------ | ----------------------------------------------------------------------- |
+| 1   | Create `/dashboard/bookmarks/[id]/page.tsx`      | Bookmark detail with all metadata                                       |
+| 2   | Create BookmarkDetail component                  | Title, URL, description, timestamps, status indicators, actions         |
+| 3   | Create `/dashboard/bookmarks/[id]/edit/page.tsx` | Edit bookmark metadata (title, description) — requires editor+ role     |
+| 4   | Create BookmarkEditForm component                | Pre-filled form with title, description, URL (readonly), submit handler |
+| 5   | Wire API calls                                   | GET /api/bookmarks/:id, PATCH /api/bookmarks/:id                        |
+| 6   | Add navigation from grid                         | Click bookmark card → detail page                                       |
+| 7   | Verify                                           | Detail page loads, edit form saves, back navigation works               |
 
-**Estimated files:** ~5
+**Estimated files:** ~7
 
 ---
 
