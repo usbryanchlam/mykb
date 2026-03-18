@@ -1,6 +1,8 @@
-import { BaseModel, column } from '@adonisjs/lucid/orm'
+import { BaseModel, column, hasMany } from '@adonisjs/lucid/orm'
+import type { HasMany } from '@adonisjs/lucid/types/relations'
 import { DateTime } from 'luxon'
 import type { UserRole } from '@mykb/shared'
+import Bookmark from '#models/bookmark'
 
 export default class User extends BaseModel {
   @column({ isPrimary: true })
@@ -29,6 +31,9 @@ export default class User extends BaseModel {
 
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   declare updatedAt: DateTime
+
+  @hasMany(() => Bookmark)
+  declare bookmarks: HasMany<typeof Bookmark>
 
   get initials() {
     const parts = this.name ? this.name.split(' ') : this.email.split('@')
