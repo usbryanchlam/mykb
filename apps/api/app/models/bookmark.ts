@@ -56,8 +56,11 @@ export default class Bookmark extends BaseModel {
   @column()
   declare safetyStatus: SafetyStatus
 
-  @column()
-  declare safetyReasons: string | null
+  @column({
+    prepare: (value: string[] | null) => (value ? JSON.stringify(value) : null),
+    consume: (value: string | null) => (value ? JSON.parse(value) : null),
+  })
+  declare safetyReasons: string[] | null
 
   @column()
   declare scrapeError: string | null
