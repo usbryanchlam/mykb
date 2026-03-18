@@ -12,6 +12,14 @@ export interface ListBookmarksParams {
   readonly is_archived?: boolean
 }
 
+function humanError(action: string, status: number): string {
+  if (status === 401) return 'Please sign in to continue.'
+  if (status === 403) return 'You do not have permission to perform this action.'
+  if (status === 404) return 'Bookmark not found.'
+  if (status >= 500) return 'Something went wrong. Please try again later.'
+  return `Failed to ${action}. Please try again.`
+}
+
 export async function listBookmarks(
   params: ListBookmarksParams = {},
 ): Promise<PaginatedResponse<Bookmark>> {
@@ -28,7 +36,7 @@ export async function listBookmarks(
   const res = await apiFetch(path)
 
   if (!res.ok) {
-    throw new Error(`Failed to fetch bookmarks: ${res.status}`)
+    throw new Error(humanError('load bookmarks', res.status))
   }
 
   return res.json() as Promise<PaginatedResponse<Bookmark>>
@@ -38,7 +46,7 @@ export async function toggleFavorite(id: number): Promise<ApiResponse<Bookmark>>
   const res = await apiFetch(`/api/bookmarks/${id}/favorite`, { method: 'PATCH' })
 
   if (!res.ok) {
-    throw new Error(`Failed to toggle favorite: ${res.status}`)
+    throw new Error(humanError('update favorite', res.status))
   }
 
   return res.json() as Promise<ApiResponse<Bookmark>>
@@ -48,7 +56,7 @@ export async function toggleArchive(id: number): Promise<ApiResponse<Bookmark>> 
   const res = await apiFetch(`/api/bookmarks/${id}/archive`, { method: 'PATCH' })
 
   if (!res.ok) {
-    throw new Error(`Failed to toggle archive: ${res.status}`)
+    throw new Error(humanError('update archive', res.status))
   }
 
   return res.json() as Promise<ApiResponse<Bookmark>>
@@ -58,7 +66,7 @@ export async function deleteBookmark(id: number): Promise<ApiResponse<null>> {
   const res = await apiFetch(`/api/bookmarks/${id}`, { method: 'DELETE' })
 
   if (!res.ok) {
-    throw new Error(`Failed to delete bookmark: ${res.status}`)
+    throw new Error(humanError('delete bookmark', res.status))
   }
 
   return res.json() as Promise<ApiResponse<null>>

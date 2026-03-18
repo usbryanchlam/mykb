@@ -3,6 +3,7 @@
 import { Star, Archive, Trash2, ExternalLink } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
+import { isSafeUrl } from '@/lib/bookmark-utils'
 
 interface BookmarkActionsProps {
   readonly isFavorite: boolean
@@ -52,10 +53,13 @@ export function BookmarkActions({
         size="icon-xs"
         onClick={(e) => {
           e.stopPropagation()
-          window.open(url, '_blank', 'noopener,noreferrer')
+          if (isSafeUrl(url)) {
+            window.open(url, '_blank', 'noopener,noreferrer')
+          }
         }}
         aria-label="Open in new tab"
         title="Open in new tab"
+        disabled={!isSafeUrl(url)}
       >
         <ExternalLink className="size-3.5" />
       </Button>
@@ -64,7 +68,9 @@ export function BookmarkActions({
         size="icon-xs"
         onClick={(e) => {
           e.stopPropagation()
-          onDelete()
+          if (window.confirm('Delete this bookmark? This cannot be undone.')) {
+            onDelete()
+          }
         }}
         aria-label="Delete bookmark"
         title="Delete bookmark"

@@ -67,6 +67,7 @@ export function useBookmarks(options: UseBookmarksOptions = {}): UseBookmarksRes
 
   const handleToggleFavorite = useCallback(
     (id: number) => {
+      setError(null)
       startTransition(async () => {
         try {
           await toggleFavorite(id)
@@ -81,6 +82,7 @@ export function useBookmarks(options: UseBookmarksOptions = {}): UseBookmarksRes
 
   const handleToggleArchive = useCallback(
     (id: number) => {
+      setError(null)
       startTransition(async () => {
         try {
           await toggleArchive(id)
@@ -95,6 +97,7 @@ export function useBookmarks(options: UseBookmarksOptions = {}): UseBookmarksRes
 
   const handleDelete = useCallback(
     (id: number) => {
+      setError(null)
       startTransition(async () => {
         try {
           await deleteBookmark(id)
