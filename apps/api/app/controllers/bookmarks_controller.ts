@@ -6,13 +6,18 @@ import {
   listBookmarksValidator,
 } from '#validators/bookmark'
 
-const service = new BookmarkService()
+function parseId(raw: string): number | null {
+  const id = Number(raw)
+  return Number.isInteger(id) && id > 0 ? id : null
+}
 
 export default class BookmarksController {
+  constructor(private readonly service: BookmarkService = new BookmarkService()) {}
+
   async index({ auth0User, request, response }: HttpContext) {
     const query = await listBookmarksValidator.validate(request.qs())
 
-    const bookmarks = await service.list({
+    const bookmarks = await this.service.list({
       userId: auth0User.id,
       page: query.page,
       limit: query.limit,
@@ -35,34 +40,61 @@ export default class BookmarksController {
   }
 
   async show({ auth0User, params, response }: HttpContext) {
-    const bookmark = await service.findById(params.id, auth0User.id)
+    const id = parseId(params.id)
+    if (!id) {
+      return response.badRequest({ success: false, data: null, error: 'Invalid bookmark id' })
+    }
+    const bookmark = await this.service.findById(id, auth0User.id)
     return response.ok({ success: true, data: bookmark, error: null })
   }
 
   async store({ auth0User, request, response }: HttpContext) {
     const data = await createBookmarkValidator.validate(request.body())
-    const bookmark = await service.create(auth0User.id, data)
+    const bookmark = await this.service.create(auth0User.id, data)
     return response.created({ success: true, data: bookmark, error: null })
   }
 
   async update({ auth0User, params, request, response }: HttpContext) {
+    const id = parseId(params.id)
+    if (!id) {
+      return response.badRequest({ success: false, data: null, error: 'Invalid bookmark id' })
+    }
     const data = await updateBookmarkValidator.validate(request.body())
-    const bookmark = await service.update(params.id, auth0User.id, data)
+    if (!data.title && !data.description) {
+      return response.badRequest({
+        success: false,
+        data: null,
+        error: 'At least one of title or description is required',
+      })
+    }
+    const bookmark = await this.service.update(id, auth0User.id, data)
     return response.ok({ success: true, data: bookmark, error: null })
   }
 
   async destroy({ auth0User, params, response }: HttpContext) {
-    await service.delete(params.id, auth0User.id)
+    const id = parseId(params.id)
+    if (!id) {
+      return response.badRequest({ success: false, data: null, error: 'Invalid bookmark id' })
+    }
+    await this.service.delete(id, auth0User.id)
     return response.ok({ success: true, data: null, error: null })
   }
 
   async favorite({ auth0User, params, response }: HttpContext) {
-    const bookmark = await service.toggleFavorite(params.id, auth0User.id)
+    const id = parseId(params.id)
+    if (!id) {
+      return response.badRequest({ success: false, data: null, error: 'Invalid bookmark id' })
+    }
+    const bookmark = await this.service.toggleFavorite(id, auth0User.id)
     return response.ok({ success: true, data: bookmark, error: null })
   }
 
   async archive({ auth0User, params, response }: HttpContext) {
-    const bookmark = await service.toggleArchive(params.id, auth0User.id)
+    const id = parseId(params.id)
+    if (!id) {
+      return response.badRequest({ success: false, data: null, error: 'Invalid bookmark id' })
+    }
+    const bookmark = await this.service.toggleArchive(id, auth0User.id)
     return response.ok({ success: true, data: bookmark, error: null })
   }
 }

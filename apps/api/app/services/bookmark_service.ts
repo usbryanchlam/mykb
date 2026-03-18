@@ -1,8 +1,6 @@
 import BookmarkRepository from '#repositories/bookmark_repository'
 import type Bookmark from '#models/bookmark'
 
-const repository = new BookmarkRepository()
-
 interface CreateBookmarkData {
   readonly url: string
   readonly title?: string
@@ -24,39 +22,55 @@ interface ListBookmarksOptions {
 }
 
 export default class BookmarkService {
+  constructor(private readonly repository: BookmarkRepository = new BookmarkRepository()) {}
+
   async list(options: ListBookmarksOptions) {
-    return repository.findAllByUser(options)
+    return this.repository.findAllByUser(options)
   }
 
   async findById(id: number, userId: number) {
-    return repository.findById(id, userId)
+    return this.repository.findById(id, userId)
   }
 
   async create(userId: number, data: CreateBookmarkData) {
-    return repository.create({
-      userId,
-      url: data.url,
-      title: data.title ?? null,
-    } as Partial<Bookmark>)
+    try {
+      return await this.repository.create({
+        userId,
+        url: data.url,
+        title: data.title,
+      } as Partial<Bookmark>)
+    } catch (error: unknown) {
+      const err = error as { code?: string }
+      if (err.code === 'SQLITE_CONSTRAINT_UNIQUE' || err.code === 'SQLITE_CONSTRAINT') {
+        const conflictError = new Error('Bookmark with this URL already exists')
+        ;(conflictError as any).status = 409
+        throw conflictError
+      }
+      throw error
+    }
   }
 
   async update(id: number, userId: number, data: UpdateBookmarkData) {
-    const bookmark = await repository.findById(id, userId)
-    return repository.update(bookmark, data as Partial<Bookmark>)
+    const bookmark = await this.repository.findById(id, userId)
+    return this.repository.update(bookmark, data as Partial<Bookmark>)
   }
 
   async delete(id: number, userId: number) {
-    const bookmark = await repository.findById(id, userId)
-    await repository.delete(bookmark)
+    const bookmark = await this.repository.findById(id, userId)
+    await this.repository.delete(bookmark)
   }
 
   async toggleFavorite(id: number, userId: number) {
-    const bookmark = await repository.findById(id, userId)
-    return repository.update(bookmark, { isFavorite: !bookmark.isFavorite } as Partial<Bookmark>)
+    const bookmark = await this.repository.findById(id, userId)
+    return this.repository.update(bookmark, {
+      isFavorite: !bookmark.isFavorite,
+    } as Partial<Bookmark>)
   }
 
   async toggleArchive(id: number, userId: number) {
-    const bookmark = await repository.findById(id, userId)
-    return repository.update(bookmark, { isArchived: !bookmark.isArchived } as Partial<Bookmark>)
+    const bookmark = await this.repository.findById(id, userId)
+    return this.repository.update(bookmark, {
+      isArchived: !bookmark.isArchived,
+    } as Partial<Bookmark>)
   }
 }

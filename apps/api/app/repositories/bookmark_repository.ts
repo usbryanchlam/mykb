@@ -48,7 +48,8 @@ export default class BookmarkRepository {
   }
 
   async update(bookmark: Bookmark, data: Partial<Bookmark>) {
-    return bookmark.merge(data).save()
+    await bookmark.merge(data).save()
+    return Bookmark.findOrFail(bookmark.id)
   }
 
   async delete(bookmark: Bookmark) {
