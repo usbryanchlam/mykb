@@ -85,6 +85,42 @@ export async function createBookmark(input: CreateBookmarkInput): Promise<ApiRes
   return res.json() as Promise<ApiResponse<Bookmark>>
 }
 
+export async function getBookmark(id: number): Promise<ApiResponse<Bookmark>> {
+  const res = await apiFetch(`/api/bookmarks/${id}`)
+
+  if (!res.ok) {
+    throw new Error(humanError('load bookmark', res.status))
+  }
+
+  return res.json() as Promise<ApiResponse<Bookmark>>
+}
+
+export interface UpdateBookmarkInput {
+  readonly title?: string
+  readonly description?: string
+}
+
+export async function updateBookmark(
+  id: number,
+  input: UpdateBookmarkInput,
+): Promise<ApiResponse<Bookmark>> {
+  const res = await apiFetch(`/api/bookmarks/${id}`, {
+    method: 'PATCH',
+    body: JSON.stringify(input),
+  })
+
+  if (!res.ok) {
+    if (res.status === 422) {
+      const body = await res.json().catch(() => null)
+      const detail = body?.errors?.[0]?.message
+      throw new Error(detail ?? 'Invalid input. Please check and try again.')
+    }
+    throw new Error(humanError('update bookmark', res.status))
+  }
+
+  return res.json() as Promise<ApiResponse<Bookmark>>
+}
+
 export async function deleteBookmark(id: number): Promise<ApiResponse<null>> {
   const res = await apiFetch(`/api/bookmarks/${id}`, { method: 'DELETE' })
 

@@ -2,6 +2,7 @@
 
 import type { Bookmark } from '@mykb/shared'
 import { Globe } from 'lucide-react'
+import Link from 'next/link'
 import { BookmarkActions } from '@/components/bookmarks/bookmark-actions'
 import { getDomain, formatRelativeDate, isSafeUrl, isSafeFaviconUrl } from '@/lib/bookmark-utils'
 
@@ -39,7 +40,9 @@ export function BookmarkCard({
       </div>
 
       <div className="min-w-0">
-        <h3 className="truncate text-sm font-medium">{title}</h3>
+        <Link href={`/dashboard/bookmarks/${bookmark.id}`} className="hover:underline">
+          <h3 className="truncate text-sm font-medium">{title}</h3>
+        </Link>
         {bookmark.description && (
           <p className="mt-1 line-clamp-2 text-xs text-muted-foreground">{bookmark.description}</p>
         )}
