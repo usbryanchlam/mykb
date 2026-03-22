@@ -1,10 +1,19 @@
 import { describe, expect, it, vi } from 'vitest'
-import { render, screen } from '@testing-library/react'
+import { render } from '@testing-library/react'
 import type { Bookmark } from '@mykb/shared'
+import type { ReactNode } from 'react'
 import { BookmarkCard } from './bookmark-card'
 
 vi.mock('next/link', () => ({
-  default: ({ href, children, ...props }: any) => (
+  default: ({
+    href,
+    children,
+    ...props
+  }: {
+    href: string
+    children: ReactNode
+    className?: string
+  }) => (
     <a href={href} {...props}>
       {children}
     </a>
