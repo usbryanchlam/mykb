@@ -2,6 +2,7 @@
 
 import type { Bookmark } from '@mykb/shared'
 import { Globe } from 'lucide-react'
+import Link from 'next/link'
 import { BookmarkActions } from '@/components/bookmarks/bookmark-actions'
 import { getDomain, formatCompactDate, isSafeFaviconUrl } from '@/lib/bookmark-utils'
 
@@ -40,7 +41,9 @@ function BookmarkListItem({
 
       <div className="min-w-0 flex-1">
         <div className="flex items-center gap-2">
-          <h3 className="truncate text-sm font-medium">{title}</h3>
+          <Link href={`/dashboard/bookmarks/${bookmark.id}`} className="hover:underline">
+            <h3 className="truncate text-sm font-medium">{title}</h3>
+          </Link>
           <span className="shrink-0 text-xs text-muted-foreground">{domain}</span>
         </div>
         {bookmark.description && (
