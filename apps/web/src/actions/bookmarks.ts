@@ -62,6 +62,29 @@ export async function toggleArchive(id: number): Promise<ApiResponse<Bookmark>> 
   return res.json() as Promise<ApiResponse<Bookmark>>
 }
 
+export interface CreateBookmarkInput {
+  readonly url: string
+  readonly title?: string
+}
+
+export async function createBookmark(input: CreateBookmarkInput): Promise<ApiResponse<Bookmark>> {
+  const res = await apiFetch('/api/bookmarks', {
+    method: 'POST',
+    body: JSON.stringify(input),
+  })
+
+  if (!res.ok) {
+    if (res.status === 422) {
+      const body = await res.json().catch(() => null)
+      const detail = body?.errors?.[0]?.message
+      throw new Error(detail ?? 'Invalid URL. Please check and try again.')
+    }
+    throw new Error(humanError('create bookmark', res.status))
+  }
+
+  return res.json() as Promise<ApiResponse<Bookmark>>
+}
+
 export async function deleteBookmark(id: number): Promise<ApiResponse<null>> {
   const res = await apiFetch(`/api/bookmarks/${id}`, { method: 'DELETE' })
 
