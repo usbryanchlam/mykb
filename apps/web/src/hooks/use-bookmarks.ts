@@ -22,6 +22,7 @@ interface UseBookmarksResult {
   readonly page: number
   readonly isLoading: boolean
   readonly error: string | null
+  readonly lastAction: string | null
   readonly setPage: (page: number) => void
   readonly refresh: () => void
   readonly handleToggleFavorite: (id: number) => void
@@ -36,6 +37,7 @@ export function useBookmarks(options: UseBookmarksOptions = {}): UseBookmarksRes
   const [error, setError] = useState<string | null>(null)
   const [isPending, startTransition] = useTransition()
   const [initialLoading, setInitialLoading] = useState(true)
+  const [lastAction, setLastAction] = useState<string | null>(null)
 
   const fetchBookmarks = useCallback(() => {
     const params: ListBookmarksParams = {
@@ -68,9 +70,16 @@ export function useBookmarks(options: UseBookmarksOptions = {}): UseBookmarksRes
   const handleToggleFavorite = useCallback(
     (id: number) => {
       setError(null)
+      setLastAction(null)
       startTransition(async () => {
         try {
-          await toggleFavorite(id)
+          const result = await toggleFavorite(id)
+          const label = result.data.title ?? 'Bookmark'
+          setLastAction(
+            result.data.isFavorite
+              ? `"${label}" added to favorites.`
+              : `"${label}" removed from favorites.`,
+          )
           fetchBookmarks()
         } catch (err) {
           setError(err instanceof Error ? err.message : 'Failed to toggle favorite')
@@ -83,9 +92,16 @@ export function useBookmarks(options: UseBookmarksOptions = {}): UseBookmarksRes
   const handleToggleArchive = useCallback(
     (id: number) => {
       setError(null)
+      setLastAction(null)
       startTransition(async () => {
         try {
-          await toggleArchive(id)
+          const result = await toggleArchive(id)
+          const label = result.data.title ?? 'Bookmark'
+          setLastAction(
+            result.data.isArchived
+              ? `"${label}" moved to archive.`
+              : `"${label}" restored from archive.`,
+          )
           fetchBookmarks()
         } catch (err) {
           setError(err instanceof Error ? err.message : 'Failed to toggle archive')
@@ -98,9 +114,11 @@ export function useBookmarks(options: UseBookmarksOptions = {}): UseBookmarksRes
   const handleDelete = useCallback(
     (id: number) => {
       setError(null)
+      setLastAction(null)
       startTransition(async () => {
         try {
           await deleteBookmark(id)
+          setLastAction('Bookmark deleted.')
           fetchBookmarks()
         } catch (err) {
           setError(err instanceof Error ? err.message : 'Failed to delete bookmark')
@@ -116,6 +134,7 @@ export function useBookmarks(options: UseBookmarksOptions = {}): UseBookmarksRes
     page,
     isLoading: initialLoading || isPending,
     error,
+    lastAction,
     setPage,
     refresh: fetchBookmarks,
     handleToggleFavorite,
