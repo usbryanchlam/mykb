@@ -113,9 +113,9 @@ test.group('ContentSafetyService — check (integration)', () => {
 
 test.group('ContentSafetyService — ContentSafetyJob', () => {
   test('updates bookmark with safety result', async ({ assert }) => {
-    const User = (await import('#models/user')).default
-    const Bookmark = (await import('#models/bookmark')).default
-    const ContentSafetyJob = (await import('#jobs/content_safety_job')).default
+    const { default: User } = await import('#models/user')
+    const { default: Bookmark } = await import('#models/bookmark')
+    const { default: ContentSafetyJob } = await import('#jobs/content_safety_job')
 
     const user = await User.create({
       auth0Sub: `auth0|safety-test-${crypto.randomUUID()}`,
@@ -145,9 +145,9 @@ test.group('ContentSafetyService — ContentSafetyJob', () => {
   })
 
   test('updates bookmark with flagged result and reasons', async ({ assert }) => {
-    const User = (await import('#models/user')).default
-    const Bookmark = (await import('#models/bookmark')).default
-    const ContentSafetyJob = (await import('#jobs/content_safety_job')).default
+    const { default: User } = await import('#models/user')
+    const { default: Bookmark } = await import('#models/bookmark')
+    const { default: ContentSafetyJob } = await import('#jobs/content_safety_job')
 
     const user = await User.create({
       auth0Sub: `auth0|safety-flag-${crypto.randomUUID()}`,
