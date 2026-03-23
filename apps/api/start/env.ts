@@ -25,4 +25,8 @@ export default await Env.create(new URL('../', import.meta.url), {
   // Auth0
   AUTH0_ISSUER_BASE_URL: Env.schema.string({ format: 'url', tld: false }),
   AUTH0_AUDIENCE: Env.schema.string(),
+
+  // Content Safety (optional — features degrade gracefully without keys)
+  GOOGLE_SAFE_BROWSING_API_KEY: Env.schema.string.optional(),
+  GEMINI_API_KEY: Env.schema.string.optional(),
 })
