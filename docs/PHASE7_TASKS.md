@@ -11,35 +11,30 @@
 ```
 main
  └── phase7/infra-config       # PR 1: Caddyfile + PM2 config + setup script
-      └── phase7/ci-update     # PR 2: Update CI workflow (add test jobs)
-           └── phase7/deploy   # PR 3: Deploy workflow (SSH + build + migrate)
-                └── phase7/env-docs  # PR 4: Environment variable docs + startup validation
+      └── phase7/deploy         # PR 2: Deploy workflow (SSH + build + migrate)
+           └── phase7/env-docs  # PR 3: Environment variable docs + startup validation
 ```
 
 ---
 
 ## PR 1: `phase7/infra-config` — Server configuration files
 
+**Goal:** Configuration files for deploying to OCI VM.
+
 | #   | Task                       | Details                                                                                 |
 | --- | -------------------------- | --------------------------------------------------------------------------------------- |
 | 1   | Create Caddyfile           | Reverse proxy: `/api/*` → `:3333`, `/*` → `:3000`, auto SSL via Let's Encrypt           |
 | 2   | Create ecosystem.config.js | PM2 config: manage AdonisJS + Next.js processes, restart on crash                       |
 | 3   | Create setup.sh            | VM bootstrap: install Node.js, pnpm, Caddy, PM2, configure firewall (ports 80, 443, 22) |
+| 4   | Verify                     | Config files are valid, build passes                                                    |
 
 **Estimated files:** ~3
 
-## PR 2: `phase7/ci-update` — Update CI workflow
+---
 
-| #   | Task                 | Details                                                   |
-| --- | -------------------- | --------------------------------------------------------- |
-| 1   | Add test-api job     | `pnpm turbo test --filter=@mykb/api` with coverage upload |
-| 2   | Add test-web job     | `pnpm turbo test --filter=@mykb/web` with coverage upload |
-| 3   | Add build job        | `pnpm turbo build` to verify production build             |
-| 4   | Update existing jobs | Ensure lint, typecheck, format still run                  |
+## PR 2: `phase7/deploy` — Deploy workflow
 
-**Estimated files:** ~1
-
-## PR 3: `phase7/deploy` — Deploy workflow
+**Goal:** Automated deployment on push to main.
 
 | #   | Task                                  | Details                                                                                                 |
 | --- | ------------------------------------- | ------------------------------------------------------------------------------------------------------- |
@@ -48,16 +43,22 @@ main
 | 3   | Deploy steps                          | git pull, pnpm install --frozen-lockfile, pnpm turbo build, node ace migration:run --force, pm2 restart |
 | 4   | Health check                          | curl https://mykb.bryanlam.dev/health (expect 200)                                                      |
 | 5   | Add GitHub secrets                    | SSH_HOST, SSH_USERNAME, SSH_KEY, SSH_PORT                                                               |
+| 6   | Verify                                | Workflow syntax is valid, build passes                                                                  |
 
 **Estimated files:** ~1
 
-## PR 4: `phase7/env-docs` — Environment documentation
+---
+
+## PR 3: `phase7/env-docs` — Environment documentation
+
+**Goal:** Document all environment variables and deployment steps.
 
 | #   | Task                     | Details                                                                               |
 | --- | ------------------------ | ------------------------------------------------------------------------------------- |
 | 1   | Update root .env.example | All production env vars documented                                                    |
 | 2   | Create deployment guide  | Step-by-step OCI VM setup instructions                                                |
 | 3   | Startup validation       | Verify all required env vars present at boot (already in env.ts, review completeness) |
+| 4   | Verify                   | Build passes                                                                          |
 
 **Estimated files:** ~3
 

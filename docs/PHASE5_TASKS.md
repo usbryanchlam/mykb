@@ -15,12 +15,13 @@ main
            └── phase5/collections-api    # PR 3: Collections migration + CRUD API
                 └── phase5/collections-ui  # PR 4: Collections frontend
                      └── phase5/smart-lists  # PR 5: Smart lists migration + API + UI
-                          └── phase5/tests  # PR 6: Tests
 ```
 
 ---
 
 ## PR 1: `phase5/fts5-search` — FTS5 + search service + API
+
+**Goal:** Full-text search over bookmarks using SQLite FTS5.
 
 | #   | Task                      | Details                                                                                                                        |
 | --- | ------------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
@@ -29,10 +30,16 @@ main
 | 3   | Create SearchService      | FTS5 query builder, snippet extraction, ranking                                                                                |
 | 4   | Create SearchController   | `GET /api/search?q=term&page=1&limit=20`                                                                                       |
 | 5   | Add route                 | Wire with auth middleware                                                                                                      |
+| 6   | Tests                     | FTS5 index sync, search queries, ranking, snippets, auth enforcement                                                           |
+| 7   | Verify                    | Tests pass, build passes                                                                                                       |
 
-**Estimated files:** ~6
+**Estimated files:** ~8
+
+---
 
 ## PR 2: `phase5/search-ui` — Frontend search
+
+**Goal:** Search bar with keyboard shortcut and results page.
 
 | #   | Task                                | Details                                                            |
 | --- | ----------------------------------- | ------------------------------------------------------------------ |
@@ -41,10 +48,16 @@ main
 | 3   | Create `/dashboard/search/page.tsx` | Search results page                                                |
 | 4   | Add search bar to dashboard header  | Always visible in header                                           |
 | 5   | Create useSearch hook               | Debounced API calls, loading states                                |
+| 6   | Component tests                     | SearchBar keyboard shortcut, debounce, SearchResults rendering     |
+| 7   | Verify                              | Tests pass, build passes                                           |
 
-**Estimated files:** ~6
+**Estimated files:** ~8
+
+---
 
 ## PR 3: `phase5/collections-api` — Collections migration + CRUD API
+
+**Goal:** Collections with bookmark association and CRUD API.
 
 | #   | Task                                  | Details                                                                                           |
 | --- | ------------------------------------- | ------------------------------------------------------------------------------------------------- |
@@ -53,22 +66,34 @@ main
 | 3   | Create Collection model               | With relationships (hasMany bookmarks through pivot)                                              |
 | 4   | Create CollectionRepository           | CRUD, list with bookmark counts, add/remove bookmarks                                             |
 | 5   | Create CollectionsController + routes | `GET/POST /api/collections`, `GET/PATCH/DELETE /api/collections/:id`, `POST/DELETE .../bookmarks` |
+| 6   | Functional tests                      | Collection CRUD, add/remove bookmarks, cascade delete, auth enforcement                           |
+| 7   | Verify                                | Tests pass, build passes                                                                          |
 
-**Estimated files:** ~10
+**Estimated files:** ~12
+
+---
 
 ## PR 4: `phase5/collections-ui` — Frontend collections
 
-| #   | Task                                             | Details                                 |
-| --- | ------------------------------------------------ | --------------------------------------- |
-| 1   | Create CollectionCard component                  | Icon, name, description, bookmark count |
-| 2   | Create CreateCollectionDialog                    | Name, description, icon picker          |
-| 3   | Create `/dashboard/collections/page.tsx`         | Grid of all collections                 |
-| 4   | Create `/dashboard/collections/[id]/page.tsx`    | Bookmarks in a collection               |
-| 5   | Add "Add to collection" action on bookmark cards | Dropdown to select collection           |
+**Goal:** Collections UI with create, browse, and add-to-collection actions.
 
-**Estimated files:** ~8
+| #   | Task                                             | Details                                                          |
+| --- | ------------------------------------------------ | ---------------------------------------------------------------- |
+| 1   | Create CollectionCard component                  | Icon, name, description, bookmark count                          |
+| 2   | Create CreateCollectionDialog                    | Name, description, icon picker                                   |
+| 3   | Create `/dashboard/collections/page.tsx`         | Grid of all collections                                          |
+| 4   | Create `/dashboard/collections/[id]/page.tsx`    | Bookmarks in a collection                                        |
+| 5   | Add "Add to collection" action on bookmark cards | Dropdown to select collection                                    |
+| 6   | Component tests                                  | CollectionCard, CreateCollectionDialog, add-to-collection action |
+| 7   | Verify                                           | Tests pass, build passes                                         |
+
+**Estimated files:** ~10
+
+---
 
 ## PR 5: `phase5/smart-lists` — Smart lists migration + API + UI
+
+**Goal:** User-defined filtered views with a visual query builder.
 
 | #   | Task                                 | Details                                                                    |
 | --- | ------------------------------------ | -------------------------------------------------------------------------- |
@@ -78,19 +103,10 @@ main
 | 4   | Create SmartListsController + routes | CRUD + resolved bookmarks endpoint                                         |
 | 5   | Create frontend pages                | `/dashboard/smart-lists`, `/dashboard/smart-lists/[id]`                    |
 | 6   | Create filter query builder UI       | Visual filter builder (tags, favorite, date range)                         |
+| 7   | Tests                                | SmartListService filter resolution, API CRUD, filter builder component     |
+| 8   | Verify                               | Tests pass, build passes                                                   |
 
-**Estimated files:** ~12
-
-## PR 6: `phase5/tests` — Tests
-
-| #   | Task              | Details                                       |
-| --- | ----------------- | --------------------------------------------- |
-| 1   | FTS5 tests        | Index sync, search queries, ranking, snippets |
-| 2   | Collections tests | CRUD, add/remove bookmarks, cascade delete    |
-| 3   | Smart lists tests | Filter query resolution, edge cases           |
-| 4   | Frontend tests    | SearchBar, CollectionCard, filter builder     |
-
-**Estimated files:** ~8
+**Estimated files:** ~14
 
 ---
 

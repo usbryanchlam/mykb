@@ -15,23 +15,30 @@ main
            └── phase4/tags-api   # PR 3: Tag repository, service, controller, routes
                 └── phase4/ai-jobs  # PR 4: SummarizeBookmarkJob + GenerateTagsJob
                      └── phase4/frontend  # PR 5: AI summary display + tag management UI
-                          └── phase4/tests  # PR 6: Tests
 ```
 
 ---
 
 ## PR 1: `phase4/ai-service` — Gemini API client
 
-| #   | Task                     | Details                                                                                        |
-| --- | ------------------------ | ---------------------------------------------------------------------------------------------- |
-| 1   | Create AIService         | Gemini API client, rate limiting (1 req/sec), response validation against expected JSON schema |
-| 2   | Summarization method     | Input: plain_text, output: 2-3 sentence summary                                                |
-| 3   | Tag generation method    | Input: plain_text + title, output: 3-5 tag strings                                             |
-| 4   | Prompt injection defense | Scraped content passed as user content with clear delimiters, never as system prompt           |
+**Goal:** Create a rate-limited Gemini API client for summarization and tag generation.
 
-**Estimated files:** ~3
+| #   | Task                     | Details                                                                                                 |
+| --- | ------------------------ | ------------------------------------------------------------------------------------------------------- |
+| 1   | Create AIService         | Gemini API client, rate limiting (1 req/sec), response validation against expected JSON schema          |
+| 2   | Summarization method     | Input: plain_text, output: 2-3 sentence summary                                                         |
+| 3   | Tag generation method    | Input: plain_text + title, output: 3-5 tag strings                                                      |
+| 4   | Prompt injection defense | Scraped content passed as user content with clear delimiters, never as system prompt                    |
+| 5   | Unit tests               | Mock Gemini API: summarization, tag generation, rate limiting, error handling, prompt injection defense |
+| 6   | Verify                   | Tests pass, build passes                                                                                |
+
+**Estimated files:** ~5
+
+---
 
 ## PR 2: `phase4/tags-migration` — Database tables + models
+
+**Goal:** Create tags and bookmark_tags tables with Lucid models.
 
 | #   | Task                           | Details                                                                 |
 | --- | ------------------------------ | ----------------------------------------------------------------------- |
@@ -41,10 +48,15 @@ main
 | 4   | Create BookmarkTag pivot model | Timestamps                                                              |
 | 5   | Update Bookmark model          | Add manyToMany Tags relationship                                        |
 | 6   | Add indexes                    | (user_id, slug) UNIQUE on tags                                          |
+| 7   | Verify                         | Migration runs, models compile, build passes                            |
 
 **Estimated files:** ~6
 
+---
+
 ## PR 3: `phase4/tags-api` — Tag CRUD API
+
+**Goal:** Full CRUD API for tags with bookmark association.
 
 | #   | Task                  | Details                                                                                   |
 | --- | --------------------- | ----------------------------------------------------------------------------------------- |
@@ -53,10 +65,16 @@ main
 | 3   | Create TagService     | Create, rename, delete, add/remove from bookmark                                          |
 | 4   | Create TagsController | index, store, update, destroy                                                             |
 | 5   | Add routes            | `GET/POST /api/tags`, `PATCH/DELETE /api/tags/:id`, `POST/DELETE /api/bookmarks/:id/tags` |
+| 6   | Functional tests      | Tag CRUD, find-or-create, add/remove from bookmark, auth enforcement                      |
+| 7   | Verify                | Tests pass, build passes                                                                  |
 
-**Estimated files:** ~8
+**Estimated files:** ~10
+
+---
 
 ## PR 4: `phase4/ai-jobs` — Summarize + generate tags jobs
+
+**Goal:** AI processing jobs that run after content safety passes.
 
 | #   | Task                        | Details                                                                                                          |
 | --- | --------------------------- | ---------------------------------------------------------------------------------------------------------------- |
@@ -64,10 +82,16 @@ main
 | 2   | Create GenerateTagsJob      | Only runs if safety_status safe/skipped, calls AIService, creates tags via find-or-create, marks is_ai_generated |
 | 3   | Wire into pipeline          | After ContentSafetyJob passes → enqueue both jobs in parallel                                                    |
 | 4   | Update FTS5 index           | After summary and tags are set (placeholder for Phase 5)                                                         |
+| 5   | Unit tests                  | SummarizeBookmarkJob and GenerateTagsJob with mocked AIService, safety gate logic                                |
+| 6   | Verify                      | Tests pass, build passes                                                                                         |
 
-**Estimated files:** ~4
+**Estimated files:** ~6
+
+---
 
 ## PR 5: `phase4/frontend` — AI summary + tag management UI
+
+**Goal:** Display AI summaries, tag badges, and tag management interface.
 
 | #   | Task                         | Details                                                        |
 | --- | ---------------------------- | -------------------------------------------------------------- |
@@ -76,19 +100,10 @@ main
 | 3   | Tag management UI            | Add/remove tags on bookmark detail, autocomplete existing tags |
 | 4   | Tags browse page             | `/dashboard/tags` — tag cloud/list with bookmark counts        |
 | 5   | Tags filter page             | `/dashboard/tags/[slug]` — bookmarks filtered by tag           |
+| 6   | Component tests              | Tag badges, tag input autocomplete, AI summary display         |
+| 7   | Verify                       | Tests pass, build passes                                       |
 
-**Estimated files:** ~10
-
-## PR 6: `phase4/tests` — Tests
-
-| #   | Task                 | Details                                                               |
-| --- | -------------------- | --------------------------------------------------------------------- |
-| 1   | AIService unit tests | Mock Gemini API, test summarization + tag generation + error handling |
-| 2   | Tag API tests        | CRUD, find-or-create, add/remove from bookmark                        |
-| 3   | Job tests            | SummarizeBookmarkJob, GenerateTagsJob with mocked AIService           |
-| 4   | Frontend tests       | Tag badges, tag input, AI summary display                             |
-
-**Estimated files:** ~8
+**Estimated files:** ~12
 
 ---
 
