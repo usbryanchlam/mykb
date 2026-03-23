@@ -29,7 +29,7 @@ export default class ScraperService {
 
     const html = await this.fetchHtml(url)
     const metadata = this.extractMetadata(html, url)
-    const article = this.extractArticle(html, url)
+    const article = this.extractArticle(html)
 
     return {
       title: metadata.title,
@@ -84,8 +84,7 @@ export default class ScraperService {
           throw new Error(`Response too large: ${contentLength} bytes`)
         }
 
-        const body = await this.readBodyWithLimit(response)
-        return body
+        return await this.readBodyWithLimit(response)
       } catch (error) {
         if (error instanceof DOMException && error.name === 'AbortError') {
           throw new Error(`Request timed out after ${FETCH_TIMEOUT_MS}ms`)
@@ -106,17 +105,21 @@ export default class ScraperService {
     const chunks: Uint8Array[] = []
     let totalBytes = 0
 
-    while (true) {
-      const { done, value } = await reader.read()
-      if (done) break
+    try {
+      while (true) {
+        const { done, value } = await reader.read()
+        if (done) break
 
-      totalBytes += value.byteLength
-      if (totalBytes > MAX_BODY_BYTES) {
-        reader.cancel()
-        throw new Error(`Response body exceeds ${MAX_BODY_BYTES} bytes`)
+        totalBytes += value.byteLength
+        if (totalBytes > MAX_BODY_BYTES) {
+          await reader.cancel()
+          throw new Error(`Response body exceeds ${MAX_BODY_BYTES} bytes`)
+        }
+
+        chunks.push(value)
       }
-
-      chunks.push(value)
+    } finally {
+      reader.releaseLock()
     }
 
     const decoder = new TextDecoder()
@@ -128,11 +131,11 @@ export default class ScraperService {
   private extractMetadata(html: string, baseUrl: string): ExtractedMetadata {
     const $ = cheerioLoad(html)
 
-    const title =
+    const rawTitle =
       $('meta[property="og:title"]').attr('content') ??
       $('meta[name="twitter:title"]').attr('content') ??
-      $('title').text().trim() ??
-      null
+      $('title').text().trim()
+    const title = rawTitle || null
 
     const description =
       $('meta[property="og:description"]').attr('content') ??
@@ -148,20 +151,19 @@ export default class ScraperService {
     const faviconHref =
       $('link[rel="icon"]').attr('href') ?? $('link[rel="shortcut icon"]').attr('href') ?? null
 
-    const faviconUrl = faviconHref ? this.resolveUrl(faviconHref, baseUrl) : null
+    // Only store https:// URLs for favicon/og to prevent SSRF when fetched later
+    const faviconUrl = faviconHref ? this.resolveSafeImageUrl(faviconHref, baseUrl) : null
+    const resolvedOgImage = ogImageUrl ? this.resolveSafeImageUrl(ogImageUrl, baseUrl) : null
 
     return {
       title: title || null,
       description: description || null,
       faviconUrl,
-      ogImageUrl: ogImageUrl ? this.resolveUrl(ogImageUrl, baseUrl) : null,
+      ogImageUrl: resolvedOgImage,
     }
   }
 
-  private extractArticle(
-    html: string,
-    _url: string
-  ): { content: string; plainText: string } | null {
+  private extractArticle(html: string): { content: string; plainText: string } | null {
     try {
       const { document } = parseHTML(html)
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -179,9 +181,15 @@ export default class ScraperService {
     }
   }
 
-  private resolveUrl(href: string, baseUrl: string): string | null {
+  /**
+   * Resolves a relative URL and validates it uses https only.
+   * Prevents storing private-network URLs that could be used for SSRF
+   * if the frontend or backend later fetches the image.
+   */
+  private resolveSafeImageUrl(href: string, baseUrl: string): string | null {
     try {
-      return new URL(href, baseUrl).href
+      const resolved = new URL(href, baseUrl)
+      return resolved.protocol === 'https:' ? resolved.href : null
     } catch {
       return null
     }

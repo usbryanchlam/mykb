@@ -1,4 +1,4 @@
-import { lookup } from 'node:dns/promises'
+import { resolve4, resolve6 } from 'node:dns/promises'
 
 function isPrivateIp(ip: string): boolean {
   // IPv4 checks
@@ -17,19 +17,53 @@ function isPrivateIp(ip: string): boolean {
   // IPv6 checks
   const lower = ip.toLowerCase()
   if (lower === '::1') return true
-  if (lower.startsWith('fe80:')) return true
-  if (lower.startsWith('fc00:') || lower.startsWith('fd')) return true
   if (lower === '::') return true
+  if (lower.startsWith('fe80:')) return true
+
+  // RFC 4193: fc00::/7 — covers fc00::/8 and fd00::/8 (unique local)
+  const firstHextet = Number.parseInt(lower.split(':')[0] || '0', 16)
+  if ((firstHextet & 0xfe00) === 0xfc00) return true
 
   return false
 }
 
 /**
+ * Resolves all IP addresses for a hostname and validates none are private.
+ * Uses resolve4/resolve6 to get ALL addresses (not just one like dns.lookup).
+ * Returns the list of resolved addresses so the caller can pin to them.
+ */
+async function resolveAndValidate(hostname: string): Promise<readonly string[]> {
+  // If hostname is already an IP literal, validate directly
+  if (isPrivateIp(hostname)) {
+    throw new Error(`Blocked private IP: ${hostname}`)
+  }
+
+  const [v4Result, v6Result] = await Promise.allSettled([resolve4(hostname), resolve6(hostname)])
+
+  const allAddresses = [
+    ...(v4Result.status === 'fulfilled' ? v4Result.value : []),
+    ...(v6Result.status === 'fulfilled' ? v6Result.value : []),
+  ]
+
+  if (allAddresses.length === 0) {
+    throw new Error(`DNS resolution failed for ${hostname}`)
+  }
+
+  const blockedAddress = allAddresses.find(isPrivateIp)
+  if (blockedAddress) {
+    throw new Error(`Blocked private IP: hostname ${hostname} resolved to ${blockedAddress}`)
+  }
+
+  return allAddresses
+}
+
+/**
  * Validates that a URL is safe to fetch (no SSRF).
  * - Only http/https protocols allowed
- * - Resolves hostname to IP and blocks private/loopback/link-local addresses
+ * - Resolves ALL IPs for hostname and blocks private/loopback/link-local
+ * - Returns resolved IPs so caller can pin connections to them
  */
-export async function assertSafeUrl(url: string): Promise<void> {
+export async function assertSafeUrl(url: string): Promise<readonly string[]> {
   let parsed: URL
   try {
     parsed = new URL(url)
@@ -41,24 +75,7 @@ export async function assertSafeUrl(url: string): Promise<void> {
     throw new Error(`Blocked protocol: ${parsed.protocol}`)
   }
 
-  // Block direct IP addresses that are private
-  const hostname = parsed.hostname
-  if (isPrivateIp(hostname)) {
-    throw new Error(`Blocked private IP: ${hostname}`)
-  }
-
-  // Resolve hostname to IP and check
-  try {
-    const { address } = await lookup(hostname)
-    if (isPrivateIp(address)) {
-      throw new Error(`Blocked private IP: hostname ${hostname} resolved to ${address}`)
-    }
-  } catch (error) {
-    if (error instanceof Error && error.message.startsWith('Blocked')) {
-      throw error
-    }
-    throw new Error(`DNS resolution failed for ${hostname}`)
-  }
+  return resolveAndValidate(parsed.hostname)
 }
 
 export { isPrivateIp }

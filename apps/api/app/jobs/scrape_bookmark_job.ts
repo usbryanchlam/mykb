@@ -24,19 +24,30 @@ export default class ScrapeBookmarkJob extends BaseJob {
     bookmark.merge({ scrapeStatus: 'processing' })
     await bookmark.save()
 
-    const result = await this.scraper.scrape(bookmark.url)
+    try {
+      const result = await this.scraper.scrape(bookmark.url)
 
-    bookmark.merge({
-      title: result.title ?? bookmark.title,
-      description: result.description ?? bookmark.description,
-      faviconUrl: result.faviconUrl,
-      ogImageUrl: result.ogImageUrl,
-      content: result.content,
-      plainText: result.plainText,
-      scrapeStatus: 'completed',
-      scrapeError: null,
-    })
-    await bookmark.save()
+      bookmark.merge({
+        title: result.title ?? bookmark.title,
+        description: result.description ?? bookmark.description,
+        faviconUrl: result.faviconUrl,
+        ogImageUrl: result.ogImageUrl,
+        content: result.content,
+        plainText: result.plainText,
+        scrapeStatus: 'completed',
+        scrapeError: null,
+      })
+      await bookmark.save()
+    } catch (error) {
+      // Ensure status is never stuck at 'processing'
+      const err = error instanceof Error ? error : new Error(String(error))
+      bookmark.merge({
+        scrapeStatus: 'failed',
+        scrapeError: err.message.slice(0, 500),
+      })
+      await bookmark.save()
+      throw error
+    }
   }
 
   async onFailure(error: Error): Promise<void> {
