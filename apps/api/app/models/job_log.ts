@@ -5,6 +5,8 @@ import Bookmark from '#models/bookmark'
 import type { JobStatus } from '#jobs/base_job'
 
 export default class JobLog extends BaseModel {
+  static readonly updatedAtColumn = false as const
+
   @column({ isPrimary: true })
   declare id: number
 
@@ -24,7 +26,7 @@ export default class JobLog extends BaseModel {
   declare attempt: number
 
   @column.dateTime()
-  declare startedAt: DateTime | null
+  declare startedAt: DateTime
 
   @column.dateTime()
   declare completedAt: DateTime | null

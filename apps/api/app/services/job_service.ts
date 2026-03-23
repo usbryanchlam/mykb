@@ -34,15 +34,16 @@ export default class JobService {
 
   /**
    * Enqueue a job without waiting for completion (fire-and-forget).
-   * Errors are logged but not propagated to the caller.
+   * Errors are persisted in job_logs. If logging itself fails,
+   * the error is written to stderr as a fallback.
    */
   enqueueAsync(job: Job): void {
     const promise = new Promise<void>((resolve, reject) => {
       this.queue.push({ job, resolve, reject })
       this.processNext()
     })
-    promise.catch(() => {
-      // Swallowed intentionally — errors are logged in job_logs
+    promise.catch((err) => {
+      console.error(`[JobService] Fire-and-forget job "${job.name}" failed:`, err)
     })
   }
 
@@ -86,13 +87,19 @@ export default class JobService {
         const err = error instanceof Error ? error : new Error(String(error))
         const isLastAttempt = attempt >= maxAttempts
 
-        if (isLastAttempt) {
+        // Best-effort log update — don't let DB errors skip onFailure
+        try {
           await this.updateLog(log, 'failed', err.message)
+        } catch (logErr) {
+          console.error(`[JobService] Failed to update job log:`, logErr)
+        }
+
+        if (isLastAttempt) {
           await job.onFailure(err)
           throw err
         }
 
-        await this.updateLog(log, 'failed', err.message)
+        // Exponential backoff: backoffMs * multiplier^(attempt-1)
         const delay = backoffMs * Math.pow(backoffMultiplier, attempt - 1)
         await this.sleep(delay)
       }
@@ -103,13 +110,14 @@ export default class JobService {
     return JobLog.create({
       jobType: job.name,
       bookmarkId: job.bookmarkId,
-      status: 'processing' as JobStatus,
+      status: 'processing',
       attempt,
       startedAt: DateTime.now(),
     })
   }
 
   private async updateLog(log: JobLog, status: JobStatus, errorMessage?: string): Promise<void> {
+    // Lucid's merge() mutates in-place — required by the ORM, no immutable alternative
     log.merge({
       status,
       errorMessage: errorMessage ?? null,

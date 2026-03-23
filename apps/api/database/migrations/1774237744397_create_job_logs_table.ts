@@ -17,7 +17,7 @@ export default class extends BaseSchema {
       table.string('status').notNullable().defaultTo('pending')
       table.text('error_message').nullable()
       table.integer('attempt').notNullable().defaultTo(1)
-      table.timestamp('started_at').nullable()
+      table.timestamp('started_at').notNullable()
       table.timestamp('completed_at').nullable()
       table.timestamp('created_at').notNullable()
 
