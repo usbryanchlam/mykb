@@ -29,4 +29,11 @@ export default await Env.create(new URL('../', import.meta.url), {
   // Content Safety (optional — features degrade gracefully without keys)
   GOOGLE_SAFE_BROWSING_API_KEY: Env.schema.string.optional(),
   GEMINI_API_KEY: Env.schema.string.optional(),
+
+  // OCI Object Storage (optional — thumbnail uploads disabled without config)
+  OCI_OBJECT_STORAGE_NAMESPACE: Env.schema.string.optional(),
+  OCI_OBJECT_STORAGE_BUCKET: Env.schema.string.optional(),
+  OCI_ACCESS_KEY: Env.schema.string.optional(),
+  OCI_SECRET_KEY: Env.schema.string.optional(),
+  OCI_REGION: Env.schema.string.optional(),
 })

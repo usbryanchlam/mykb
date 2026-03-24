@@ -43,7 +43,7 @@ test.group('ScrapeBookmarkJob', () => {
   test('updates bookmark with scraped data on success', async ({ assert }) => {
     const bookmark = await createTestBookmark()
     const scraper = createMockScraper()
-    const job = new ScrapeBookmarkJob(bookmark.id, scraper, { maxAttempts: 1 })
+    const job = new ScrapeBookmarkJob(bookmark.id, scraper, undefined, { maxAttempts: 1 })
 
     await job.execute()
 
@@ -77,7 +77,7 @@ test.group('ScrapeBookmarkJob', () => {
       },
     } as unknown as ScraperService
 
-    const job = new ScrapeBookmarkJob(bookmark.id, scraper, { maxAttempts: 1 })
+    const job = new ScrapeBookmarkJob(bookmark.id, scraper, undefined, { maxAttempts: 1 })
     await job.execute()
 
     assert.equal(statusDuringExecution, 'processing')
@@ -89,7 +89,7 @@ test.group('ScrapeBookmarkJob', () => {
     await bookmark.save()
 
     const scraper = createMockScraper({ title: null })
-    const job = new ScrapeBookmarkJob(bookmark.id, scraper, { maxAttempts: 1 })
+    const job = new ScrapeBookmarkJob(bookmark.id, scraper, undefined, { maxAttempts: 1 })
     await job.execute()
 
     await bookmark.refresh()
@@ -99,7 +99,7 @@ test.group('ScrapeBookmarkJob', () => {
   test('sets scrapeStatus to failed and records error on failure', async ({ assert }) => {
     const bookmark = await createTestBookmark()
     const scraper = createFailingScraper('Connection refused')
-    const job = new ScrapeBookmarkJob(bookmark.id, scraper, { maxAttempts: 1 })
+    const job = new ScrapeBookmarkJob(bookmark.id, scraper, undefined, { maxAttempts: 1 })
 
     await job.onFailure(new Error('Connection refused'))
 
@@ -111,7 +111,7 @@ test.group('ScrapeBookmarkJob', () => {
   test('truncates long error messages in onFailure', async ({ assert }) => {
     const bookmark = await createTestBookmark()
     const longError = 'x'.repeat(600)
-    const job = new ScrapeBookmarkJob(bookmark.id, createFailingScraper(longError), {
+    const job = new ScrapeBookmarkJob(bookmark.id, createFailingScraper(longError), undefined, {
       maxAttempts: 1,
     })
 
