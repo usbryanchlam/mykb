@@ -61,7 +61,7 @@ export function BookmarkDetail({
   return (
     <div className="mx-auto flex max-w-3xl flex-col gap-6">
       <div className="flex items-center gap-2">
-        <Button variant="ghost" size="sm" render={<Link href="/dashboard" />}>
+        <Button variant="ghost" size="sm" nativeButton={false} render={<Link href="/dashboard" />}>
           <ArrowLeft className="size-4" />
           Back
         </Button>
@@ -94,6 +94,7 @@ export function BookmarkDetail({
               <Button
                 variant="outline"
                 size="sm"
+                nativeButton={false}
                 render={<Link href={`/dashboard/bookmarks/${bookmark.id}/edit`} />}
               >
                 <Pencil className="size-4" />
