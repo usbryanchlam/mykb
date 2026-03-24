@@ -83,6 +83,7 @@ export function BookmarkEditForm({ bookmark, onSuccess }: BookmarkEditFormProps)
         <Button
           variant="ghost"
           size="sm"
+          nativeButton={false}
           render={<Link href={`/dashboard/bookmarks/${bookmark.id}`} />}
         >
           <ArrowLeft className="size-4" />
@@ -158,6 +159,7 @@ export function BookmarkEditForm({ bookmark, onSuccess }: BookmarkEditFormProps)
             <Button
               variant="outline"
               disabled={isPending}
+              nativeButton={false}
               render={<Link href={`/dashboard/bookmarks/${bookmark.id}`} />}
             >
               Cancel
