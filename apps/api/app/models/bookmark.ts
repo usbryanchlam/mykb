@@ -1,8 +1,9 @@
-import { BaseModel, belongsTo, column } from '@adonisjs/lucid/orm'
-import type { BelongsTo } from '@adonisjs/lucid/types/relations'
+import { BaseModel, belongsTo, column, manyToMany } from '@adonisjs/lucid/orm'
+import type { BelongsTo, ManyToMany } from '@adonisjs/lucid/types/relations'
 import { DateTime } from 'luxon'
 import type { AiStatus, SafetyStatus, ScrapeStatus } from '@mykb/shared'
 import User from '#models/user'
+import Tag from '#models/tag'
 
 export default class Bookmark extends BaseModel {
   @column({ isPrimary: true })
@@ -76,4 +77,10 @@ export default class Bookmark extends BaseModel {
 
   @belongsTo(() => User)
   declare user: BelongsTo<typeof User>
+
+  @manyToMany(() => Tag, {
+    pivotTable: 'bookmark_tags',
+    pivotTimestamps: { createdAt: 'created_at', updatedAt: false },
+  })
+  declare tags: ManyToMany<typeof Tag>
 }
