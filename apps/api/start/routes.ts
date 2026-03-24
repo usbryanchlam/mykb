@@ -17,6 +17,8 @@ router
     router.delete('/bookmarks/:id', [BookmarksController, 'destroy'])
     router.patch('/bookmarks/:id/favorite', [BookmarksController, 'favorite'])
     router.patch('/bookmarks/:id/archive', [BookmarksController, 'archive'])
+    router.post('/bookmarks/:id/rescrape', [BookmarksController, 'rescrape'])
+    router.get('/bookmarks/:id/reader', [BookmarksController, 'reader'])
   })
   .prefix('/api')
   .use(middleware.auth0())
