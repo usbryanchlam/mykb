@@ -121,6 +121,40 @@ export async function updateBookmark(
   return res.json() as Promise<ApiResponse<Bookmark>>
 }
 
+export interface ReaderContent {
+  readonly content: string | null
+  readonly plainText: string | null
+  readonly status: string
+}
+
+export async function getReaderContent(id: number): Promise<ApiResponse<ReaderContent>> {
+  const res = await apiFetch(`/api/bookmarks/${id}/reader`)
+
+  if (res.status === 403) {
+    throw new Error('Content has been flagged for safety concerns.')
+  }
+
+  if (!res.ok) {
+    throw new Error(humanError('load reader content', res.status))
+  }
+
+  return res.json() as Promise<ApiResponse<ReaderContent>>
+}
+
+export async function rescrapeBookmark(id: number): Promise<ApiResponse<Bookmark>> {
+  const res = await apiFetch(`/api/bookmarks/${id}/rescrape`, { method: 'POST' })
+
+  if (res.status === 409) {
+    throw new Error('Bookmark is currently being processed.')
+  }
+
+  if (!res.ok) {
+    throw new Error(humanError('rescrape bookmark', res.status))
+  }
+
+  return res.json() as Promise<ApiResponse<Bookmark>>
+}
+
 export async function deleteBookmark(id: number): Promise<ApiResponse<null>> {
   const res = await apiFetch(`/api/bookmarks/${id}`, { method: 'DELETE' })
 

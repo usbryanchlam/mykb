@@ -106,6 +106,7 @@ export default function BookmarkDetailPage() {
       onToggleFavorite={handleToggleFavorite}
       onToggleArchive={handleToggleArchive}
       onDelete={handleDelete}
+      onRescrape={fetchBookmark}
     />
   )
 }

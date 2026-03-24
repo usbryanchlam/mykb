@@ -4,6 +4,7 @@ import type { Bookmark } from '@mykb/shared'
 import { Globe } from 'lucide-react'
 import Link from 'next/link'
 import { BookmarkActions } from '@/components/bookmarks/bookmark-actions'
+import { StatusBadge } from '@/components/bookmarks/status-badge'
 import { getDomain, formatRelativeDate, isSafeUrl, isSafeFaviconUrl } from '@/lib/bookmark-utils'
 
 interface BookmarkCardProps {
@@ -22,6 +23,9 @@ export function BookmarkCard({
   const domain = getDomain(bookmark.url)
   const title = bookmark.title ?? domain
   const safeHref = isSafeUrl(bookmark.url) ? bookmark.url : '#'
+  const showScrapeStatus =
+    bookmark.scrapeStatus !== 'completed' && bookmark.scrapeStatus !== 'pending'
+  const showSafetyStatus = bookmark.safetyStatus === 'flagged'
 
   return (
     <article className="group flex flex-col gap-3 rounded-lg border border-border bg-card p-4 transition-colors hover:bg-muted/50">
@@ -47,6 +51,13 @@ export function BookmarkCard({
           <p className="mt-1 line-clamp-2 text-xs text-muted-foreground">{bookmark.description}</p>
         )}
       </div>
+
+      {(showScrapeStatus || showSafetyStatus) && (
+        <div className="flex items-center gap-1.5">
+          {showScrapeStatus && <StatusBadge status={bookmark.scrapeStatus} label="Scrape" />}
+          {showSafetyStatus && <StatusBadge status={bookmark.safetyStatus} label="Safety" />}
+        </div>
+      )}
 
       <div className="flex items-center justify-between">
         <a

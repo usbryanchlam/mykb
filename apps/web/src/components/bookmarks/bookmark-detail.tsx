@@ -13,6 +13,8 @@ import {
 } from 'lucide-react'
 import Link from 'next/link'
 import { BookmarkActions } from '@/components/bookmarks/bookmark-actions'
+import { ReaderView } from '@/components/bookmarks/reader-view'
+import { StatusBadge } from '@/components/bookmarks/status-badge'
 import { Button } from '@/components/ui/button'
 import { getDomain, isSafeUrl, isSafeFaviconUrl } from '@/lib/bookmark-utils'
 
@@ -22,27 +24,14 @@ interface BookmarkDetailProps {
   readonly onToggleFavorite: () => void
   readonly onToggleArchive: () => void
   readonly onDelete: () => void
+  readonly onRescrape: () => void
 }
 
-function StatusBadge({ label, value }: { readonly label: string; readonly value: string }) {
-  const colorMap: Record<string, string> = {
-    completed: 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400',
-    safe: 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400',
-    pending: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400',
-    processing: 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400',
-    failed: 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400',
-    flagged: 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400',
-    skipped: 'bg-gray-100 text-gray-800 dark:bg-gray-800/50 dark:text-gray-400',
-  }
-
+function StatusRow({ label, value }: { readonly label: string; readonly value: string }) {
   return (
     <div className="flex items-center justify-between py-2">
       <span className="text-sm text-muted-foreground">{label}</span>
-      <span
-        className={`rounded-full px-2 py-0.5 text-xs font-medium ${colorMap[value] ?? colorMap.pending}`}
-      >
-        {value}
-      </span>
+      <StatusBadge status={value} label={label} />
     </div>
   )
 }
@@ -63,6 +52,7 @@ export function BookmarkDetail({
   onToggleFavorite,
   onToggleArchive,
   onDelete,
+  onRescrape,
 }: BookmarkDetailProps) {
   const domain = getDomain(bookmark.url)
   const title = bookmark.title ?? domain
@@ -164,12 +154,14 @@ export function BookmarkDetail({
         <div className="flex flex-col rounded-lg border border-border bg-card p-4">
           <h2 className="mb-2 text-sm font-medium">Status</h2>
           <div className="flex flex-col divide-y divide-border">
-            <StatusBadge label="Scrape" value={bookmark.scrapeStatus} />
-            <StatusBadge label="AI" value={bookmark.aiStatus} />
-            <StatusBadge label="Safety" value={bookmark.safetyStatus} />
+            <StatusRow label="Scrape" value={bookmark.scrapeStatus} />
+            <StatusRow label="AI" value={bookmark.aiStatus} />
+            <StatusRow label="Safety" value={bookmark.safetyStatus} />
           </div>
         </div>
       </div>
+
+      <ReaderView bookmark={bookmark} onRescrape={onRescrape} />
 
       {bookmark.safetyStatus === 'flagged' &&
         bookmark.safetyReasons &&
