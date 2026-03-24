@@ -14,22 +14,22 @@ async function createUser(client: any, options: { roles?: string[] } = {}) {
 }
 
 async function createBookmarkWithContent(client: any, token: string) {
-  const url = `https://pipeline-${randomUUID()}.example.com`
-  const res = await client.post('/api/bookmarks').json({ url }).bearerToken(token)
-  const bookmarkId = res.body().data.id as number
+  // Create user first via /api/me to get the DB user ID
+  const meRes = await client.get('/api/me').bearerToken(token)
+  const userId = meRes.body().data.id as number
 
-  // Manually set scraped content for reader tests (scrape job won't actually run against fake URLs)
+  // Create bookmark directly via model to avoid triggering the pipeline
   const { default: Bookmark } = await import('#models/bookmark')
-  const bookmark = await Bookmark.findOrFail(bookmarkId)
-  bookmark.merge({
+  const bookmark = await Bookmark.create({
+    userId,
+    url: `https://pipeline-${randomUUID()}.example.com`,
     content: '<p>Article content</p>',
     plainText: 'Article content',
     scrapeStatus: 'completed',
     safetyStatus: 'safe',
   })
-  await bookmark.save()
 
-  return { bookmarkId, url }
+  return { bookmarkId: bookmark.id, url: bookmark.url }
 }
 
 test.group('POST /api/bookmarks — pipeline trigger', () => {
