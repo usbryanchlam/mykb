@@ -2,7 +2,7 @@ export type ScrapeStatus = 'pending' | 'processing' | 'completed' | 'failed'
 
 export type AiStatus = 'pending' | 'processing' | 'completed' | 'failed' | 'skipped'
 
-export type SafetyStatus = 'pending' | 'safe' | 'flagged' | 'skipped'
+export type SafetyStatus = 'pending' | 'safe' | 'flagged' | 'skipped' | 'failed'
 
 export interface Bookmark {
   readonly id: number
