@@ -73,4 +73,21 @@ export default class BookmarkService {
       isArchived: !bookmark.isArchived,
     } as Partial<Bookmark>)
   }
+
+  async resetForRescrape(id: number, userId: number) {
+    const bookmark = await this.repository.findById(id, userId)
+
+    if (bookmark.scrapeStatus === 'processing') {
+      const error = new Error('Bookmark is currently being processed')
+      ;(error as any).status = 409
+      throw error
+    }
+
+    return this.repository.update(bookmark, {
+      scrapeStatus: 'pending',
+      scrapeError: null,
+      safetyStatus: 'pending',
+      safetyReasons: null,
+    } as Partial<Bookmark>)
+  }
 }

@@ -21,6 +21,13 @@ export default class ContentSafetyJob extends BaseJob {
   async execute(): Promise<void> {
     const bookmark = await Bookmark.findOrFail(this.bookmarkId)
 
+    // Only run safety check if scrape completed — no content to analyze otherwise
+    if (bookmark.scrapeStatus !== 'completed') {
+      bookmark.merge({ safetyStatus: 'skipped' })
+      await bookmark.save()
+      return
+    }
+
     const result = await this.safetyService.check(
       bookmark.url,
       bookmark.content,

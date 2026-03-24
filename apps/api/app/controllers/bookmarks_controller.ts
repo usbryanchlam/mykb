@@ -1,5 +1,6 @@
 import type { HttpContext } from '@adonisjs/core/http'
 import BookmarkService from '#services/bookmark_service'
+import BookmarkPipelineService from '#services/bookmark_pipeline_service'
 import {
   createBookmarkValidator,
   updateBookmarkValidator,
@@ -12,7 +13,10 @@ function parseId(raw: string): number | null {
 }
 
 export default class BookmarksController {
-  constructor(private readonly service: BookmarkService = new BookmarkService()) {}
+  constructor(
+    private readonly service: BookmarkService = new BookmarkService(),
+    private readonly pipeline: BookmarkPipelineService = new BookmarkPipelineService()
+  ) {}
 
   async index({ auth0User, request, response }: HttpContext) {
     const query = await listBookmarksValidator.validate(request.qs())
@@ -51,6 +55,10 @@ export default class BookmarksController {
   async store({ auth0User, request, response }: HttpContext) {
     const data = await createBookmarkValidator.validate(request.body())
     const bookmark = await this.service.create(auth0User.id, data)
+
+    // Trigger scrape → safety pipeline in the background
+    this.pipeline.triggerPipeline(bookmark.id)
+
     return response.created({ success: true, data: bookmark, error: null })
   }
 
@@ -96,5 +104,52 @@ export default class BookmarksController {
     }
     const bookmark = await this.service.toggleArchive(id, auth0User.id)
     return response.ok({ success: true, data: bookmark, error: null })
+  }
+
+  async rescrape({ auth0User, params, response }: HttpContext) {
+    const id = parseId(params.id)
+    if (!id) {
+      return response.badRequest({ success: false, data: null, error: 'Invalid bookmark id' })
+    }
+
+    const bookmark = await this.service.resetForRescrape(id, auth0User.id)
+    this.pipeline.triggerPipeline(bookmark.id)
+
+    return response.ok({ success: true, data: bookmark, error: null })
+  }
+
+  async reader({ auth0User, params, response }: HttpContext) {
+    const id = parseId(params.id)
+    if (!id) {
+      return response.badRequest({ success: false, data: null, error: 'Invalid bookmark id' })
+    }
+
+    const bookmark = await this.service.findById(id, auth0User.id)
+
+    if (bookmark.safetyStatus === 'flagged') {
+      return response.forbidden({
+        success: false,
+        data: null,
+        error: 'Content has been flagged for safety concerns',
+      })
+    }
+
+    if (bookmark.scrapeStatus !== 'completed') {
+      return response.ok({
+        success: true,
+        data: { content: null, plainText: null, status: bookmark.scrapeStatus },
+        error: null,
+      })
+    }
+
+    return response.ok({
+      success: true,
+      data: {
+        content: bookmark.content,
+        plainText: bookmark.plainText,
+        status: bookmark.scrapeStatus,
+      },
+      error: null,
+    })
   }
 }
