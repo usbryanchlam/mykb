@@ -1,11 +1,15 @@
 import JobService from '#services/job_service'
 import ScrapeBookmarkJob from '#jobs/scrape_bookmark_job'
 import ContentSafetyJob from '#jobs/content_safety_job'
+import SummarizeBookmarkJob from '#jobs/summarize_bookmark_job'
+import GenerateTagsJob from '#jobs/generate_tags_job'
+import Bookmark from '#models/bookmark'
 
 /**
  * Orchestrates the bookmark processing pipeline:
  * 1. Scrape (metadata, content, thumbnail)
  * 2. Content safety check
+ * 3. AI summarize + tag generation (parallel, only if safe/skipped)
  *
  * Each step is enqueued as a fire-and-forget job.
  * The safety job is chained after scrape completes via a wrapper job.
@@ -47,6 +51,15 @@ class PipelineJob {
 
     // Step 2: Content safety (only runs if scrape succeeded)
     await this.jobService.enqueue(new ContentSafetyJob(this.bookmarkId))
+
+    // Step 3: AI processing (only if content is safe or skipped)
+    const bookmark = await Bookmark.findOrFail(this.bookmarkId)
+    if (bookmark.safetyStatus === 'safe' || bookmark.safetyStatus === 'skipped') {
+      await Promise.all([
+        this.jobService.enqueue(new SummarizeBookmarkJob(this.bookmarkId)),
+        this.jobService.enqueue(new GenerateTagsJob(this.bookmarkId)),
+      ])
+    }
   }
 
   async onFailure(_error: Error): Promise<void> {
