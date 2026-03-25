@@ -19,7 +19,19 @@ export default class TagRepository {
 
     if (existing) return existing
 
-    return Tag.create({ userId, name, slug, isAiGenerated })
+    try {
+      return await Tag.create({ userId, name, slug, isAiGenerated })
+    } catch (error: unknown) {
+      // Handle race condition: unique constraint (userId, slug) violated
+      if (error instanceof Error && error.message.includes('UNIQUE constraint')) {
+        const refetched = await Tag.query()
+          .where('userId', userId)
+          .where('slug', slug)
+          .firstOrFail()
+        return refetched
+      }
+      throw error
+    }
   }
 
   async create(data: Partial<Tag>): Promise<Tag> {
