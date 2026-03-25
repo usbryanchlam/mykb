@@ -34,16 +34,20 @@ export default class Tag extends BaseModel {
   })
   declare bookmarks: ManyToMany<typeof Bookmark>
 
+  static generateSlugFromName(name: string): string {
+    return name
+      .toLowerCase()
+      .trim()
+      .replace(/[^a-z0-9\s-]/g, '')
+      .replace(/\s+/g, '-')
+      .replace(/-+/g, '-')
+      .slice(0, 100)
+  }
+
   @beforeCreate()
-  static generateSlug(tag: Tag) {
+  static assignSlug(tag: Tag) {
     if (!tag.slug) {
-      tag.slug = tag.name
-        .toLowerCase()
-        .trim()
-        .replace(/[^a-z0-9\s-]/g, '')
-        .replace(/\s+/g, '-')
-        .replace(/-+/g, '-')
-        .slice(0, 100)
+      tag.slug = Tag.generateSlugFromName(tag.name)
     }
   }
 }
