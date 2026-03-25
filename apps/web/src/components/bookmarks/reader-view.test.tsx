@@ -30,6 +30,7 @@ function createBookmark(overrides: Partial<Bookmark> = {}): Bookmark {
     safetyReasons: null,
     scrapeError: null,
     aiError: null,
+    tags: [],
     createdAt: '2026-03-21T12:00:00Z',
     updatedAt: '2026-03-21T12:00:00Z',
     ...overrides,

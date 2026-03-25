@@ -9,6 +9,7 @@ interface ListOptions {
   readonly order?: 'asc' | 'desc'
   readonly isFavorite?: boolean
   readonly isArchived?: boolean
+  readonly tag?: string
 }
 
 export default class BookmarkRepository {
@@ -21,13 +22,14 @@ export default class BookmarkRepository {
       order = 'desc',
       isFavorite,
       isArchived,
+      tag,
     } = options
 
     const clampedLimit = Math.min(limit, PAGINATION.MAX_LIMIT)
     const allowedSorts = ['created_at', 'updated_at', 'title']
     const safeSort = allowedSorts.includes(sort) ? sort : 'created_at'
 
-    const query = Bookmark.query().where('userId', userId).orderBy(safeSort, order)
+    const query = Bookmark.query().where('userId', userId).preload('tags').orderBy(safeSort, order)
 
     if (isFavorite !== undefined) {
       query.where('isFavorite', isFavorite)
@@ -35,12 +37,17 @@ export default class BookmarkRepository {
     if (isArchived !== undefined) {
       query.where('isArchived', isArchived)
     }
+    if (tag) {
+      query.whereHas('tags', (tagQuery) => {
+        tagQuery.where('slug', tag)
+      })
+    }
 
     return query.paginate(page, clampedLimit)
   }
 
   async findById(id: number, userId: number) {
-    return Bookmark.query().where('id', id).where('userId', userId).firstOrFail()
+    return Bookmark.query().where('id', id).where('userId', userId).preload('tags').firstOrFail()
   }
 
   async create(data: Partial<Bookmark>) {

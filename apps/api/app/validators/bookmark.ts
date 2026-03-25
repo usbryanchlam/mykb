@@ -34,5 +34,6 @@ export const listBookmarksValidator = vine.compile(
       .in(['true', 'false'])
       .optional()
       .transform((value) => value === 'true'),
+    tag: vine.string().trim().maxLength(100).optional(),
   })
 )

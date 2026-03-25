@@ -1,6 +1,7 @@
 'use client'
 
-import type { Bookmark } from '@mykb/shared'
+import { useState } from 'react'
+import type { Bookmark, BookmarkTag } from '@mykb/shared'
 import {
   ArrowLeft,
   Calendar,
@@ -10,11 +11,13 @@ import {
   Pencil,
   ShieldAlert,
   ShieldCheck,
+  Sparkles,
 } from 'lucide-react'
 import Link from 'next/link'
 import { BookmarkActions } from '@/components/bookmarks/bookmark-actions'
 import { ReaderView } from '@/components/bookmarks/reader-view'
 import { StatusBadge } from '@/components/bookmarks/status-badge'
+import { TagManager } from '@/components/bookmarks/tag-manager'
 import { Button } from '@/components/ui/button'
 import { getDomain, isSafeUrl, isSafeFaviconUrl } from '@/lib/bookmark-utils'
 
@@ -54,6 +57,7 @@ export function BookmarkDetail({
   onDelete,
   onRescrape,
 }: BookmarkDetailProps) {
+  const [tags, setTags] = useState<readonly BookmarkTag[]>(bookmark.tags ?? [])
   const domain = getDomain(bookmark.url)
   const title = bookmark.title ?? domain
   const safeHref = isSafeUrl(bookmark.url) ? bookmark.url : '#'
@@ -120,11 +124,18 @@ export function BookmarkDetail({
         )}
 
         {bookmark.summary && (
-          <div>
-            <h2 className="mb-1 text-sm font-medium text-muted-foreground">Summary</h2>
-            <p className="text-sm">{bookmark.summary}</p>
+          <div className="rounded-md border border-purple-200 bg-purple-50 p-3 dark:border-purple-900 dark:bg-purple-950/30">
+            <div className="mb-1 flex items-center gap-1.5">
+              <Sparkles className="size-3.5 text-purple-600 dark:text-purple-400" />
+              <h2 className="text-sm font-medium text-purple-800 dark:text-purple-300">
+                AI Summary
+              </h2>
+            </div>
+            <p className="text-sm text-purple-900 dark:text-purple-200">{bookmark.summary}</p>
           </div>
         )}
+
+        <TagManager bookmarkId={bookmark.id} tags={tags} canEdit={canEdit} onTagsChange={setTags} />
 
         <div>
           <h2 className="mb-1 text-sm font-medium text-muted-foreground">URL</h2>

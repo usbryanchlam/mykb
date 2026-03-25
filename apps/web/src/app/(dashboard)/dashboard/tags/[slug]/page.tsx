@@ -1,0 +1,44 @@
+'use client'
+
+import { useParams } from 'next/navigation'
+import { Tag } from 'lucide-react'
+import { useBookmarks } from '@/hooks/use-bookmarks'
+import { BookmarkPageLayout } from '@/components/bookmarks/bookmark-page-layout'
+
+export default function TagBookmarksPage() {
+  const params = useParams<{ slug: string }>()
+  const slug = params.slug
+
+  const {
+    bookmarks,
+    meta,
+    page,
+    isLoading,
+    error,
+    lastAction,
+    setPage,
+    handleToggleFavorite,
+    handleToggleArchive,
+    handleDelete,
+  } = useBookmarks({ tag: slug })
+
+  return (
+    <BookmarkPageLayout
+      title={`Tag: ${decodeURIComponent(slug)}`}
+      loadingText="Loading bookmarks..."
+      emptyIcon={<Tag className="size-12 text-muted-foreground" />}
+      emptyTitle="No bookmarks with this tag"
+      emptyDescription="Bookmarks tagged with this tag will appear here."
+      bookmarks={bookmarks}
+      meta={meta}
+      page={page}
+      isLoading={isLoading}
+      error={error}
+      lastAction={lastAction}
+      onPageChange={setPage}
+      onToggleFavorite={handleToggleFavorite}
+      onToggleArchive={handleToggleArchive}
+      onDelete={handleDelete}
+    />
+  )
+}
