@@ -4,6 +4,7 @@ import { middleware } from '#start/kernel'
 const UsersController = () => import('#controllers/users_controller')
 const BookmarksController = () => import('#controllers/bookmarks_controller')
 const TagsController = () => import('#controllers/tags_controller')
+const SearchController = () => import('#controllers/search_controller')
 
 router.get('/health', () => ({ status: 'ok' }))
 
@@ -22,6 +23,8 @@ router
     router.get('/bookmarks/:id/reader', [BookmarksController, 'reader'])
     router.post('/bookmarks/:id/tags', [TagsController, 'addToBookmark'])
     router.delete('/bookmarks/:id/tags/:tagId', [TagsController, 'removeFromBookmark'])
+
+    router.get('/search', [SearchController, 'search'])
 
     router.get('/tags', [TagsController, 'index'])
     router.post('/tags', [TagsController, 'store'])

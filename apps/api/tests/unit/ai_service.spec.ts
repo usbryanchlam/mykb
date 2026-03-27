@@ -1,5 +1,8 @@
 import { test } from '@japa/runner'
+import env from '#start/env'
 import AIService, { sanitizeInput, parseTags } from '#services/ai_service'
+
+const hasGeminiKey = !!env.get('GEMINI_API_KEY')
 
 test.group('AIService — summarize', () => {
   test('returns null for short text', async ({ assert }) => {
@@ -18,7 +21,7 @@ test.group('AIService — summarize', () => {
     const service = new AIService()
     const result = await service.summarize('x'.repeat(200))
     assert.isNull(result)
-  })
+  }).skip(hasGeminiKey, 'Skipped: GEMINI_API_KEY is set')
 })
 
 test.group('AIService — generateTags', () => {
@@ -38,7 +41,7 @@ test.group('AIService — generateTags', () => {
     const service = new AIService()
     const result = await service.generateTags('x'.repeat(200), 'Title')
     assert.deepEqual(result, [])
-  })
+  }).skip(hasGeminiKey, 'Skipped: GEMINI_API_KEY is set')
 })
 
 test.group('sanitizeInput', () => {
