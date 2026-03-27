@@ -7,6 +7,7 @@ const TagsController = () => import('#controllers/tags_controller')
 const SearchController = () => import('#controllers/search_controller')
 const CollectionsController = () => import('#controllers/collections_controller')
 const SmartListsController = () => import('#controllers/smart_lists_controller')
+const AdminController = () => import('#controllers/admin_controller')
 
 router.get('/health', () => ({ status: 'ok' }))
 
@@ -54,3 +55,11 @@ router
   })
   .prefix('/api')
   .use(middleware.auth0())
+
+router
+  .group(() => {
+    router.get('/admin/stats', [AdminController, 'stats'])
+  })
+  .prefix('/api')
+  .use(middleware.auth0())
+  .use(middleware.role({ roles: ['admin'] }))
