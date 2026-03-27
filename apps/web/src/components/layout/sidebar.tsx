@@ -1,5 +1,8 @@
+'use client'
+
 import { Bookmark, Star, Archive, FolderOpen, Tags, Search, Sparkles, Shield } from 'lucide-react'
 import { SidebarNavItem } from '@/components/layout/sidebar-nav'
+import { useAuth } from '@/hooks/use-auth'
 
 const navItems = [
   { href: '/dashboard', label: 'All Bookmarks', icon: Bookmark },
@@ -9,10 +12,11 @@ const navItems = [
   { href: '/dashboard/tags', label: 'Tags', icon: Tags },
   { href: '/dashboard/smart-lists', label: 'Smart Lists', icon: Sparkles },
   { href: '/dashboard/search', label: 'Search', icon: Search },
-  { href: '/dashboard/admin', label: 'Admin', icon: Shield },
 ] as const
 
 export function Sidebar() {
+  const { role } = useAuth()
+
   return (
     <aside
       aria-label="Main navigation"
@@ -25,6 +29,7 @@ export function Sidebar() {
         {navItems.map((item) => (
           <SidebarNavItem key={item.href} href={item.href} label={item.label} icon={item.icon} />
         ))}
+        {role === 'admin' && <SidebarNavItem href="/dashboard/admin" label="Admin" icon={Shield} />}
       </nav>
     </aside>
   )

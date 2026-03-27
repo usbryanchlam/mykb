@@ -14,19 +14,35 @@ vi.mock('next/link', () => ({
   ),
 }))
 
+const mockUseAuth = vi.fn()
+
+vi.mock('@/hooks/use-auth', () => ({
+  useAuth: () => mockUseAuth(),
+}))
+
 describe('Sidebar', () => {
   it('renders MyKB logo', () => {
+    mockUseAuth.mockReturnValue({ role: 'editor' })
     const { container } = render(<Sidebar />)
     expect(container).toHaveTextContent('MyKB')
   })
 
-  it('renders all eight navigation items', () => {
+  it('renders seven navigation items for non-admin', () => {
+    mockUseAuth.mockReturnValue({ role: 'editor' })
+    const { container } = render(<Sidebar />)
+    const links = container.querySelectorAll('a')
+    expect(links).toHaveLength(7)
+  })
+
+  it('renders eight navigation items for admin', () => {
+    mockUseAuth.mockReturnValue({ role: 'admin' })
     const { container } = render(<Sidebar />)
     const links = container.querySelectorAll('a')
     expect(links).toHaveLength(8)
   })
 
-  it('renders correct hrefs for all nav items', () => {
+  it('renders correct hrefs for non-admin', () => {
+    mockUseAuth.mockReturnValue({ role: 'editor' })
     const { container } = render(<Sidebar />)
     const links = container.querySelectorAll('a')
     const hrefs = Array.from(links).map((link) => link.getAttribute('href'))
@@ -38,11 +54,27 @@ describe('Sidebar', () => {
       '/dashboard/tags',
       '/dashboard/smart-lists',
       '/dashboard/search',
-      '/dashboard/admin',
     ])
   })
 
+  it('includes admin link for admin role', () => {
+    mockUseAuth.mockReturnValue({ role: 'admin' })
+    const { container } = render(<Sidebar />)
+    const links = container.querySelectorAll('a')
+    const hrefs = Array.from(links).map((link) => link.getAttribute('href'))
+    expect(hrefs).toContain('/dashboard/admin')
+  })
+
+  it('does not show admin link for viewer role', () => {
+    mockUseAuth.mockReturnValue({ role: 'viewer' })
+    const { container } = render(<Sidebar />)
+    const links = container.querySelectorAll('a')
+    const hrefs = Array.from(links).map((link) => link.getAttribute('href'))
+    expect(hrefs).not.toContain('/dashboard/admin')
+  })
+
   it('renders nav item labels', () => {
+    mockUseAuth.mockReturnValue({ role: 'editor' })
     const { container } = render(<Sidebar />)
     expect(container).toHaveTextContent('All Bookmarks')
     expect(container).toHaveTextContent('Favorites')
@@ -51,10 +83,10 @@ describe('Sidebar', () => {
     expect(container).toHaveTextContent('Tags')
     expect(container).toHaveTextContent('Smart Lists')
     expect(container).toHaveTextContent('Search')
-    expect(container).toHaveTextContent('Admin')
   })
 
   it('has main navigation aria-label', () => {
+    mockUseAuth.mockReturnValue({ role: 'editor' })
     const { container } = render(<Sidebar />)
     const aside = container.querySelector('aside')
     expect(aside).toHaveAttribute('aria-label', 'Main navigation')

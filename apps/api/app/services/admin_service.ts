@@ -24,6 +24,8 @@ export interface AppStats {
   }
 }
 
+const ALLOWED_TABLES = new Set(['users', 'bookmarks', 'tags', 'collections', 'smart_lists'])
+
 export default class AdminService {
   async getStats(): Promise<AppStats> {
     const [users, bookmarks, tags, collections, smartLists, jobs, scrapeStats, safetyStats] =
@@ -42,15 +44,18 @@ export default class AdminService {
   }
 
   private async count(table: string): Promise<number> {
+    if (!ALLOWED_TABLES.has(table)) {
+      throw new Error(`Invalid table name: ${table}`)
+    }
     const result = await db.rawQuery(`SELECT COUNT(*) as count FROM ${table}`)
-    return result[0]?.count ?? 0
+    return Number(result[0]?.count ?? 0)
   }
 
   private async getJobStats() {
     const rows = await db.rawQuery(`SELECT status, COUNT(*) as count FROM job_logs GROUP BY status`)
     const stats = { total: 0, completed: 0, failed: 0, processing: 0 }
     for (const row of rows) {
-      const count = row.count as number
+      const count = Number(row.count)
       stats.total += count
       if (row.status === 'completed') stats.completed = count
       else if (row.status === 'failed') stats.failed = count
@@ -65,9 +70,9 @@ export default class AdminService {
     )
     const stats = { completed: 0, failed: 0, pending: 0 }
     for (const row of rows) {
-      if (row.status === 'completed') stats.completed = row.count as number
-      else if (row.status === 'failed') stats.failed = row.count as number
-      else if (row.status === 'pending') stats.pending = row.count as number
+      if (row.status === 'completed') stats.completed = Number(row.count)
+      else if (row.status === 'failed') stats.failed = Number(row.count)
+      else if (row.status === 'pending') stats.pending = Number(row.count)
     }
     return stats
   }
@@ -78,9 +83,9 @@ export default class AdminService {
     )
     const stats = { safe: 0, flagged: 0, failed: 0 }
     for (const row of rows) {
-      if (row.status === 'safe') stats.safe = row.count as number
-      else if (row.status === 'flagged') stats.flagged = row.count as number
-      else if (row.status === 'failed') stats.failed = row.count as number
+      if (row.status === 'safe') stats.safe = Number(row.count)
+      else if (row.status === 'flagged') stats.flagged = Number(row.count)
+      else if (row.status === 'failed') stats.failed = Number(row.count)
     }
     return stats
   }
