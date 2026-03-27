@@ -1,7 +1,7 @@
 import env from '#start/env'
 
 const GEMINI_URL =
-  'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent'
+  'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent'
 const API_TIMEOUT_MS = 30_000
 const MIN_REQUEST_INTERVAL_MS = 1000
 const MAX_SUMMARY_LENGTH = 500
