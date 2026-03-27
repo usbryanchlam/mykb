@@ -20,10 +20,10 @@ describe('Sidebar', () => {
     expect(container).toHaveTextContent('MyKB')
   })
 
-  it('renders all seven navigation items', () => {
+  it('renders all eight navigation items', () => {
     const { container } = render(<Sidebar />)
     const links = container.querySelectorAll('a')
-    expect(links).toHaveLength(7)
+    expect(links).toHaveLength(8)
   })
 
   it('renders correct hrefs for all nav items', () => {
@@ -38,6 +38,7 @@ describe('Sidebar', () => {
       '/dashboard/tags',
       '/dashboard/smart-lists',
       '/dashboard/search',
+      '/dashboard/admin',
     ])
   })
 
@@ -50,6 +51,7 @@ describe('Sidebar', () => {
     expect(container).toHaveTextContent('Tags')
     expect(container).toHaveTextContent('Smart Lists')
     expect(container).toHaveTextContent('Search')
+    expect(container).toHaveTextContent('Admin')
   })
 
   it('has main navigation aria-label', () => {

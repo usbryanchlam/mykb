@@ -1,4 +1,4 @@
-import { Bookmark, Star, Archive, FolderOpen, Tags, Search, Sparkles } from 'lucide-react'
+import { Bookmark, Star, Archive, FolderOpen, Tags, Search, Sparkles, Shield } from 'lucide-react'
 import { SidebarNavItem } from '@/components/layout/sidebar-nav'
 
 const navItems = [
@@ -9,6 +9,7 @@ const navItems = [
   { href: '/dashboard/tags', label: 'Tags', icon: Tags },
   { href: '/dashboard/smart-lists', label: 'Smart Lists', icon: Sparkles },
   { href: '/dashboard/search', label: 'Search', icon: Search },
+  { href: '/dashboard/admin', label: 'Admin', icon: Shield },
 ] as const
 
 export function Sidebar() {
