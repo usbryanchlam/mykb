@@ -23,6 +23,7 @@ server.errorHandler(() => import('#exceptions/handler'))
  * the request URL.
  */
 server.use([
+  () => import('#middleware/security_headers_middleware'),
   () => import('#middleware/force_json_response_middleware'),
   () => import('#middleware/container_bindings_middleware'),
   () => import('@adonisjs/cors/cors_middleware'),
@@ -41,4 +42,5 @@ router.use([() => import('@adonisjs/core/bodyparser_middleware')])
 export const middleware = router.named({
   auth0: () => import('#middleware/auth0_middleware'),
   role: () => import('#middleware/role_middleware'),
+  rateLimit: () => import('#middleware/rate_limit_middleware'),
 })
