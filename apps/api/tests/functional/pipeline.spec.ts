@@ -127,8 +127,8 @@ test.group('GET /api/bookmarks/:id/reader', () => {
     response.assertStatus(200)
     const data = response.body().data
     assert.isNull(data.content)
-    // Status may be 'pending' or 'processing' depending on pipeline timing
-    assert.oneOf(data.status, ['pending', 'processing'])
+    // Status depends on pipeline timing: pending/processing if still running, failed if scrape completed (fake URL)
+    assert.oneOf(data.status, ['pending', 'processing', 'failed'])
   })
 
   test('returns 404 for other users bookmark', async ({ client }) => {
