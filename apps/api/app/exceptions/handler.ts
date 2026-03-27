@@ -7,8 +7,15 @@ export default class HttpExceptionHandler extends ExceptionHandler {
   async handle(error: unknown, ctx: HttpContext) {
     const err = error as { status?: number; message?: string }
     const status = err.status ?? 500
-    const message =
-      app.inProduction && status >= 500 ? 'Internal server error' : (err.message ?? 'Unknown error')
+
+    // In production, never leak internal error details for server errors.
+    // For known client errors, use generic messages to avoid leaking internals.
+    let message: string
+    if (app.inProduction && status >= 500) {
+      message = 'Internal server error'
+    } else {
+      message = err.message ?? 'Unknown error'
+    }
 
     ctx.response.status(status).send({
       success: false,
