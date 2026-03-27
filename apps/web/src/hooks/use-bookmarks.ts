@@ -14,6 +14,7 @@ import {
 interface UseBookmarksOptions {
   readonly isFavorite?: boolean
   readonly isArchived?: boolean
+  readonly tag?: string
 }
 
 interface UseBookmarksResult {
@@ -47,6 +48,7 @@ export function useBookmarks(options: UseBookmarksOptions = {}): UseBookmarksRes
       order: 'desc',
       ...(options.isFavorite !== undefined && { is_favorite: options.isFavorite }),
       ...(options.isArchived !== undefined && { is_archived: options.isArchived }),
+      ...(options.tag !== undefined && { tag: options.tag }),
     }
 
     startTransition(async () => {
@@ -61,7 +63,7 @@ export function useBookmarks(options: UseBookmarksOptions = {}): UseBookmarksRes
         setInitialLoading(false)
       }
     })
-  }, [page, options.isFavorite, options.isArchived])
+  }, [page, options.isFavorite, options.isArchived, options.tag])
 
   useEffect(() => {
     fetchBookmarks()

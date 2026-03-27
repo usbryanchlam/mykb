@@ -19,6 +19,7 @@ interface ListBookmarksOptions {
   readonly order?: 'asc' | 'desc'
   readonly isFavorite?: boolean
   readonly isArchived?: boolean
+  readonly tag?: string
 }
 
 export default class BookmarkService {

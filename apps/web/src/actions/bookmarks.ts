@@ -10,6 +10,7 @@ export interface ListBookmarksParams {
   readonly order?: 'asc' | 'desc'
   readonly is_favorite?: boolean
   readonly is_archived?: boolean
+  readonly tag?: string
 }
 
 function humanError(action: string, status: number): string {
@@ -30,6 +31,7 @@ export async function listBookmarks(
   if (params.order !== undefined) qs.set('order', params.order)
   if (params.is_favorite !== undefined) qs.set('is_favorite', String(params.is_favorite))
   if (params.is_archived !== undefined) qs.set('is_archived', String(params.is_archived))
+  if (params.tag !== undefined) qs.set('tag', params.tag)
 
   const queryString = qs.toString()
   const path = queryString ? `/api/bookmarks?${queryString}` : '/api/bookmarks'

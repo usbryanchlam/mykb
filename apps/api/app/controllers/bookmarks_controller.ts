@@ -29,6 +29,7 @@ export default class BookmarksController {
       order: query.order as 'asc' | 'desc' | undefined,
       isFavorite: query.is_favorite,
       isArchived: query.is_archived,
+      tag: query.tag,
     })
 
     return response.ok({

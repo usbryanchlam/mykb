@@ -4,6 +4,13 @@ export type AiStatus = 'pending' | 'processing' | 'completed' | 'failed' | 'skip
 
 export type SafetyStatus = 'pending' | 'safe' | 'flagged' | 'skipped' | 'failed'
 
+export interface BookmarkTag {
+  readonly id: number
+  readonly name: string
+  readonly slug: string
+  readonly isAiGenerated: boolean
+}
+
 export interface Bookmark {
   readonly id: number
   readonly userId: number
@@ -25,6 +32,7 @@ export interface Bookmark {
   readonly safetyReasons: readonly string[] | null
   readonly scrapeError: string | null
   readonly aiError: string | null
+  readonly tags: readonly BookmarkTag[]
   readonly createdAt: string
   readonly updatedAt: string
 }

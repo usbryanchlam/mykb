@@ -5,6 +5,7 @@ import { Globe } from 'lucide-react'
 import Link from 'next/link'
 import { BookmarkActions } from '@/components/bookmarks/bookmark-actions'
 import { StatusBadge } from '@/components/bookmarks/status-badge'
+import { TagBadge } from '@/components/bookmarks/tag-badge'
 import { getDomain, formatRelativeDate, isSafeUrl, isSafeFaviconUrl } from '@/lib/bookmark-utils'
 
 interface BookmarkCardProps {
@@ -56,6 +57,19 @@ export function BookmarkCard({
         <div className="flex items-center gap-1.5">
           {showScrapeStatus && <StatusBadge status={bookmark.scrapeStatus} label="Scrape" />}
           {showSafetyStatus && <StatusBadge status={bookmark.safetyStatus} label="Safety" />}
+        </div>
+      )}
+
+      {bookmark.tags && bookmark.tags.length > 0 && (
+        <div className="flex flex-wrap gap-1">
+          {bookmark.tags.slice(0, 5).map((tag) => (
+            <TagBadge key={tag.id} tag={tag} />
+          ))}
+          {bookmark.tags.length > 5 && (
+            <span className="inline-flex items-center rounded-full bg-muted px-2 py-0.5 text-xs text-muted-foreground">
+              +{bookmark.tags.length - 5}
+            </span>
+          )}
         </div>
       )}
 
