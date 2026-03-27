@@ -20,10 +20,10 @@ describe('Sidebar', () => {
     expect(container).toHaveTextContent('MyKB')
   })
 
-  it('renders all six navigation items', () => {
+  it('renders all seven navigation items', () => {
     const { container } = render(<Sidebar />)
     const links = container.querySelectorAll('a')
-    expect(links).toHaveLength(6)
+    expect(links).toHaveLength(7)
   })
 
   it('renders correct hrefs for all nav items', () => {
@@ -36,6 +36,7 @@ describe('Sidebar', () => {
       '/dashboard/archive',
       '/dashboard/collections',
       '/dashboard/tags',
+      '/dashboard/smart-lists',
       '/dashboard/search',
     ])
   })
@@ -47,6 +48,7 @@ describe('Sidebar', () => {
     expect(container).toHaveTextContent('Archive')
     expect(container).toHaveTextContent('Collections')
     expect(container).toHaveTextContent('Tags')
+    expect(container).toHaveTextContent('Smart Lists')
     expect(container).toHaveTextContent('Search')
   })
 

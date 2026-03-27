@@ -6,6 +6,7 @@ const BookmarksController = () => import('#controllers/bookmarks_controller')
 const TagsController = () => import('#controllers/tags_controller')
 const SearchController = () => import('#controllers/search_controller')
 const CollectionsController = () => import('#controllers/collections_controller')
+const SmartListsController = () => import('#controllers/smart_lists_controller')
 
 router.get('/health', () => ({ status: 'ok' }))
 
@@ -38,6 +39,13 @@ router
       CollectionsController,
       'removeBookmark',
     ])
+
+    router.get('/smart-lists', [SmartListsController, 'index'])
+    router.post('/smart-lists', [SmartListsController, 'store'])
+    router.get('/smart-lists/:id', [SmartListsController, 'show'])
+    router.patch('/smart-lists/:id', [SmartListsController, 'update'])
+    router.delete('/smart-lists/:id', [SmartListsController, 'destroy'])
+    router.get('/smart-lists/:id/bookmarks', [SmartListsController, 'resolve'])
 
     router.get('/tags', [TagsController, 'index'])
     router.post('/tags', [TagsController, 'store'])

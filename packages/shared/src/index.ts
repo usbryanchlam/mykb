@@ -10,6 +10,7 @@ export type {
 } from './types/bookmark.js'
 export type { Tag } from './types/tag.js'
 export type { Collection } from './types/collection.js'
+export type { SmartList, FilterQuery } from './types/smart-list.js'
 export type {
   ApiResponse,
   ApiErrorResponse,
