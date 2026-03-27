@@ -18,6 +18,7 @@ import { BookmarkActions } from '@/components/bookmarks/bookmark-actions'
 import { ReaderView } from '@/components/bookmarks/reader-view'
 import { StatusBadge } from '@/components/bookmarks/status-badge'
 import { TagManager } from '@/components/bookmarks/tag-manager'
+import { AddToCollection } from '@/components/collections/add-to-collection'
 import { Button } from '@/components/ui/button'
 import { getDomain, isSafeUrl, isSafeFaviconUrl } from '@/lib/bookmark-utils'
 
@@ -136,6 +137,8 @@ export function BookmarkDetail({
         )}
 
         <TagManager bookmarkId={bookmark.id} tags={tags} canEdit={canEdit} onTagsChange={setTags} />
+
+        {canEdit && <AddToCollection bookmarkId={bookmark.id} />}
 
         <div>
           <h2 className="mb-1 text-sm font-medium text-muted-foreground">URL</h2>
