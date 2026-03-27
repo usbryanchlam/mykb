@@ -5,6 +5,7 @@ const UsersController = () => import('#controllers/users_controller')
 const BookmarksController = () => import('#controllers/bookmarks_controller')
 const TagsController = () => import('#controllers/tags_controller')
 const SearchController = () => import('#controllers/search_controller')
+const CollectionsController = () => import('#controllers/collections_controller')
 
 router.get('/health', () => ({ status: 'ok' }))
 
@@ -25,6 +26,18 @@ router
     router.delete('/bookmarks/:id/tags/:tagId', [TagsController, 'removeFromBookmark'])
 
     router.get('/search', [SearchController, 'search'])
+
+    router.get('/collections', [CollectionsController, 'index'])
+    router.post('/collections', [CollectionsController, 'store'])
+    router.get('/collections/:id', [CollectionsController, 'show'])
+    router.patch('/collections/:id', [CollectionsController, 'update'])
+    router.delete('/collections/:id', [CollectionsController, 'destroy'])
+    router.get('/collections/:id/bookmarks', [CollectionsController, 'bookmarks'])
+    router.post('/collections/:id/bookmarks', [CollectionsController, 'addBookmark'])
+    router.delete('/collections/:id/bookmarks/:bookmarkId', [
+      CollectionsController,
+      'removeBookmark',
+    ])
 
     router.get('/tags', [TagsController, 'index'])
     router.post('/tags', [TagsController, 'store'])
