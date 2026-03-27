@@ -27,7 +27,12 @@ export const runnerHooks: Required<Pick<Config, 'setup' | 'teardown'>> = {
     },
     () => testUtils.db().migrate(),
   ],
-  teardown: [() => stopJwksServer(), () => testUtils.db().truncate()],
+  teardown: [
+    () => stopJwksServer(),
+    // truncateAllTables is incompatible with FTS5 shadow tables (bookmarks_fts_*).
+    // The migrate() in setup already does a full rollback + re-migrate, so data
+    // isolation between test runs is ensured without explicit truncation.
+  ],
 }
 
 /**
