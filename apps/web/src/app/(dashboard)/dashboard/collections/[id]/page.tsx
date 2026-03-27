@@ -23,7 +23,7 @@ export default function CollectionDetailPage() {
   const [bookmarks, setBookmarks] = useState<readonly Bookmark[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
-  const [isPending, startTransition] = useTransition()
+  const [, startTransition] = useTransition()
 
   function fetchData() {
     startTransition(async () => {
