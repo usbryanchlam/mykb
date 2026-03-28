@@ -11,10 +11,7 @@ export default function DashboardLayout({ children }: { readonly children: React
       <Sidebar />
       <div className="flex flex-1 flex-col overflow-hidden">
         <DashboardHeader />
-        <main
-          aria-label="Main content"
-          className="flex flex-1 flex-col overflow-y-auto p-4 pt-14 md:p-6 md:pt-6"
-        >
+        <main aria-label="Main content" className="flex flex-1 flex-col overflow-y-auto p-4 md:p-6">
           {children}
         </main>
         <Footer />
