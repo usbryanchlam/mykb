@@ -14,8 +14,18 @@ const geistMono = Geist_Mono({
 })
 
 export const metadata: Metadata = {
-  title: 'MyKB',
+  title: {
+    default: 'MyKB',
+    template: '%s | MyKB',
+  },
   description: 'Personal knowledge base for bookmarking and organizing web content',
+  icons: { icon: '/favicon.ico' },
+  openGraph: {
+    title: 'MyKB',
+    description: 'Personal knowledge base for bookmarking and organizing web content',
+    type: 'website',
+  },
+  robots: { index: false, follow: false },
 }
 
 export default function RootLayout({

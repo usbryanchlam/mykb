@@ -7,55 +7,311 @@
 import { BaseModel, column } from '@adonisjs/lucid/orm'
 import { DateTime } from 'luxon'
 
-export class AuthAccessTokenSchema extends BaseModel {
-  static $columns = [
-    'abilities',
-    'createdAt',
-    'expiresAt',
-    'hash',
-    'id',
-    'lastUsedAt',
-    'name',
-    'tokenableId',
-    'type',
-    'updatedAt',
-  ] as const
-  $columns = AuthAccessTokenSchema.$columns
+export class BookmarkCollectionSchema extends BaseModel {
+  static $columns = ['bookmarkId', 'collectionId', 'createdAt', 'sortOrder'] as const
+  $columns = BookmarkCollectionSchema.$columns
   @column()
-  declare abilities: string
+  declare bookmarkId: number
+  @column()
+  declare collectionId: number
   @column.dateTime({ autoCreate: true })
-  declare createdAt: DateTime | null
-  @column.dateTime()
-  declare expiresAt: DateTime | null
+  declare createdAt: DateTime
   @column()
-  declare hash: string
+  declare sortOrder: number
+}
+
+export class BookmarkTagSchema extends BaseModel {
+  static $columns = ['bookmarkId', 'createdAt', 'tagId'] as const
+  $columns = BookmarkTagSchema.$columns
+  @column()
+  declare bookmarkId: number
+  @column.dateTime({ autoCreate: true })
+  declare createdAt: DateTime
+  @column()
+  declare tagId: number
+}
+
+export class BookmarkSchema extends BaseModel {
+  static $columns = [
+    'aiError',
+    'aiStatus',
+    'content',
+    'createdAt',
+    'description',
+    'faviconUrl',
+    'id',
+    'isArchived',
+    'isFavorite',
+    'ogImageUrl',
+    'plainText',
+    'safetyReasons',
+    'safetyStatus',
+    'scrapeError',
+    'scrapeStatus',
+    'screenshotKey',
+    'summary',
+    'thumbnailKey',
+    'title',
+    'updatedAt',
+    'url',
+    'userId',
+  ] as const
+  $columns = BookmarkSchema.$columns
+  @column()
+  declare aiError: string | null
+  @column()
+  declare aiStatus: string
+  @column()
+  declare content: string | null
+  @column.dateTime({ autoCreate: true })
+  declare createdAt: DateTime
+  @column()
+  declare description: string | null
+  @column()
+  declare faviconUrl: string | null
   @column({ isPrimary: true })
   declare id: number
-  @column.dateTime()
-  declare lastUsedAt: DateTime | null
   @column()
-  declare name: string | null
+  declare isArchived: boolean
   @column()
-  declare tokenableId: number
+  declare isFavorite: boolean
   @column()
-  declare type: string
+  declare ogImageUrl: string | null
+  @column()
+  declare plainText: string | null
+  @column()
+  declare safetyReasons: string | null
+  @column()
+  declare safetyStatus: string
+  @column()
+  declare scrapeError: string | null
+  @column()
+  declare scrapeStatus: string
+  @column()
+  declare screenshotKey: string | null
+  @column()
+  declare summary: string | null
+  @column()
+  declare thumbnailKey: string | null
+  @column()
+  declare title: string | null
   @column.dateTime({ autoCreate: true, autoUpdate: true })
-  declare updatedAt: DateTime | null
+  declare updatedAt: DateTime
+  @column()
+  declare url: string
+  @column()
+  declare userId: number
+}
+
+export class BookmarksFtSchema extends BaseModel {
+  static $columns = ['description', 'plainText', 'summary', 'tags', 'title'] as const
+  $columns = BookmarksFtSchema.$columns
+  @column()
+  declare description: any | null
+  @column()
+  declare plainText: any | null
+  @column()
+  declare summary: any | null
+  @column()
+  declare tags: any | null
+  @column()
+  declare title: any | null
+}
+
+export class BookmarksFtsConfigSchema extends BaseModel {
+  static $columns = ['k', 'v'] as const
+  $columns = BookmarksFtsConfigSchema.$columns
+  @column()
+  declare k: any
+  @column()
+  declare v: any | null
+}
+
+export class BookmarksFtsContentSchema extends BaseModel {
+  static $columns = ['c0', 'c1', 'c2', 'c3', 'c4', 'id'] as const
+  $columns = BookmarksFtsContentSchema.$columns
+  @column()
+  declare c0: any | null
+  @column()
+  declare c1: any | null
+  @column()
+  declare c2: any | null
+  @column()
+  declare c3: any | null
+  @column()
+  declare c4: any | null
+  @column({ isPrimary: true })
+  declare id: number | null
+}
+
+export class BookmarksFtsDatumSchema extends BaseModel {
+  static $columns = ['block', 'id'] as const
+  $columns = BookmarksFtsDatumSchema.$columns
+  @column()
+  declare block: Buffer | null
+  @column({ isPrimary: true })
+  declare id: number | null
+}
+
+export class BookmarksFtsDocsizeSchema extends BaseModel {
+  static $columns = ['id', 'sz'] as const
+  $columns = BookmarksFtsDocsizeSchema.$columns
+  @column({ isPrimary: true })
+  declare id: number | null
+  @column()
+  declare sz: Buffer | null
+}
+
+export class BookmarksFtsIdxSchema extends BaseModel {
+  static $columns = ['pgno', 'segid', 'term'] as const
+  $columns = BookmarksFtsIdxSchema.$columns
+  @column()
+  declare pgno: any | null
+  @column()
+  declare segid: any
+  @column()
+  declare term: any
+}
+
+export class CollectionSchema extends BaseModel {
+  static $columns = [
+    'createdAt',
+    'description',
+    'icon',
+    'id',
+    'name',
+    'sortOrder',
+    'updatedAt',
+    'userId',
+  ] as const
+  $columns = CollectionSchema.$columns
+  @column.dateTime({ autoCreate: true })
+  declare createdAt: DateTime
+  @column()
+  declare description: string | null
+  @column()
+  declare icon: string | null
+  @column({ isPrimary: true })
+  declare id: number
+  @column()
+  declare name: string
+  @column()
+  declare sortOrder: number
+  @column.dateTime({ autoCreate: true, autoUpdate: true })
+  declare updatedAt: DateTime
+  @column()
+  declare userId: number
+}
+
+export class JobLogSchema extends BaseModel {
+  static $columns = [
+    'attempt',
+    'bookmarkId',
+    'completedAt',
+    'createdAt',
+    'errorMessage',
+    'id',
+    'jobType',
+    'startedAt',
+    'status',
+  ] as const
+  $columns = JobLogSchema.$columns
+  @column()
+  declare attempt: number
+  @column()
+  declare bookmarkId: number
+  @column.dateTime()
+  declare completedAt: DateTime | null
+  @column.dateTime({ autoCreate: true })
+  declare createdAt: DateTime
+  @column()
+  declare errorMessage: string | null
+  @column({ isPrimary: true })
+  declare id: number
+  @column()
+  declare jobType: string
+  @column.dateTime()
+  declare startedAt: DateTime
+  @column()
+  declare status: string
+}
+
+export class SmartListSchema extends BaseModel {
+  static $columns = [
+    'createdAt',
+    'description',
+    'filterQuery',
+    'icon',
+    'id',
+    'name',
+    'updatedAt',
+    'userId',
+  ] as const
+  $columns = SmartListSchema.$columns
+  @column.dateTime({ autoCreate: true })
+  declare createdAt: DateTime
+  @column()
+  declare description: string | null
+  @column()
+  declare filterQuery: string
+  @column()
+  declare icon: string | null
+  @column({ isPrimary: true })
+  declare id: number
+  @column()
+  declare name: string
+  @column.dateTime({ autoCreate: true, autoUpdate: true })
+  declare updatedAt: DateTime
+  @column()
+  declare userId: number
+}
+
+export class TagSchema extends BaseModel {
+  static $columns = ['createdAt', 'id', 'isAiGenerated', 'name', 'slug', 'userId'] as const
+  $columns = TagSchema.$columns
+  @column.dateTime({ autoCreate: true })
+  declare createdAt: DateTime
+  @column({ isPrimary: true })
+  declare id: number
+  @column()
+  declare isAiGenerated: boolean
+  @column()
+  declare name: string
+  @column()
+  declare slug: string
+  @column()
+  declare userId: number
 }
 
 export class UserSchema extends BaseModel {
-  static $columns = ['createdAt', 'email', 'fullName', 'id', 'password', 'updatedAt'] as const
+  static $columns = [
+    'auth0Sub',
+    'avatarUrl',
+    'createdAt',
+    'email',
+    'id',
+    'lastLoginAt',
+    'name',
+    'role',
+    'updatedAt',
+  ] as const
   $columns = UserSchema.$columns
+  @column()
+  declare auth0Sub: string
+  @column()
+  declare avatarUrl: string | null
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime
   @column()
   declare email: string
-  @column()
-  declare fullName: string | null
   @column({ isPrimary: true })
   declare id: number
-  @column({ serializeAs: null })
-  declare password: string
+  @column.dateTime()
+  declare lastLoginAt: DateTime | null
+  @column()
+  declare name: string
+  @column()
+  declare role: string
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   declare updatedAt: DateTime | null
 }

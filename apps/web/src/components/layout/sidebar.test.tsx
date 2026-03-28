@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest'
-import { render } from '@testing-library/react'
+import { render, fireEvent } from '@testing-library/react'
 import { Sidebar } from './sidebar'
 
 vi.mock('next/navigation', () => ({
@@ -90,5 +90,48 @@ describe('Sidebar', () => {
     const { container } = render(<Sidebar />)
     const aside = container.querySelector('aside')
     expect(aside).toHaveAttribute('aria-label', 'Main navigation')
+  })
+
+  it('renders mobile menu button', () => {
+    mockUseAuth.mockReturnValue({ role: 'editor' })
+    const { container } = render(<Sidebar />)
+    const menuBtn = container.querySelector('button[aria-label="Open navigation menu"]')
+    expect(menuBtn).toBeTruthy()
+  })
+
+  it('opens sidebar on mobile menu click', () => {
+    mockUseAuth.mockReturnValue({ role: 'editor' })
+    const { container } = render(<Sidebar />)
+    const aside = container.querySelector('aside')!
+    expect(aside.className).toContain('-translate-x-full')
+
+    const menuBtn = container.querySelector('button[aria-label="Open navigation menu"]')!
+    fireEvent.click(menuBtn)
+    expect(aside.className).toContain('translate-x-0')
+  })
+
+  it('toggles aria-expanded on mobile menu button', () => {
+    mockUseAuth.mockReturnValue({ role: 'editor' })
+    const { container } = render(<Sidebar />)
+    const menuBtn = container.querySelector('button[aria-controls="sidebar-nav"]')!
+    expect(menuBtn.getAttribute('aria-expanded')).toBe('false')
+
+    fireEvent.click(menuBtn)
+    expect(menuBtn.getAttribute('aria-expanded')).toBe('true')
+  })
+
+  it('closes sidebar on close button click', () => {
+    mockUseAuth.mockReturnValue({ role: 'editor' })
+    const { container } = render(<Sidebar />)
+
+    // Open sidebar
+    const menuBtn = container.querySelector('button[aria-label="Open navigation menu"]')!
+    fireEvent.click(menuBtn)
+
+    // Close sidebar
+    const closeBtn = container.querySelector('button[aria-label="Close navigation menu"]')!
+    fireEvent.click(closeBtn)
+    const aside = container.querySelector('aside')!
+    expect(aside.className).toContain('-translate-x-full')
   })
 })
