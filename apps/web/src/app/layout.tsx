@@ -4,12 +4,12 @@ import { ThemeProvider } from '@/providers/theme-provider'
 import './globals.css'
 
 const inter = Inter({
-  variable: '--font-sans',
+  variable: '--font-inter',
   subsets: ['latin'],
 })
 
 const jetbrainsMono = JetBrains_Mono({
-  variable: '--font-mono',
+  variable: '--font-jetbrains',
   subsets: ['latin'],
 })
 
