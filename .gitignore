@@ -33,6 +33,9 @@ tmp/
 progress-*
 code_review/
 
+# Playwright MCP
+.playwright-mcp/
+
 # Debug logs
 npm-debug.log*
 pnpm-debug.log*
