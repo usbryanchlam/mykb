@@ -1,23 +1,23 @@
-# Phase 7: Infrastructure + Deployment — Tasks
+# Phase 9: Infrastructure + Deployment — Tasks
 
 > **Deliverable:** App deployed to mykb.bryanlam.dev with automated CI/CD.
 
 ## Dependencies
 
-- Phase 6 complete (admin, polish, security)
+- Phase 8 complete (security assessment)
 
 ## PR Stack
 
 ```
 main
- └── phase7/infra-config       # PR 1: Caddyfile + PM2 config + setup script
-      └── phase7/deploy         # PR 2: Deploy workflow (SSH + build + migrate)
-           └── phase7/env-docs  # PR 3: Environment variable docs + startup validation
+ └── phase9/infra-config       # PR 1: Caddyfile + PM2 config + setup script
+      └── phase9/deploy         # PR 2: Deploy workflow (SSH + build + migrate)
+           └── phase9/env-docs  # PR 3: Environment variable docs + startup validation
 ```
 
 ---
 
-## PR 1: `phase7/infra-config` — Server configuration files
+## PR 1: `phase9/infra-config` — Server configuration files
 
 **Goal:** Configuration files for deploying to OCI VM.
 
@@ -32,7 +32,7 @@ main
 
 ---
 
-## PR 2: `phase7/deploy` — Deploy workflow
+## PR 2: `phase9/deploy` — Deploy workflow
 
 **Goal:** Automated deployment on push to main.
 
@@ -49,7 +49,7 @@ main
 
 ---
 
-## PR 3: `phase7/env-docs` — Environment documentation
+## PR 3: `phase9/env-docs` — Environment documentation
 
 **Goal:** Document all environment variables and deployment steps.
 
