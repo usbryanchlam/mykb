@@ -10,14 +10,16 @@ interface ErrorPageProps {
 
 export default function DashboardErrorPage({ error, reset }: ErrorPageProps) {
   useEffect(() => {
-    console.error('Dashboard error:', error)
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Dashboard error:', error)
+    }
   }, [error])
 
+  const typedError = error as Error & { status?: number }
   const isForbidden =
+    typedError.status === 403 ||
     error.message.includes('permission') ||
-    error.message.includes('403') ||
-    error.message.includes('Forbidden') ||
-    error.message.includes('Admin access')
+    error.message.includes('Admin access required')
 
   if (isForbidden) {
     return (
