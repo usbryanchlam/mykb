@@ -8,7 +8,9 @@ body {
   font-family: var(--font-inter), 'Inter', sans-serif;
 }
 
-code, pre, kbd {
+code,
+pre,
+kbd {
   font-family: var(--font-jetbrains), 'JetBrains Mono', monospace;
 }
 
