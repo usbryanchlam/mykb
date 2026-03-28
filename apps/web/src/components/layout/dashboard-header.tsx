@@ -6,7 +6,7 @@ export function DashboardHeader() {
   return (
     <header
       aria-label="Application header"
-      className="flex h-14 items-center gap-3 border-b border-border px-4 pl-14 md:pl-6"
+      className="flex h-14 items-center gap-3 border-b border-border px-4 pl-12 md:pl-6"
     >
       <div className="min-w-0 flex-1">
         <SearchBar />

@@ -36,7 +36,7 @@ export function Sidebar() {
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className="fixed left-4 top-4 z-40 rounded-md border border-border bg-background p-2 md:hidden"
+        className="fixed left-3 top-3 z-40 rounded-md border border-border bg-background p-1.5 md:hidden"
         aria-label={isOpen ? 'Close navigation menu' : 'Open navigation menu'}
         aria-expanded={isOpen}
         aria-controls="sidebar-nav"
