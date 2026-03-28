@@ -7,6 +7,9 @@ export default class HttpExceptionHandler extends ExceptionHandler {
   async handle(error: unknown, ctx: HttpContext) {
     const err = error as { status?: number; message?: string }
     const status = err.status ?? 500
+
+    // Custom envelope for consistent {success, data, error} format.
+    // In production, hide internal details for server errors.
     const message =
       app.inProduction && status >= 500 ? 'Internal server error' : (err.message ?? 'Unknown error')
 
