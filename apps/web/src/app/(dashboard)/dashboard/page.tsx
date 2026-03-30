@@ -21,7 +21,7 @@ export default function DashboardPage() {
     handleToggleFavorite,
     handleToggleArchive,
     handleDelete,
-  } = useBookmarks()
+  } = useBookmarks({ isArchived: false })
 
   return (
     <>
