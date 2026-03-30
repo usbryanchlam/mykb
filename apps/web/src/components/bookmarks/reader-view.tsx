@@ -184,7 +184,7 @@ export function ReaderView({ bookmark, onRescrape }: ReaderViewProps) {
 
   return (
     <div className="flex flex-col gap-4">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-wrap items-center justify-between gap-2">
         <h2 className="text-sm font-medium text-muted-foreground">Reader View</h2>
         <div className="flex items-center gap-2">
           <Button
@@ -214,7 +214,7 @@ export function ReaderView({ bookmark, onRescrape }: ReaderViewProps) {
       </div>
 
       <article
-        className="prose prose-sm dark:prose-invert max-w-none overflow-hidden rounded-lg border border-border bg-card p-6 [&_pre]:overflow-x-auto [&_table]:overflow-x-auto"
+        className="prose prose-sm dark:prose-invert max-w-none overflow-hidden rounded-lg border border-border bg-card p-6 [&_figure]:max-w-full [&_img]:max-w-full [&_pre]:overflow-x-auto [&_table]:overflow-x-auto"
         style={{ fontSize: `${FONT_SIZES[fontIndex]}px` }}
         dangerouslySetInnerHTML={{ __html: sanitizedHtml }}
       />
