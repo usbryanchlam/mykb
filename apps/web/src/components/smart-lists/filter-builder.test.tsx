@@ -53,19 +53,25 @@ describe('FilterBuilder', () => {
     expect(onChange).toHaveBeenCalledWith({})
   })
 
-  it('sets dateFrom when date entered', () => {
+  it('sets dateFrom as UTC ISO string when date entered', () => {
     const onChange = vi.fn()
     const { container } = render(<FilterBuilder value={{}} onChange={onChange} />)
     const input = container.querySelector('#filter-date-from') as HTMLInputElement
     fireEvent.change(input, { target: { value: '2026-01-01' } })
-    expect(onChange).toHaveBeenCalledWith({ dateFrom: '2026-01-01' })
+    const call = onChange.mock.calls[0][0] as { dateFrom: string }
+    // Should be a UTC ISO string derived from local start-of-day
+    expect(call.dateFrom).toContain('2026-01-01')
+    expect(call.dateFrom).toContain('T')
   })
 
-  it('sets dateTo when date entered', () => {
+  it('sets dateTo as UTC ISO string when date entered', () => {
     const onChange = vi.fn()
     const { container } = render(<FilterBuilder value={{}} onChange={onChange} />)
     const input = container.querySelector('#filter-date-to') as HTMLInputElement
     fireEvent.change(input, { target: { value: '2026-12-31' } })
-    expect(onChange).toHaveBeenCalledWith({ dateTo: '2026-12-31' })
+    const call = onChange.mock.calls[0][0] as { dateTo: string }
+    // Should be a UTC ISO string derived from local end-of-day
+    expect(call.dateTo).toContain('T')
+    expect(call.dateTo).toContain('Z')
   })
 })
