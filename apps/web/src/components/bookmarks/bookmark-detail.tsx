@@ -64,7 +64,7 @@ export function BookmarkDetail({
   const safeHref = isSafeUrl(bookmark.url) ? bookmark.url : '#'
 
   return (
-    <div className="mx-auto flex max-w-3xl flex-col gap-6">
+    <div className="mx-auto flex w-full max-w-3xl flex-col gap-6 overflow-hidden">
       <div className="flex items-center gap-2">
         <Button variant="ghost" size="sm" nativeButton={false} render={<Link href="/dashboard" />}>
           <ArrowLeft className="size-4" />
@@ -72,29 +72,34 @@ export function BookmarkDetail({
         </Button>
       </div>
 
-      <div className="flex flex-col gap-4 rounded-lg border border-border bg-card p-6">
-        <div className="flex items-start justify-between gap-4">
-          <div className="flex items-center gap-3">
+      <div className="flex flex-col gap-4 overflow-hidden rounded-lg border border-border bg-card p-6">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between sm:gap-4">
+          <div className="flex min-w-0 items-center gap-3">
             {isSafeFaviconUrl(bookmark.faviconUrl) ? (
-              <img src={bookmark.faviconUrl} alt="" className="size-6 rounded-sm" loading="lazy" />
+              <img
+                src={bookmark.faviconUrl}
+                alt=""
+                className="size-6 shrink-0 rounded-sm"
+                loading="lazy"
+              />
             ) : (
-              <Globe className="size-6 text-muted-foreground" />
+              <Globe className="size-6 shrink-0 text-muted-foreground" />
             )}
-            <div>
-              <h1 className="text-xl font-semibold">{title}</h1>
+            <div className="min-w-0">
+              <h1 className="truncate text-xl font-semibold">{title}</h1>
               <a
                 href={safeHref}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground hover:underline"
               >
-                {domain}
-                <ExternalLink className="size-3" />
+                <span className="truncate">{domain}</span>
+                <ExternalLink className="size-3 shrink-0" />
               </a>
             </div>
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex shrink-0 items-center gap-2">
             {canEdit && (
               <Button
                 variant="outline"
@@ -120,7 +125,7 @@ export function BookmarkDetail({
         {bookmark.description && (
           <div>
             <h2 className="mb-1 text-sm font-medium text-muted-foreground">Description</h2>
-            <p className="text-sm">{bookmark.description}</p>
+            <p className="break-words text-sm">{bookmark.description}</p>
           </div>
         )}
 
@@ -132,7 +137,9 @@ export function BookmarkDetail({
                 AI Summary
               </h2>
             </div>
-            <p className="text-sm text-purple-900 dark:text-purple-200">{bookmark.summary}</p>
+            <p className="break-words text-sm text-purple-900 dark:text-purple-200">
+              {bookmark.summary}
+            </p>
           </div>
         )}
 
