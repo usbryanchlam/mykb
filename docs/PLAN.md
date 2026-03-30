@@ -874,9 +874,31 @@ User adds URL
 
 **Deliverable:** Admin page links to Auth0. App is polished, responsive, and security-hardened.
 
-### Phase 7: Infrastructure + Deployment
+### Phase 7: Fit-and-Finish
 
 **Dependencies:** Phase 6
+
+1. Comprehensive manual testing on localhost (desktop + mobile)
+2. User-reported UI/UX issues and functional bugs
+3. Iterative fixes in focused PRs until quality bar is met
+
+**Deliverable:** Production-quality UI/UX verified through comprehensive manual testing.
+
+### Phase 8: Full Security Assessment
+
+**Dependencies:** Phase 7
+
+1. Authentication & authorization review (Auth0, RBAC, session management)
+2. API security (input validation, SQL injection, rate limiting, error leakage)
+3. Content security (XSS, SSRF, content safety pipeline)
+4. Infrastructure security (headers, secrets, dependency audit)
+5. Data protection (user isolation, cascade deletes, sensitive data in logs)
+
+**Deliverable:** All security vulnerabilities identified and remediated before cloud deployment.
+
+### Phase 9: Infrastructure + Deployment
+
+**Dependencies:** Phase 8
 
 1. Caddyfile (reverse proxy: /api/_ -> :3333, /_ -> :3000)
 2. PM2 config (manage AdonisJS + Next.js processes)
