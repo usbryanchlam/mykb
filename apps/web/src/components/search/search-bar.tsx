@@ -59,10 +59,10 @@ export function SearchBar({
         onChange={handleChange}
         onKeyDown={handleKeyDown}
         placeholder={placeholder}
-        className="h-9 w-full rounded-md border border-border bg-background pl-9 pr-12 text-sm focus:outline-none focus:ring-2 focus:ring-ring md:w-64"
+        className="h-9 w-full rounded-md border border-border bg-background pl-9 pr-3 text-sm focus:outline-none focus:ring-2 focus:ring-ring md:w-64 md:pr-12"
         aria-label="Search bookmarks"
       />
-      <kbd className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 rounded border border-border bg-muted px-1.5 text-[10px] font-medium text-muted-foreground">
+      <kbd className="pointer-events-none absolute right-2 top-1/2 hidden -translate-y-1/2 rounded border border-border bg-muted px-1.5 text-[10px] font-medium text-muted-foreground md:inline-block">
         ⌘K
       </kbd>
     </div>
