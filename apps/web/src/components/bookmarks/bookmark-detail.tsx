@@ -72,7 +72,7 @@ export function BookmarkDetail({
         </Button>
       </div>
 
-      <div className="flex flex-col gap-4 overflow-hidden rounded-lg border border-border bg-card p-6">
+      <div className="flex min-w-0 flex-col gap-4 rounded-lg border border-border bg-card p-6">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between sm:gap-4">
           <div className="flex min-w-0 items-center gap-3">
             {isSafeFaviconUrl(bookmark.faviconUrl) ? (
