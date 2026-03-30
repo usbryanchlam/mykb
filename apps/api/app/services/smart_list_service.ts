@@ -79,10 +79,12 @@ export default class SmartListService {
       query.where('createdAt', '>=', filter.dateFrom)
     }
     if (filter.dateTo) {
-      // Append end-of-day time if only a date string (no T) is provided,
-      // so "2026-03-28" includes the entire day, not just midnight.
-      const endDate = filter.dateTo.includes('T') ? filter.dateTo : `${filter.dateTo}T23:59:59`
-      query.where('createdAt', '<=', endDate)
+      // Use < next_day to include the entire day regardless of timezone.
+      // Dates are stored in UTC but user picks a local date, so a bookmark
+      // created on 2026-03-29 at 11pm Pacific is stored as 2026-03-30 UTC.
+      const nextDay = new Date(filter.dateTo)
+      nextDay.setDate(nextDay.getDate() + 1)
+      query.where('createdAt', '<', nextDay.toISOString().split('T')[0])
     }
 
     query.orderBy('created_at', 'desc')
