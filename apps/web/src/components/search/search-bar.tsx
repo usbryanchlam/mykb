@@ -39,9 +39,12 @@ export function SearchBar({
 
   function handleKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
     if (e.key === 'Enter' && !onChange) {
-      const q = (e.target as HTMLInputElement).value.trim()
+      const input = e.target as HTMLInputElement
+      const q = input.value.trim()
       if (q) {
         router.push(`/dashboard/search?q=${encodeURIComponent(q)}`)
+        input.value = ''
+        input.blur()
       }
     }
   }
