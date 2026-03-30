@@ -50,7 +50,7 @@ export function SearchBar({
   }
 
   return (
-    <div className="relative w-full md:w-64">
+    <div className="relative w-full max-w-xl">
       <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
       <input
         ref={inputRef}
