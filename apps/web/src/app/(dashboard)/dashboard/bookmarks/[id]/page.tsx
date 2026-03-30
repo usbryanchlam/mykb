@@ -1,6 +1,6 @@
 'use client'
 
-import { useCallback, useEffect, useState, useTransition } from 'react'
+import { useCallback, useEffect, useRef, useState, useTransition } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import { Loader2 } from 'lucide-react'
 import type { Bookmark } from '@mykb/shared'
@@ -20,6 +20,8 @@ export default function BookmarkDetailPage() {
 
   const bookmarkId = Number(params.id)
   const canEdit = role === 'admin' || role === 'editor'
+  const isFetchingRef = useRef(false)
+  const isPollingRef = useRef(false)
 
   const fetchBookmark = useCallback(() => {
     if (Number.isNaN(bookmarkId) || bookmarkId <= 0) {
@@ -28,15 +30,22 @@ export default function BookmarkDetailPage() {
       return
     }
 
+    if (isFetchingRef.current) return
+    isFetchingRef.current = true
+
     startTransition(async () => {
       try {
         const result = await getBookmark(bookmarkId)
         setBookmark(result.data)
         setError(null)
       } catch (err) {
-        setError(err instanceof Error ? err.message : 'Failed to load bookmark.')
+        // During polling, suppress transient errors (429, network blips)
+        if (!isPollingRef.current) {
+          setError(err instanceof Error ? err.message : 'Failed to load bookmark.')
+        }
       } finally {
         setInitialLoading(false)
+        isFetchingRef.current = false
       }
     })
   }, [bookmarkId])
@@ -44,6 +53,30 @@ export default function BookmarkDetailPage() {
   useEffect(() => {
     fetchBookmark()
   }, [fetchBookmark])
+
+  // Poll while scrape/AI is pending or processing
+  useEffect(() => {
+    const isProcessing =
+      bookmark?.scrapeStatus === 'pending' ||
+      bookmark?.scrapeStatus === 'processing' ||
+      bookmark?.aiStatus === 'pending' ||
+      bookmark?.aiStatus === 'processing'
+
+    if (!isProcessing) {
+      isPollingRef.current = false
+      return
+    }
+
+    isPollingRef.current = true
+    const interval = setInterval(() => {
+      fetchBookmark()
+    }, 3000)
+
+    return () => {
+      clearInterval(interval)
+      isPollingRef.current = false
+    }
+  }, [bookmark?.scrapeStatus, bookmark?.aiStatus, fetchBookmark])
 
   const handleToggleFavorite = useCallback(() => {
     startTransition(async () => {
