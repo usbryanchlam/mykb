@@ -3,7 +3,6 @@
 import { useSearchParams } from 'next/navigation'
 import { Loader2, Search } from 'lucide-react'
 import { useSearch } from '@/hooks/use-search'
-import { SearchBar } from '@/components/search/search-bar'
 import { SearchResults } from '@/components/search/search-results'
 import { Pagination } from '@/components/bookmarks/pagination'
 
@@ -11,14 +10,19 @@ export default function SearchPage() {
   const searchParams = useSearchParams()
   const initialQuery = searchParams.get('q') ?? ''
 
-  const { query, results, meta, page, isLoading, error, setQuery, setPage } =
-    useSearch(initialQuery)
-
   return (
     <div className="flex flex-col gap-4">
       <h1 className="text-lg font-semibold">Search</h1>
-      <SearchBar value={query} onChange={setQuery} placeholder="Search bookmarks..." />
+      <SearchContent key={initialQuery} initialQuery={initialQuery} />
+    </div>
+  )
+}
 
+function SearchContent({ initialQuery }: { readonly initialQuery: string }) {
+  const { query, results, meta, page, isLoading, error, setPage } = useSearch(initialQuery)
+
+  return (
+    <>
       {isLoading && (
         <div className="flex items-center gap-2 py-8 text-sm text-muted-foreground">
           <Loader2 className="size-4 animate-spin" />
@@ -60,6 +64,6 @@ export default function SearchPage() {
           </p>
         </div>
       )}
-    </div>
+    </>
   )
 }
