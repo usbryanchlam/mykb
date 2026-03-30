@@ -214,7 +214,7 @@ export function ReaderView({ bookmark, onRescrape }: ReaderViewProps) {
       </div>
 
       <article
-        className="prose prose-sm dark:prose-invert max-w-none rounded-lg border border-border bg-card p-6"
+        className="prose prose-sm dark:prose-invert max-w-none overflow-hidden rounded-lg border border-border bg-card p-6 [&_pre]:overflow-x-auto [&_table]:overflow-x-auto"
         style={{ fontSize: `${FONT_SIZES[fontIndex]}px` }}
         dangerouslySetInnerHTML={{ __html: sanitizedHtml }}
       />
