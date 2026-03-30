@@ -5,6 +5,18 @@ import type { FilterQuery } from '@mykb/shared'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 
+/** Convert a UTC ISO string or date string to local YYYY-MM-DD for the date input */
+function toLocalDate(isoString: string | undefined): string {
+  if (!isoString) return ''
+  // If it's already a bare date (YYYY-MM-DD), return as-is
+  if (!isoString.includes('T')) return isoString
+  const date = new Date(isoString)
+  const year = date.getFullYear()
+  const month = String(date.getMonth() + 1).padStart(2, '0')
+  const day = String(date.getDate()).padStart(2, '0')
+  return `${year}-${month}-${day}`
+}
+
 interface FilterBuilderProps {
   readonly value: FilterQuery
   readonly onChange: (value: FilterQuery) => void
@@ -55,7 +67,14 @@ export function FilterBuilder({ value, onChange }: FilterBuilderProps) {
 
   function handleDateChange(field: 'dateFrom' | 'dateTo', dateValue: string) {
     if (dateValue) {
-      onChange({ ...value, [field]: dateValue })
+      // Convert local date to UTC ISO string.
+      // dateFrom: start of day in user's timezone → UTC
+      // dateTo: end of day in user's timezone → UTC
+      const utcValue =
+        field === 'dateTo'
+          ? new Date(`${dateValue}T23:59:59`).toISOString()
+          : new Date(`${dateValue}T00:00:00`).toISOString()
+      onChange({ ...value, [field]: utcValue })
     } else {
       const { [field]: _, ...rest } = value
       onChange(rest)
@@ -111,7 +130,7 @@ export function FilterBuilder({ value, onChange }: FilterBuilderProps) {
           <Input
             id="filter-date-from"
             type="date"
-            value={value.dateFrom ?? ''}
+            value={toLocalDate(value.dateFrom)}
             onChange={(e) => handleDateChange('dateFrom', e.target.value)}
           />
         </div>
@@ -121,7 +140,7 @@ export function FilterBuilder({ value, onChange }: FilterBuilderProps) {
           <Input
             id="filter-date-to"
             type="date"
-            value={value.dateTo ?? ''}
+            value={toLocalDate(value.dateTo)}
             onChange={(e) => handleDateChange('dateTo', e.target.value)}
           />
         </div>

@@ -79,6 +79,8 @@ export default class SmartListService {
       query.where('createdAt', '>=', filter.dateFrom)
     }
     if (filter.dateTo) {
+      // Frontend converts local end-of-day to UTC ISO string,
+      // so direct comparison is timezone-correct.
       query.where('createdAt', '<=', filter.dateTo)
     }
 

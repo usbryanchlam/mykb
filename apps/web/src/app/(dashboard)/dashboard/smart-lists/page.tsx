@@ -150,6 +150,11 @@ export default function SmartListsPage() {
   )
 }
 
+function formatLocalDate(isoString: string): string {
+  const date = new Date(isoString)
+  return date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })
+}
+
 function FilterSummary({ filter }: { readonly filter: FilterQuery }) {
   const parts: string[] = []
   if (filter.isFavorite === true) parts.push('favorites')
@@ -157,8 +162,8 @@ function FilterSummary({ filter }: { readonly filter: FilterQuery }) {
   if (filter.isArchived === true) parts.push('archived')
   if (filter.isArchived === false) parts.push('not archived')
   if (filter.tags && filter.tags.length > 0) parts.push(`tags: ${filter.tags.join(', ')}`)
-  if (filter.dateFrom) parts.push(`from ${filter.dateFrom}`)
-  if (filter.dateTo) parts.push(`until ${filter.dateTo}`)
+  if (filter.dateFrom) parts.push(`from ${formatLocalDate(filter.dateFrom)}`)
+  if (filter.dateTo) parts.push(`until ${formatLocalDate(filter.dateTo)}`)
 
   if (parts.length === 0)
     return <span className="text-xs text-muted-foreground">All bookmarks</span>
