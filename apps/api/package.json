@@ -68,6 +68,7 @@
     "@vinejs/vine": "^4.3.0",
     "better-sqlite3": "^12.6.2",
     "cheerio": "^1.2.0",
+    "isomorphic-dompurify": "^3.6.0",
     "jose": "^6.0.11",
     "linkedom": "^0.18.12",
     "luxon": "^3.7.2",

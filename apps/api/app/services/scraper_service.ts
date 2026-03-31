@@ -1,11 +1,49 @@
 import { load as cheerioLoad } from 'cheerio'
 import { Readability } from '@mozilla/readability'
+import DOMPurify from 'isomorphic-dompurify'
 import { parseHTML } from 'linkedom'
 import { assertSafeUrl } from '#services/ssrf_guard'
 
 const FETCH_TIMEOUT_MS = 15_000
 const MAX_BODY_BYTES = 10 * 1024 * 1024 // 10MB
 const MAX_REDIRECTS = 3
+
+const SANITIZE_CONFIG = {
+  ALLOWED_TAGS: [
+    'p',
+    'h1',
+    'h2',
+    'h3',
+    'h4',
+    'h5',
+    'h6',
+    'ul',
+    'ol',
+    'li',
+    'blockquote',
+    'pre',
+    'code',
+    'em',
+    'strong',
+    'a',
+    'img',
+    'br',
+    'hr',
+    'table',
+    'thead',
+    'tbody',
+    'tr',
+    'th',
+    'td',
+    'figure',
+    'figcaption',
+    'span',
+    'div',
+  ],
+  ALLOWED_ATTR: ['href', 'src', 'alt', 'title'],
+  ALLOWED_URI_REGEXP: /^https:\/\//i,
+  ALLOW_DATA_ATTR: false,
+} as const
 
 export interface ScrapeResult {
   readonly title: string | null
@@ -173,7 +211,7 @@ export default class ScraperService {
       if (!article) return null
 
       return {
-        content: article.content ?? '',
+        content: DOMPurify.sanitize(article.content ?? '', SANITIZE_CONFIG),
         plainText: (article.textContent ?? '').trim(),
       }
     } catch {
