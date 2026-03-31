@@ -43,7 +43,7 @@ const SANITIZE_CONFIG = {
   ALLOWED_ATTR: ['href', 'src', 'alt', 'title'],
   ALLOWED_URI_REGEXP: /^https:\/\//i,
   ALLOW_DATA_ATTR: false,
-} as const
+}
 
 export interface ScrapeResult {
   readonly title: string | null
