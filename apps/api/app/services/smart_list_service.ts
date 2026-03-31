@@ -3,6 +3,14 @@ import type { FilterQuery } from '#models/smart_list'
 import Bookmark from '#models/bookmark'
 import { PAGINATION } from '@mykb/shared'
 
+/** Convert UTC ISO 8601 string to SQLite datetime format for string comparison */
+function toSqliteDatetime(iso: string): string {
+  return iso
+    .replace('T', ' ')
+    .replace(/\.\d{1,3}Z$/, '')
+    .replace('Z', '')
+}
+
 interface ResolveOptions {
   readonly page?: number
   readonly limit?: number
@@ -76,12 +84,12 @@ export default class SmartListService {
       }
     }
     if (filter.dateFrom) {
-      query.where('createdAt', '>=', filter.dateFrom)
+      // Convert ISO 8601 (2026-03-31T07:00:00.000Z) to SQLite format (2026-03-31 07:00:00)
+      // because Lucid stores timestamps as 'YYYY-MM-DD HH:mm:ss' and SQLite uses string comparison.
+      query.where('createdAt', '>=', toSqliteDatetime(filter.dateFrom))
     }
     if (filter.dateTo) {
-      // Frontend converts local end-of-day to UTC ISO string,
-      // so direct comparison is timezone-correct.
-      query.where('createdAt', '<=', filter.dateTo)
+      query.where('createdAt', '<=', toSqliteDatetime(filter.dateTo))
     }
 
     query.orderBy('created_at', 'desc')
