@@ -177,10 +177,13 @@ export function ReaderView({ bookmark, onRescrape }: ReaderViewProps) {
       'span',
       'div',
     ],
-    ALLOWED_ATTR: ['href', 'src', 'alt', 'title', 'class'],
-    ALLOWED_URI_REGEXP: /^https?:\/\//i,
+    ALLOWED_ATTR: ['href', 'src', 'alt', 'title'],
+    ALLOWED_URI_REGEXP: /^https:\/\//i,
     ALLOW_DATA_ATTR: false,
   })
+
+  // Open all links in new tab with safe rel attribute
+  const safeHtml = sanitizedHtml.replace(/<a /g, '<a target="_blank" rel="noopener noreferrer" ')
 
   return (
     <div className="flex flex-col gap-4">
@@ -216,7 +219,7 @@ export function ReaderView({ bookmark, onRescrape }: ReaderViewProps) {
       <article
         className="prose prose-sm dark:prose-invert max-w-none overflow-hidden rounded-lg border border-border bg-card p-6 [&_figure]:max-w-full [&_img]:max-w-full [&_pre]:overflow-x-auto [&_table]:overflow-x-auto"
         style={{ fontSize: `${FONT_SIZES[fontIndex]}px` }}
-        dangerouslySetInnerHTML={{ __html: sanitizedHtml }}
+        dangerouslySetInnerHTML={{ __html: safeHtml }}
       />
     </div>
   )
