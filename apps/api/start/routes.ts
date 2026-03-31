@@ -9,7 +9,9 @@ const CollectionsController = () => import('#controllers/collections_controller'
 const SmartListsController = () => import('#controllers/smart_lists_controller')
 const AdminController = () => import('#controllers/admin_controller')
 
-router.get('/health', () => ({ status: 'ok' }))
+router
+  .get('/health', () => ({ status: 'ok' }))
+  .use(middleware.rateLimit({ maxRequests: 60, windowMs: 60_000 }))
 
 router
   .group(() => {
