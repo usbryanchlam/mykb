@@ -64,6 +64,13 @@ main
 
 ---
 
+## Deployment Checklist (from Phase 8 Security Findings)
+
+- [ ] Set `CORS_ORIGIN` env var to frontend production URL (e.g. `https://mykb.bryanlam.dev`)
+- [ ] Migrate rate limiter to Redis-backed store if running multiple instances (HIGH-03)
+- [ ] Set HSTS header at CDN/load balancer level, not application (LOW-02)
+- [ ] Ensure log pipeline redacts Safe Browsing API key from query strings (MED-02)
+
 ## Final Verification
 
 - [ ] OCI VM provisioned and accessible via SSH
