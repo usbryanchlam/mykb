@@ -63,5 +63,5 @@ router
   })
   .prefix('/api')
   .use(middleware.auth0())
-  .use(middleware.role({ roles: ['admin'] }))
   .use(middleware.rateLimit({ maxRequests: 30, windowMs: 60_000 }))
+  .use(middleware.role({ roles: ['admin'] }))
