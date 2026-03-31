@@ -7,6 +7,8 @@ import { assertSafeUrl } from '#services/ssrf_guard'
 const FETCH_TIMEOUT_MS = 15_000
 const MAX_BODY_BYTES = 10 * 1024 * 1024 // 10MB
 const MAX_REDIRECTS = 3
+const MAX_CONTENT_CHARS = 500_000 // 500KB cap for stored article HTML
+const MAX_PLAIN_TEXT_CHARS = 100_000 // 100KB cap for stored plain text
 
 const SANITIZE_CONFIG = {
   ALLOWED_TAGS: [
@@ -210,9 +212,12 @@ export default class ScraperService {
 
       if (!article) return null
 
+      const sanitized = DOMPurify.sanitize(article.content ?? '', SANITIZE_CONFIG)
+      const plainText = (article.textContent ?? '').trim()
+
       return {
-        content: DOMPurify.sanitize(article.content ?? '', SANITIZE_CONFIG),
-        plainText: (article.textContent ?? '').trim(),
+        content: sanitized.slice(0, MAX_CONTENT_CHARS),
+        plainText: plainText.slice(0, MAX_PLAIN_TEXT_CHARS),
       }
     } catch {
       return null

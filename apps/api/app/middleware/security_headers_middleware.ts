@@ -12,7 +12,8 @@ export default class SecurityHeadersMiddleware {
       'camera=(), microphone=(), geolocation=(), payment=()'
     )
     ctx.response.header('Content-Security-Policy', "default-src 'none'; frame-ancestors 'none'")
-    ctx.response.header('Strict-Transport-Security', 'max-age=31536000; includeSubDomains')
+    // HSTS should be set at the CDN/load balancer level, not the application.
+    // See docs/PHASE9_TASKS.md deployment checklist.
 
     return next()
   }
