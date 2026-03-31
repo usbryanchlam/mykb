@@ -1,4 +1,5 @@
 import { DateTime } from 'luxon'
+import logger from '@adonisjs/core/services/logger'
 import type { Job, JobStatus } from '#jobs/base_job'
 import JobLog from '#models/job_log'
 
@@ -43,7 +44,7 @@ export default class JobService {
       this.processNext()
     })
     promise.catch((err) => {
-      console.error(`[JobService] Fire-and-forget job "${job.name}" failed:`, err)
+      logger.error({ err, job: job.name }, 'Fire-and-forget job failed')
     })
   }
 
@@ -91,7 +92,7 @@ export default class JobService {
         try {
           await this.updateLog(log, 'failed', err.message)
         } catch (logErr) {
-          console.error(`[JobService] Failed to update job log:`, logErr)
+          logger.error({ err: logErr, job: job.name }, 'Failed to update job log')
         }
 
         if (isLastAttempt) {

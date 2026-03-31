@@ -45,9 +45,9 @@ test.group('Security Headers', () => {
     assert.include(csp, "frame-ancestors 'none'")
   })
 
-  test('sets Strict-Transport-Security header', async ({ client, assert }) => {
+  test('does not set HSTS header (delegated to CDN/load balancer)', async ({ client, assert }) => {
     const res = await client.get('/health')
-    assert.include(res.header('strict-transport-security'), 'max-age=31536000')
+    assert.isUndefined(res.header('strict-transport-security'))
   })
 
   test('disables X-XSS-Protection', async ({ client, assert }) => {
