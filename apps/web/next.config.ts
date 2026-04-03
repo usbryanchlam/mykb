@@ -14,6 +14,9 @@ const nextConfig: NextConfig = {
   },
 
   async rewrites() {
+    // In production, Caddy handles /api/* routing directly to the API server.
+    // The rewrite is only needed in development where Next.js proxies to the API.
+    if (process.env.NODE_ENV === 'production') return []
     return [
       {
         source: '/api/:path*',
