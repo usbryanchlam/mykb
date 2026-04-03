@@ -1,0 +1,27 @@
+mykb.bryanlam.dev {
+	# API backend
+	handle /api/* {
+		reverse_proxy localhost:3333
+	}
+
+	# Auth0 callback/logout routes (handled by Next.js)
+	handle /auth/* {
+		reverse_proxy localhost:3000
+	}
+
+	# Health check (API)
+	handle /health {
+		reverse_proxy localhost:3333
+	}
+
+	# Frontend (Next.js)
+	handle {
+		reverse_proxy localhost:3000
+	}
+
+	# HSTS at the edge
+	header Strict-Transport-Security "max-age=31536000; includeSubDomains"
+
+	# Gzip/Zstd compression
+	encode gzip zstd
+}
