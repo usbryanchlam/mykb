@@ -3,7 +3,8 @@
 import { useEffect, useState, useTransition } from 'react'
 import { Tags, Trash2 } from 'lucide-react'
 import Link from 'next/link'
-import { listTags, deleteTag, getTagBookmarksCount, type TagWithCount } from '@/actions/tags'
+import { listTags, deleteTag } from '@/actions/tags'
+import { getTagBookmarksCount, type TagWithCount } from '@/lib/tag-utils'
 
 export default function TagsPage() {
   const [tags, setTags] = useState<readonly TagWithCount[]>([])

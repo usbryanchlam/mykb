@@ -2,12 +2,8 @@
 
 import { useEffect, useState, useTransition } from 'react'
 import { FolderPlus } from 'lucide-react'
-import {
-  listCollections,
-  addBookmarkToCollection,
-  getBookmarksCount,
-  type CollectionWithCount,
-} from '@/actions/collections'
+import { listCollections, addBookmarkToCollection } from '@/actions/collections'
+import { getBookmarksCount, type CollectionWithCount } from '@/lib/collection-utils'
 import { Button } from '@/components/ui/button'
 
 interface AddToCollectionProps {
