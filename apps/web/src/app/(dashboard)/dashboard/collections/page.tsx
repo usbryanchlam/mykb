@@ -2,7 +2,12 @@
 
 import { useEffect, useState, useTransition } from 'react'
 import { FolderOpen, Plus } from 'lucide-react'
-import { listCollections, deleteCollection, type CollectionWithCount } from '@/actions/collections'
+import {
+  listCollections,
+  deleteCollection,
+  getBookmarksCount,
+  type CollectionWithCount,
+} from '@/actions/collections'
 import { CollectionCard } from '@/components/collections/collection-card'
 import { CreateCollectionDialog } from '@/components/collections/create-collection-dialog'
 import { Button } from '@/components/ui/button'
@@ -102,7 +107,7 @@ export default function CollectionsPage() {
               name={c.name}
               description={c.description}
               icon={c.icon}
-              bookmarksCount={c.bookmarksCount}
+              bookmarksCount={getBookmarksCount(c)}
               onDelete={handleDelete}
             />
           ))}

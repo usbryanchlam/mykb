@@ -5,6 +5,7 @@ import { FolderPlus } from 'lucide-react'
 import {
   listCollections,
   addBookmarkToCollection,
+  getBookmarksCount,
   type CollectionWithCount,
 } from '@/actions/collections'
 import { Button } from '@/components/ui/button'
@@ -68,7 +69,7 @@ export function AddToCollection({ bookmarkId }: AddToCollectionProps) {
               disabled={isPending}
             >
               {c.name}
-              <span className="ml-1 text-xs text-muted-foreground">({c.bookmarksCount})</span>
+              <span className="ml-1 text-xs text-muted-foreground">({getBookmarksCount(c)})</span>
             </button>
           ))}
         </div>
