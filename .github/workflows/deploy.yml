@@ -63,6 +63,14 @@ jobs:
             echo "==> Building..."
             pnpm turbo build
 
+            echo "==> Post-build setup..."
+            # Copy .env to build dir (AdonisJS loads env from build/ in production)
+            cp apps/api/.env apps/api/build/.env
+            # Symlink tmp dir so DB path resolves correctly from build/
+            mkdir -p apps/api/tmp
+            rm -rf apps/api/build/tmp
+            ln -sf /opt/mykb/apps/api/tmp apps/api/build/tmp
+
             echo "==> Backing up database..."
             if [ -f apps/api/tmp/db.sqlite3 ]; then
               cp apps/api/tmp/db.sqlite3 "apps/api/tmp/db.sqlite3.bak-$(date +%s)"
