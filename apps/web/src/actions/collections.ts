@@ -1,7 +1,7 @@
 'use server'
 
 import { apiFetch } from '@/lib/api-client'
-import type { Bookmark, ApiResponse } from '@mykb/shared'
+import type { Collection, Bookmark, ApiResponse } from '@mykb/shared'
 import type { CollectionWithCount } from '@/lib/collection-utils'
 
 export async function listCollections(): Promise<ApiResponse<CollectionWithCount[]>> {
