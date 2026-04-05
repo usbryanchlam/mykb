@@ -12,7 +12,7 @@ export default class User extends BaseModel {
   declare auth0Sub: string
 
   @column()
-  declare email: string
+  declare email: string | null
 
   @column()
   declare name: string
@@ -36,7 +36,7 @@ export default class User extends BaseModel {
   declare bookmarks: HasMany<typeof Bookmark>
 
   get initials() {
-    const parts = this.name ? this.name.split(' ') : this.email.split('@')
+    const parts = this.name ? this.name.split(' ') : (this.email ?? '').split('@')
     const [first, last] = parts
     if (first && last) {
       return `${first.charAt(0)}${last.charAt(0)}`.toUpperCase()

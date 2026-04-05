@@ -41,7 +41,7 @@ export default class Auth0Middleware {
     }
 
     const auth0Sub = payload.sub!
-    const email = (payload['email'] as string | undefined) ?? ''
+    const email = (payload['email'] as string | undefined) ?? null
     const name = (payload['name'] as string | undefined) ?? ''
     const picture = (payload['picture'] as string | undefined) ?? null
     const roles = (payload[ROLES_CLAIM] as string[] | undefined) ?? []
