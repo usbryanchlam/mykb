@@ -4,7 +4,11 @@ import { apiFetch } from '@/lib/api-client'
 import type { Tag, ApiResponse } from '@mykb/shared'
 
 export interface TagWithCount extends Tag {
-  readonly bookmarksCount: number
+  readonly $extras?: { readonly bookmarks_count?: string | number }
+}
+
+export function getTagBookmarksCount(tag: TagWithCount): number {
+  return Number(tag.$extras?.bookmarks_count ?? 0)
 }
 
 export async function listTags(): Promise<ApiResponse<TagWithCount[]>> {

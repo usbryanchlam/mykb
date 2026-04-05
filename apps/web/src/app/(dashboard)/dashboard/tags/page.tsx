@@ -3,7 +3,7 @@
 import { useEffect, useState, useTransition } from 'react'
 import { Tags, Trash2 } from 'lucide-react'
 import Link from 'next/link'
-import { listTags, deleteTag, type TagWithCount } from '@/actions/tags'
+import { listTags, deleteTag, getTagBookmarksCount, type TagWithCount } from '@/actions/tags'
 
 export default function TagsPage() {
   const [tags, setTags] = useState<readonly TagWithCount[]>([])
@@ -88,7 +88,8 @@ export default function TagsPage() {
               />
               <span className="truncate text-sm font-medium">{tag.name}</span>
               <span className="shrink-0 text-xs text-muted-foreground">
-                {tag.bookmarksCount} {tag.bookmarksCount === 1 ? 'bookmark' : 'bookmarks'}
+                {getTagBookmarksCount(tag)}{' '}
+                {getTagBookmarksCount(tag) === 1 ? 'bookmark' : 'bookmarks'}
               </span>
             </Link>
             <button
