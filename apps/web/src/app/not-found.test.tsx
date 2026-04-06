@@ -20,21 +20,22 @@ vi.mock('next/link', () => ({
 }))
 
 describe('NotFound page', () => {
-  it('renders 404 heading', () => {
+  it('renders page not found heading', () => {
     const { container } = render(<NotFound />)
-    expect(container.textContent).toContain('404')
+    expect(container.textContent).toContain('Page Not Found')
   })
 
-  it('renders descriptive message', () => {
+  it('renders descriptive message with admin contact', () => {
     const { container } = render(<NotFound />)
     expect(container.textContent).toContain("doesn't exist")
+    expect(container.textContent).toContain('bryanlam.dev@techie.com')
   })
 
-  it('links to dashboard', () => {
+  it('links to home page', () => {
     const { container } = render(<NotFound />)
-    const link = container.querySelector('a[href="/dashboard"]')
+    const link = container.querySelector('a[href="/"]')
     expect(link).toBeTruthy()
-    expect(link?.textContent).toContain('Back to Dashboard')
+    expect(link?.textContent).toContain('Back to Home')
   })
 
   it('does not expose sensitive information', () => {

@@ -1,4 +1,5 @@
 import { Auth0Client } from '@auth0/nextjs-auth0/server'
+import { NextResponse } from 'next/server'
 
 const ROLES_CLAIM = 'https://mykb.bryanlam.dev/roles'
 
@@ -17,6 +18,16 @@ export const auth0 = new Auth0Client({
   authorizationParameters: {
     audience: process.env.AUTH0_AUDIENCE,
     scope: 'openid profile email',
+  },
+  async onCallback(error, ctx) {
+    if (error) {
+      const SAFE_CODES = new Set(['access_denied', 'unauthorized', 'login_required'])
+      const safeCode = SAFE_CODES.has(error.code ?? '') ? error.code! : 'unknown'
+      const url = new URL('/auth-error', ctx.appBaseUrl)
+      url.searchParams.set('error', safeCode)
+      return NextResponse.redirect(url)
+    }
+    return NextResponse.redirect(new URL(ctx.returnTo ?? '/', ctx.appBaseUrl))
   },
   async beforeSessionSaved(session, idToken) {
     const claims = idToken ? decodeJwtPayload(idToken) : {}
