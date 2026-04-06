@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useMemo, useState } from 'react'
 import type { Bookmark, BookmarkTag } from '@mykb/shared'
 import {
   ArrowLeft,
@@ -58,11 +58,22 @@ export function BookmarkDetail({
   onDelete,
   onRescrape,
 }: BookmarkDetailProps) {
+  // Derive a stable key from bookmark tags to detect when polling brings new tags
+  const bookmarkTagKey = useMemo(
+    () =>
+      (bookmark.tags ?? [])
+        .map((t) => t.id)
+        .sort()
+        .join(','),
+    [bookmark.tags],
+  )
   const [tags, setTags] = useState<readonly BookmarkTag[]>(bookmark.tags ?? [])
+  const [prevTagKey, setPrevTagKey] = useState(bookmarkTagKey)
 
-  useEffect(() => {
+  if (bookmarkTagKey !== prevTagKey) {
+    setPrevTagKey(bookmarkTagKey)
     setTags(bookmark.tags ?? [])
-  }, [bookmark.tags])
+  }
 
   const domain = getDomain(bookmark.url)
   const title = bookmark.title ?? domain
