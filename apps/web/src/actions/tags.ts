@@ -2,10 +2,7 @@
 
 import { apiFetch } from '@/lib/api-client'
 import type { Tag, ApiResponse } from '@mykb/shared'
-
-export interface TagWithCount extends Tag {
-  readonly bookmarksCount: number
-}
+import type { TagWithCount } from '@/lib/tag-utils'
 
 export async function listTags(): Promise<ApiResponse<TagWithCount[]>> {
   const res = await apiFetch('/api/tags')

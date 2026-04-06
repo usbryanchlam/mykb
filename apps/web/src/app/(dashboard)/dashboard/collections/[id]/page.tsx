@@ -9,8 +9,8 @@ import {
   getCollection,
   getCollectionBookmarks,
   removeBookmarkFromCollection,
-  type CollectionWithCount,
 } from '@/actions/collections'
+import type { CollectionWithCount } from '@/lib/collection-utils'
 import { toggleFavorite, toggleArchive, deleteBookmark } from '@/actions/bookmarks'
 import { BookmarkGrid } from '@/components/bookmarks/bookmark-grid'
 import { Button } from '@/components/ui/button'

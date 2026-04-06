@@ -2,10 +2,7 @@
 
 import { apiFetch } from '@/lib/api-client'
 import type { Collection, Bookmark, ApiResponse } from '@mykb/shared'
-
-export interface CollectionWithCount extends Collection {
-  readonly bookmarksCount: number
-}
+import type { CollectionWithCount } from '@/lib/collection-utils'
 
 export async function listCollections(): Promise<ApiResponse<CollectionWithCount[]>> {
   const res = await apiFetch('/api/collections')

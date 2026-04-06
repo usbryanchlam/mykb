@@ -2,11 +2,8 @@
 
 import { useEffect, useState, useTransition } from 'react'
 import { FolderPlus } from 'lucide-react'
-import {
-  listCollections,
-  addBookmarkToCollection,
-  type CollectionWithCount,
-} from '@/actions/collections'
+import { listCollections, addBookmarkToCollection } from '@/actions/collections'
+import { getBookmarksCount, type CollectionWithCount } from '@/lib/collection-utils'
 import { Button } from '@/components/ui/button'
 
 interface AddToCollectionProps {
@@ -68,7 +65,7 @@ export function AddToCollection({ bookmarkId }: AddToCollectionProps) {
               disabled={isPending}
             >
               {c.name}
-              <span className="ml-1 text-xs text-muted-foreground">({c.bookmarksCount})</span>
+              <span className="ml-1 text-xs text-muted-foreground">({getBookmarksCount(c)})</span>
             </button>
           ))}
         </div>
