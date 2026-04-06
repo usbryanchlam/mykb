@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import type { Bookmark, BookmarkTag } from '@mykb/shared'
 import {
   ArrowLeft,
@@ -59,6 +59,11 @@ export function BookmarkDetail({
   onRescrape,
 }: BookmarkDetailProps) {
   const [tags, setTags] = useState<readonly BookmarkTag[]>(bookmark.tags ?? [])
+
+  useEffect(() => {
+    setTags(bookmark.tags ?? [])
+  }, [bookmark.tags])
+
   const domain = getDomain(bookmark.url)
   const title = bookmark.title ?? domain
   const safeHref = isSafeUrl(bookmark.url) ? bookmark.url : '#'
