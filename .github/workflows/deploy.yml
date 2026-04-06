@@ -70,6 +70,9 @@ jobs:
             rm -rf apps/api/build/tmp
             ln -sf /opt/mykb/apps/api/tmp apps/api/build/tmp
 
+            echo "==> Stopping services before migration..."
+            pm2 stop all 2>/dev/null || true
+
             echo "==> Backing up database..."
             if [ -f apps/api/tmp/db.sqlite3 ]; then
               cp apps/api/tmp/db.sqlite3 "apps/api/tmp/db.sqlite3.bak-$(date +%s)"
