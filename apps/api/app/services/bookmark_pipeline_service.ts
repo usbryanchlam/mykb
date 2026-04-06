@@ -61,12 +61,13 @@ class PipelineJob {
     await this.jobService.enqueue(new ContentSafetyJob(this.bookmarkId))
 
     // Step 3: AI processing (only if content is safe or skipped)
+    // Generate tags first, then summarize — because summarize sets
+    // aiStatus='completed' which stops frontend polling. Tags must
+    // be attached before that status change.
     const bookmark = await Bookmark.findOrFail(this.bookmarkId)
     if (bookmark.safetyStatus === 'safe' || bookmark.safetyStatus === 'skipped') {
-      await Promise.all([
-        this.jobService.enqueue(new SummarizeBookmarkJob(this.bookmarkId)),
-        this.jobService.enqueue(new GenerateTagsJob(this.bookmarkId)),
-      ])
+      await this.jobService.enqueue(new GenerateTagsJob(this.bookmarkId))
+      await this.jobService.enqueue(new SummarizeBookmarkJob(this.bookmarkId))
     }
   }
 
@@ -91,10 +92,11 @@ class AiOnlyPipelineJob {
   }
 
   async execute(): Promise<void> {
-    await Promise.all([
-      this.jobService.enqueue(new SummarizeBookmarkJob(this.bookmarkId)),
-      this.jobService.enqueue(new GenerateTagsJob(this.bookmarkId)),
-    ])
+    // Generate tags first, then summarize — because summarize sets
+    // aiStatus='completed' which stops frontend polling. Tags must
+    // be attached before that status change.
+    await this.jobService.enqueue(new GenerateTagsJob(this.bookmarkId))
+    await this.jobService.enqueue(new SummarizeBookmarkJob(this.bookmarkId))
   }
 
   async onFailure(_error: Error): Promise<void> {
