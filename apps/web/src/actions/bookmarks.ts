@@ -157,6 +157,30 @@ export async function rescrapeBookmark(id: number): Promise<ApiResponse<Bookmark
   return res.json() as Promise<ApiResponse<Bookmark>>
 }
 
+export async function updateBookmarkContent(
+  id: number,
+  plainText: string,
+): Promise<ApiResponse<Bookmark>> {
+  const res = await apiFetch(`/api/bookmarks/${id}/content`, {
+    method: 'PATCH',
+    body: JSON.stringify({ plain_text: plainText }),
+  })
+
+  if (!res.ok) {
+    if (res.status === 409) {
+      throw new Error('Bookmark is currently being processed.')
+    }
+    if (res.status === 422) {
+      const body = await res.json().catch(() => null)
+      const detail = body?.errors?.[0]?.message
+      throw new Error(detail ?? 'Content is required.')
+    }
+    throw new Error(humanError('save content', res.status))
+  }
+
+  return res.json() as Promise<ApiResponse<Bookmark>>
+}
+
 export async function deleteBookmark(id: number): Promise<ApiResponse<null>> {
   const res = await apiFetch(`/api/bookmarks/${id}`, { method: 'DELETE' })
 

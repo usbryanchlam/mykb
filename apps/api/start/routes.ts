@@ -24,6 +24,7 @@ router
     router.delete('/bookmarks/:id', [BookmarksController, 'destroy'])
     router.patch('/bookmarks/:id/favorite', [BookmarksController, 'favorite'])
     router.patch('/bookmarks/:id/archive', [BookmarksController, 'archive'])
+    router.patch('/bookmarks/:id/content', [BookmarksController, 'updateContent'])
     router.post('/bookmarks/:id/rescrape', [BookmarksController, 'rescrape'])
     router.get('/bookmarks/:id/reader', [BookmarksController, 'reader'])
     router.post('/bookmarks/:id/tags', [TagsController, 'addToBookmark'])

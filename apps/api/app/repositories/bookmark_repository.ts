@@ -56,7 +56,7 @@ export default class BookmarkRepository {
 
   async update(bookmark: Bookmark, data: Partial<Bookmark>) {
     await bookmark.merge(data).save()
-    return Bookmark.findOrFail(bookmark.id)
+    return Bookmark.query().where('id', bookmark.id).preload('tags').firstOrFail()
   }
 
   async delete(bookmark: Bookmark) {

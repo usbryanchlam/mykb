@@ -28,6 +28,14 @@ export default class BookmarkPipelineService {
   triggerPipeline(bookmarkId: number): void {
     this.jobService.enqueueAsync(new PipelineJob(bookmarkId, this.jobService))
   }
+
+  /**
+   * Trigger only the AI portion (summarize + tags) for a bookmark.
+   * Used when content is provided manually and scraping/safety are skipped.
+   */
+  triggerAiPipeline(bookmarkId: number): void {
+    this.jobService.enqueueAsync(new AiOnlyPipelineJob(bookmarkId, this.jobService))
+  }
 }
 
 /**
@@ -53,16 +61,45 @@ class PipelineJob {
     await this.jobService.enqueue(new ContentSafetyJob(this.bookmarkId))
 
     // Step 3: AI processing (only if content is safe or skipped)
+    // Generate tags first, then summarize — because summarize sets
+    // aiStatus='completed' which stops frontend polling. Tags must
+    // be attached before that status change.
     const bookmark = await Bookmark.findOrFail(this.bookmarkId)
     if (bookmark.safetyStatus === 'safe' || bookmark.safetyStatus === 'skipped') {
-      await Promise.all([
-        this.jobService.enqueue(new SummarizeBookmarkJob(this.bookmarkId)),
-        this.jobService.enqueue(new GenerateTagsJob(this.bookmarkId)),
-      ])
+      await this.jobService.enqueue(new GenerateTagsJob(this.bookmarkId))
+      await this.jobService.enqueue(new SummarizeBookmarkJob(this.bookmarkId))
     }
   }
 
   async onFailure(_error: Error): Promise<void> {
     // Individual jobs handle their own failure — nothing extra needed here
+  }
+}
+
+/**
+ * Job that runs only the AI portion (summarize + tags).
+ * Used for manually provided content where scraping/safety are skipped.
+ */
+class AiOnlyPipelineJob {
+  readonly name = 'ai-only-pipeline'
+  readonly bookmarkId: number
+  readonly config = { maxAttempts: 1, backoffMs: 1000, backoffMultiplier: 2 }
+  private readonly jobService: JobService
+
+  constructor(bookmarkId: number, jobService: JobService) {
+    this.bookmarkId = bookmarkId
+    this.jobService = jobService
+  }
+
+  async execute(): Promise<void> {
+    // Generate tags first, then summarize — because summarize sets
+    // aiStatus='completed' which stops frontend polling. Tags must
+    // be attached before that status change.
+    await this.jobService.enqueue(new GenerateTagsJob(this.bookmarkId))
+    await this.jobService.enqueue(new SummarizeBookmarkJob(this.bookmarkId))
+  }
+
+  async onFailure(_error: Error): Promise<void> {
+    // Individual jobs handle their own failure
   }
 }
