@@ -22,6 +22,15 @@ interface ListBookmarksOptions {
   readonly tag?: string
 }
 
+function escapeHtml(raw: string): string {
+  return raw
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#x27;')
+}
+
 export default class BookmarkService {
   constructor(private readonly repository: BookmarkRepository = new BookmarkRepository()) {}
 
@@ -72,6 +81,29 @@ export default class BookmarkService {
     const bookmark = await this.repository.findById(id, userId)
     return this.repository.update(bookmark, {
       isArchived: !bookmark.isArchived,
+    } as Partial<Bookmark>)
+  }
+
+  async setManualContent(id: number, userId: number, plainText: string) {
+    const bookmark = await this.repository.findById(id, userId)
+
+    if (bookmark.scrapeStatus === 'processing') {
+      const error = new Error('Bookmark is currently being processed')
+      ;(error as any).status = 409
+      throw error
+    }
+
+    return this.repository.update(bookmark, {
+      plainText,
+      content: plainText
+        .split(/\n\n+/)
+        .map((p) => `<p>${escapeHtml(p.trim())}</p>`)
+        .join('\n'),
+      scrapeStatus: 'completed',
+      scrapeError: null,
+      aiStatus: 'pending',
+      aiError: null,
+      safetyStatus: 'skipped',
     } as Partial<Bookmark>)
   }
 

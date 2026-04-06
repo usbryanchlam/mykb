@@ -1,11 +1,12 @@
 import { describe, expect, it, vi } from 'vitest'
-import { render } from '@testing-library/react'
+import { render, fireEvent } from '@testing-library/react'
 import type { Bookmark } from '@mykb/shared'
 import { ReaderView } from './reader-view'
 
 vi.mock('@/actions/bookmarks', () => ({
   getReaderContent: vi.fn(),
   rescrapeBookmark: vi.fn(),
+  updateBookmarkContent: vi.fn(),
 }))
 
 function createBookmark(overrides: Partial<Bookmark> = {}): Bookmark {
@@ -84,6 +85,62 @@ describe('ReaderView', () => {
     expect(container.textContent).toContain('Connection refused')
     const retryBtn = container.querySelector('button[data-slot="button"]')
     expect(retryBtn).toBeTruthy()
+  })
+
+  it('shows "Add content manually" button when scrape failed', () => {
+    const { container } = render(
+      <ReaderView bookmark={createBookmark({ scrapeStatus: 'failed' })} onRescrape={vi.fn()} />,
+    )
+
+    expect(container.textContent).toContain('Add content manually')
+  })
+
+  it('shows textarea when "Add content manually" is clicked on failed scrape', () => {
+    const { container } = render(
+      <ReaderView bookmark={createBookmark({ scrapeStatus: 'failed' })} onRescrape={vi.fn()} />,
+    )
+
+    const addBtn = Array.from(container.querySelectorAll('button')).find((b) =>
+      b.textContent?.includes('Add content manually'),
+    )
+    expect(addBtn).toBeTruthy()
+    fireEvent.click(addBtn!)
+
+    const textarea = container.querySelector('textarea')
+    expect(textarea).toBeTruthy()
+    expect(textarea?.placeholder).toContain('Paste the article content')
+  })
+
+  it('shows Save and Cancel buttons when manual input is visible', () => {
+    const { container } = render(
+      <ReaderView bookmark={createBookmark({ scrapeStatus: 'failed' })} onRescrape={vi.fn()} />,
+    )
+
+    const addBtn = Array.from(container.querySelectorAll('button')).find((b) =>
+      b.textContent?.includes('Add content manually'),
+    )
+    fireEvent.click(addBtn!)
+
+    expect(container.textContent).toContain('Save')
+    expect(container.textContent).toContain('Cancel')
+  })
+
+  it('hides textarea when Cancel is clicked', () => {
+    const { container } = render(
+      <ReaderView bookmark={createBookmark({ scrapeStatus: 'failed' })} onRescrape={vi.fn()} />,
+    )
+
+    const addBtn = Array.from(container.querySelectorAll('button')).find((b) =>
+      b.textContent?.includes('Add content manually'),
+    )
+    fireEvent.click(addBtn!)
+    expect(container.querySelector('textarea')).toBeTruthy()
+
+    const cancelBtn = Array.from(container.querySelectorAll('button')).find((b) =>
+      b.textContent?.includes('Cancel'),
+    )
+    fireEvent.click(cancelBtn!)
+    expect(container.querySelector('textarea')).toBeNull()
   })
 
   it('renders safety reasons as list items when flagged', () => {

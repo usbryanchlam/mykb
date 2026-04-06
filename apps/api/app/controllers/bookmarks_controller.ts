@@ -4,6 +4,7 @@ import BookmarkPipelineService from '#services/bookmark_pipeline_service'
 import {
   createBookmarkValidator,
   updateBookmarkValidator,
+  updateContentValidator,
   listBookmarksValidator,
 } from '#validators/bookmark'
 
@@ -104,6 +105,19 @@ export default class BookmarksController {
       return response.badRequest({ success: false, data: null, error: 'Invalid bookmark id' })
     }
     const bookmark = await this.service.toggleArchive(id, auth0User.id)
+    return response.ok({ success: true, data: bookmark, error: null })
+  }
+
+  async updateContent({ auth0User, params, request, response }: HttpContext) {
+    const id = parseId(params.id)
+    if (!id) {
+      return response.badRequest({ success: false, data: null, error: 'Invalid bookmark id' })
+    }
+    const data = await updateContentValidator.validate(request.body())
+    const bookmark = await this.service.setManualContent(id, auth0User.id, data.plain_text)
+
+    this.pipeline.triggerAiPipeline(bookmark.id)
+
     return response.ok({ success: true, data: bookmark, error: null })
   }
 

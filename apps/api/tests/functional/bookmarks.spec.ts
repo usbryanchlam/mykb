@@ -1,6 +1,7 @@
 import { randomUUID } from 'node:crypto'
 import { test } from '@japa/runner'
 import { createTestToken } from '#tests/helpers/auth'
+import Bookmark from '#models/bookmark'
 
 /**
  * Helper: creates a user via /api/me and returns a token + userId pair.
@@ -354,5 +355,122 @@ test.group('PATCH /api/bookmarks/:id/archive', () => {
 
     response.assertStatus(200)
     assert.notOk(response.body().data.isArchived)
+  })
+})
+
+test.group('PATCH /api/bookmarks/:id/content', () => {
+  async function setBookmarkFailed(id: number) {
+    const bookmark = await Bookmark.findOrFail(id)
+    bookmark.scrapeStatus = 'failed'
+    bookmark.scrapeError = 'Test: forced failure'
+    await bookmark.save()
+  }
+
+  test('sets manual content and triggers AI pipeline', async ({ client, assert }) => {
+    const { token } = await createUser(client)
+    const bm = await createBookmark(
+      client,
+      token,
+      `https://manual-content-${randomUUID()}.example.com`
+    )
+    await setBookmarkFailed(bm.id)
+
+    const response = await client
+      .patch(`/api/bookmarks/${bm.id}/content`)
+      .json({ plain_text: 'This is manually pasted article content for testing purposes.' })
+      .bearerToken(token)
+
+    response.assertStatus(200)
+    const data = response.body().data
+    assert.isTrue(response.body().success)
+    assert.equal(data.plainText, 'This is manually pasted article content for testing purposes.')
+    assert.include(data.content, '<p>')
+    assert.equal(data.scrapeStatus, 'completed')
+    assert.equal(data.aiStatus, 'pending')
+    assert.equal(data.safetyStatus, 'skipped')
+  })
+
+  test('converts multi-paragraph text to HTML paragraphs', async ({ client, assert }) => {
+    const { token } = await createUser(client)
+    const bm = await createBookmark(client, token, `https://multi-para-${randomUUID()}.example.com`)
+    await setBookmarkFailed(bm.id)
+
+    const response = await client
+      .patch(`/api/bookmarks/${bm.id}/content`)
+      .json({ plain_text: 'First paragraph.\n\nSecond paragraph.' })
+      .bearerToken(token)
+
+    response.assertStatus(200)
+    assert.include(response.body().data.content, '<p>First paragraph.</p>')
+    assert.include(response.body().data.content, '<p>Second paragraph.</p>')
+  })
+
+  test('returns 422 for empty plain_text', async ({ client }) => {
+    const { token } = await createUser(client)
+    const bm = await createBookmark(
+      client,
+      token,
+      `https://empty-content-${randomUUID()}.example.com`
+    )
+
+    const response = await client
+      .patch(`/api/bookmarks/${bm.id}/content`)
+      .json({ plain_text: '' })
+      .bearerToken(token)
+
+    response.assertStatus(422)
+  })
+
+  test('returns 422 for missing plain_text', async ({ client }) => {
+    const { token } = await createUser(client)
+    const bm = await createBookmark(
+      client,
+      token,
+      `https://missing-content-${randomUUID()}.example.com`
+    )
+
+    const response = await client
+      .patch(`/api/bookmarks/${bm.id}/content`)
+      .json({})
+      .bearerToken(token)
+
+    response.assertStatus(422)
+  })
+
+  test('returns 400 for invalid bookmark id', async ({ client }) => {
+    const { token } = await createUser(client)
+    const response = await client
+      .patch('/api/bookmarks/abc/content')
+      .json({ plain_text: 'Some content' })
+      .bearerToken(token)
+
+    response.assertStatus(400)
+  })
+
+  test('returns 404 for non-existent bookmark', async ({ client }) => {
+    const { token } = await createUser(client)
+    const response = await client
+      .patch('/api/bookmarks/999999/content')
+      .json({ plain_text: 'Some content' })
+      .bearerToken(token)
+
+    response.assertStatus(404)
+  })
+
+  test('cannot update content of another user bookmark', async ({ client }) => {
+    const { token: ownerToken } = await createUser(client)
+    const { token: otherToken } = await createUser(client)
+    const bm = await createBookmark(
+      client,
+      ownerToken,
+      `https://other-user-content-${randomUUID()}.example.com`
+    )
+
+    const response = await client
+      .patch(`/api/bookmarks/${bm.id}/content`)
+      .json({ plain_text: 'Stolen content' })
+      .bearerToken(otherToken)
+
+    response.assertStatus(404)
   })
 })
