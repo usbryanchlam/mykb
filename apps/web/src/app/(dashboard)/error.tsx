@@ -1,7 +1,9 @@
 'use client'
 
 import { useEffect } from 'react'
+import Link from 'next/link'
 import { ShieldX } from 'lucide-react'
+import { ADMIN_EMAIL } from '@/lib/constants'
 
 interface ErrorPageProps {
   readonly error: Error & { digest?: string }
@@ -26,16 +28,23 @@ export default function DashboardErrorPage({ error, reset }: ErrorPageProps) {
       <div className="flex flex-1 flex-col items-center justify-center gap-4 px-4 text-center">
         <ShieldX className="size-16 text-destructive" />
         <h1 className="text-2xl font-bold">Access Denied</h1>
-        <p className="max-w-md text-muted-foreground">
-          You don&apos;t have permission to access this page. Contact your administrator if you
-          believe this is an error.
+        <p className="max-w-lg text-muted-foreground">
+          You don&apos;t have permission to access this page. If you believe this is an error,
+          please contact the administrator at{' '}
+          <a
+            href={`mailto:${ADMIN_EMAIL}`}
+            className="text-primary underline hover:text-primary/80"
+          >
+            {ADMIN_EMAIL}
+          </a>
+          .
         </p>
-        <a
-          href="/dashboard"
+        <Link
+          href="/"
           className="mt-2 rounded-md bg-primary px-6 py-2.5 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
         >
-          Back to Dashboard
-        </a>
+          Back to Home
+        </Link>
       </div>
     )
   }
@@ -43,8 +52,15 @@ export default function DashboardErrorPage({ error, reset }: ErrorPageProps) {
   return (
     <div className="flex flex-1 flex-col items-center justify-center gap-4 px-4 text-center">
       <ShieldX className="size-16 text-muted-foreground" />
-      <h1 className="text-2xl font-bold">Something went wrong</h1>
-      <p className="max-w-md text-muted-foreground">An error occurred while loading this page.</p>
+      <h1 className="text-2xl font-bold">Something Went Wrong</h1>
+      <p className="max-w-lg text-muted-foreground">
+        The service is temporarily unavailable. If the problem persists, please contact the
+        administrator at{' '}
+        <a href={`mailto:${ADMIN_EMAIL}`} className="text-primary underline hover:text-primary/80">
+          {ADMIN_EMAIL}
+        </a>
+        .
+      </p>
       <div className="mt-2 flex gap-3">
         <button
           onClick={reset}
@@ -52,12 +68,12 @@ export default function DashboardErrorPage({ error, reset }: ErrorPageProps) {
         >
           Try Again
         </button>
-        <a
-          href="/dashboard"
+        <Link
+          href="/"
           className="rounded-md border border-border px-6 py-2.5 text-sm font-medium transition-colors hover:bg-muted"
         >
-          Back to Dashboard
-        </a>
+          Back to Home
+        </Link>
       </div>
     </div>
   )

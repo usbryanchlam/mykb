@@ -1,7 +1,9 @@
 'use client'
 
 import { useEffect } from 'react'
+import Link from 'next/link'
 import { AlertTriangle } from 'lucide-react'
+import { ADMIN_EMAIL } from '@/lib/constants'
 
 interface ErrorPageProps {
   readonly error: Error & { digest?: string }
@@ -19,9 +21,17 @@ export default function ErrorPage({ error, reset }: ErrorPageProps) {
     <div className="flex min-h-screen items-center justify-center bg-background">
       <main className="flex flex-col items-center gap-4 px-4 text-center">
         <AlertTriangle className="size-16 text-destructive" />
-        <h1 className="text-4xl font-bold">Something went wrong</h1>
-        <p className="max-w-md text-muted-foreground">
-          An unexpected error occurred. Please try again or contact support if the problem persists.
+        <h1 className="text-4xl font-bold">Something Went Wrong</h1>
+        <p className="max-w-lg text-muted-foreground">
+          The service is temporarily unavailable. If the problem persists, please contact the
+          administrator at{' '}
+          <a
+            href={`mailto:${ADMIN_EMAIL}`}
+            className="text-primary underline hover:text-primary/80"
+          >
+            {ADMIN_EMAIL}
+          </a>
+          .
         </p>
         <div className="mt-2 flex gap-3">
           <button
@@ -30,12 +40,12 @@ export default function ErrorPage({ error, reset }: ErrorPageProps) {
           >
             Try Again
           </button>
-          <a
-            href="/dashboard"
+          <Link
+            href="/"
             className="rounded-md border border-border px-6 py-2.5 text-sm font-medium transition-colors hover:bg-muted"
           >
-            Back to Dashboard
-          </a>
+            Back to Home
+          </Link>
         </div>
       </main>
     </div>
