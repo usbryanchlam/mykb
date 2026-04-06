@@ -63,7 +63,12 @@ export default function BookmarkDetailPage() {
       bookmark?.aiStatus === 'processing'
 
     if (!isProcessing) {
-      isPollingRef.current = false
+      // One final fetch after processing completes to pick up tags
+      // generated concurrently with summarization
+      if (isPollingRef.current) {
+        isPollingRef.current = false
+        setTimeout(() => fetchBookmark(), 1500)
+      }
       return
     }
 
