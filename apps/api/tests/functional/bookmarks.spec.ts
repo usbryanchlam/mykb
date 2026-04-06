@@ -361,8 +361,7 @@ test.group('PATCH /api/bookmarks/:id/archive', () => {
 test.group('PATCH /api/bookmarks/:id/content', () => {
   async function setBookmarkFailed(id: number) {
     const bookmark = await Bookmark.findOrFail(id)
-    bookmark.scrapeStatus = 'failed'
-    bookmark.scrapeError = 'Test: forced failure'
+    bookmark.merge({ scrapeStatus: 'failed', scrapeError: 'Test: forced failure' })
     await bookmark.save()
   }
 

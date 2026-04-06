@@ -167,6 +167,9 @@ export async function updateBookmarkContent(
   })
 
   if (!res.ok) {
+    if (res.status === 409) {
+      throw new Error('Bookmark is currently being processed.')
+    }
     if (res.status === 422) {
       const body = await res.json().catch(() => null)
       const detail = body?.errors?.[0]?.message
