@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect } from 'react'
+import Link from 'next/link'
 import { AlertTriangle } from 'lucide-react'
 import { ADMIN_EMAIL } from '@/lib/constants'
 
@@ -39,12 +40,12 @@ export default function ErrorPage({ error, reset }: ErrorPageProps) {
           >
             Try Again
           </button>
-          <a
+          <Link
             href="/"
             className="rounded-md border border-border px-6 py-2.5 text-sm font-medium transition-colors hover:bg-muted"
           >
             Back to Home
-          </a>
+          </Link>
         </div>
       </main>
     </div>

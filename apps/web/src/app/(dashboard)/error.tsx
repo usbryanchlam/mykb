@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect } from 'react'
+import Link from 'next/link'
 import { ShieldX } from 'lucide-react'
 import { ADMIN_EMAIL } from '@/lib/constants'
 
@@ -38,12 +39,12 @@ export default function DashboardErrorPage({ error, reset }: ErrorPageProps) {
           </a>
           .
         </p>
-        <a
+        <Link
           href="/"
           className="mt-2 rounded-md bg-primary px-6 py-2.5 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
         >
           Back to Home
-        </a>
+        </Link>
       </div>
     )
   }
@@ -55,11 +56,8 @@ export default function DashboardErrorPage({ error, reset }: ErrorPageProps) {
       <p className="max-w-lg text-muted-foreground">
         The service is temporarily unavailable. If the problem persists, please contact the
         administrator at{' '}
-        <a
-          href="mailto:bryanlam.dev@techie.com"
-          className="text-primary underline hover:text-primary/80"
-        >
-          bryanlam.dev@techie.com
+        <a href={`mailto:${ADMIN_EMAIL}`} className="text-primary underline hover:text-primary/80">
+          {ADMIN_EMAIL}
         </a>
         .
       </p>
@@ -70,12 +68,12 @@ export default function DashboardErrorPage({ error, reset }: ErrorPageProps) {
         >
           Try Again
         </button>
-        <a
+        <Link
           href="/"
           className="rounded-md border border-border px-6 py-2.5 text-sm font-medium transition-colors hover:bg-muted"
         >
           Back to Home
-        </a>
+        </Link>
       </div>
     </div>
   )
