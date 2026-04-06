@@ -5,6 +5,8 @@ import User from '#models/user'
 import Bookmark from '#models/bookmark'
 
 export default class Collection extends BaseModel {
+  serializeExtras = true
+
   @column({ isPrimary: true })
   declare id: number
 

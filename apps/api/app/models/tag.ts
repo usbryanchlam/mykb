@@ -5,6 +5,7 @@ import User from '#models/user'
 import Bookmark from '#models/bookmark'
 
 export default class Tag extends BaseModel {
+  serializeExtras = true
   static readonly updatedAtColumn = false as const
 
   @column({ isPrimary: true })
