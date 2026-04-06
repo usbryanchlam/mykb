@@ -1,6 +1,10 @@
 import { BaseSchema } from '@adonisjs/lucid/schema'
 
 export default class extends BaseSchema {
+  // Disable transaction wrapping — SQLite can't DROP TABLE inside a transaction,
+  // and PRAGMA foreign_keys can't be set inside a transaction either.
+  disableTransactions = true
+
   protected tableName = 'users'
 
   async up() {
