@@ -1,7 +1,7 @@
 'use server'
 
 import { apiFetch } from '@/lib/api-client'
-import type { ApiResponse } from '@mykb/shared'
+import type { Tag, ApiResponse } from '@mykb/shared'
 import type { TagWithCount } from '@/lib/tag-utils'
 
 export async function listTags(): Promise<ApiResponse<TagWithCount[]>> {
