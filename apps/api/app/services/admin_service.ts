@@ -27,6 +27,7 @@ export interface AppStats {
 }
 
 const ALLOWED_TABLES = new Set(['users', 'bookmarks', 'tags', 'collections', 'smart_lists'])
+const ALLOWED_COLUMNS = new Set(['is_favorite', 'is_archived'])
 
 export default class AdminService {
   async getStats(): Promise<AppStats> {
@@ -44,8 +45,8 @@ export default class AdminService {
     ] = await Promise.all([
       this.count('users'),
       this.count('bookmarks'),
-      this.countWhere('bookmarks', 'is_favorite', 1),
-      this.countWhere('bookmarks', 'is_archived', 1),
+      this.countWhereTrue('bookmarks', 'is_favorite'),
+      this.countWhereTrue('bookmarks', 'is_archived'),
       this.count('tags'),
       this.count('collections'),
       this.count('smart_lists'),
@@ -76,18 +77,14 @@ export default class AdminService {
     return Number(result[0]?.count ?? 0)
   }
 
-  private readonly ALLOWED_COLUMNS = new Set(['is_favorite', 'is_archived'])
-
-  private async countWhere(table: string, column: string, value: number): Promise<number> {
+  private async countWhereTrue(table: string, column: string): Promise<number> {
     if (!ALLOWED_TABLES.has(table)) {
       throw new Error(`Invalid table name: ${table}`)
     }
-    if (!this.ALLOWED_COLUMNS.has(column)) {
+    if (!ALLOWED_COLUMNS.has(column)) {
       throw new Error(`Invalid column name: ${column}`)
     }
-    const result = await db.rawQuery(`SELECT COUNT(*) as count FROM ${table} WHERE ${column} = ?`, [
-      value,
-    ])
+    const result = await db.rawQuery(`SELECT COUNT(*) as count FROM ${table} WHERE ${column} = 1`)
     return Number(result[0]?.count ?? 0)
   }
 
