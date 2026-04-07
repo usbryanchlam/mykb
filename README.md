@@ -118,7 +118,7 @@ Deployments are triggered manually via GitHub Actions workflow.
 
 ## Acknowledgments
 
-- Landing page design inspired by [Karakeep](https://github.com/karakeep-app/karakeep)
+- Architecture and feature design informed by studying the [Karakeep](https://github.com/karakeep-app/karakeep) codebase — a self-hostable bookmark-everything app with AI features. Karakeep's monorepo structure, content processing pipeline, and AI integration patterns were key references during the planning phase.
 
 ## License
 
