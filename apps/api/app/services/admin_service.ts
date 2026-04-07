@@ -3,6 +3,8 @@ import db from '@adonisjs/lucid/services/db'
 export interface AppStats {
   readonly users: number
   readonly bookmarks: number
+  readonly favoriteBookmarks: number
+  readonly archivedBookmarks: number
   readonly tags: number
   readonly collections: number
   readonly smartLists: number
@@ -25,22 +27,46 @@ export interface AppStats {
 }
 
 const ALLOWED_TABLES = new Set(['users', 'bookmarks', 'tags', 'collections', 'smart_lists'])
+const ALLOWED_COLUMNS = new Set(['is_favorite', 'is_archived'])
 
 export default class AdminService {
   async getStats(): Promise<AppStats> {
-    const [users, bookmarks, tags, collections, smartLists, jobs, scrapeStats, safetyStats] =
-      await Promise.all([
-        this.count('users'),
-        this.count('bookmarks'),
-        this.count('tags'),
-        this.count('collections'),
-        this.count('smart_lists'),
-        this.getJobStats(),
-        this.getScrapeStats(),
-        this.getSafetyStats(),
-      ])
+    const [
+      users,
+      bookmarks,
+      favoriteBookmarks,
+      archivedBookmarks,
+      tags,
+      collections,
+      smartLists,
+      jobs,
+      scrapeStats,
+      safetyStats,
+    ] = await Promise.all([
+      this.count('users'),
+      this.count('bookmarks'),
+      this.countWhereTrue('bookmarks', 'is_favorite'),
+      this.countWhereTrue('bookmarks', 'is_archived'),
+      this.count('tags'),
+      this.count('collections'),
+      this.count('smart_lists'),
+      this.getJobStats(),
+      this.getScrapeStats(),
+      this.getSafetyStats(),
+    ])
 
-    return { users, bookmarks, tags, collections, smartLists, jobs, scrapeStats, safetyStats }
+    return {
+      users,
+      bookmarks,
+      favoriteBookmarks,
+      archivedBookmarks,
+      tags,
+      collections,
+      smartLists,
+      jobs,
+      scrapeStats,
+      safetyStats,
+    }
   }
 
   private async count(table: string): Promise<number> {
@@ -48,6 +74,17 @@ export default class AdminService {
       throw new Error(`Invalid table name: ${table}`)
     }
     const result = await db.rawQuery(`SELECT COUNT(*) as count FROM ${table}`)
+    return Number(result[0]?.count ?? 0)
+  }
+
+  private async countWhereTrue(table: string, column: string): Promise<number> {
+    if (!ALLOWED_TABLES.has(table)) {
+      throw new Error(`Invalid table name: ${table}`)
+    }
+    if (!ALLOWED_COLUMNS.has(column)) {
+      throw new Error(`Invalid column name: ${column}`)
+    }
+    const result = await db.rawQuery(`SELECT COUNT(*) as count FROM ${table} WHERE ${column} = 1`)
     return Number(result[0]?.count ?? 0)
   }
 

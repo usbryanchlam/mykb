@@ -39,6 +39,8 @@ test.group('GET /api/admin/stats', () => {
     const data = res.body().data
     assert.isNumber(data.users)
     assert.isNumber(data.bookmarks)
+    assert.isNumber(data.favoriteBookmarks)
+    assert.isNumber(data.archivedBookmarks)
     assert.isNumber(data.tags)
     assert.isNumber(data.collections)
     assert.isNumber(data.smartLists)
