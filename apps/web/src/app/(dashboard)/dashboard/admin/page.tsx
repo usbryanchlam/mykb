@@ -2,9 +2,10 @@
 
 import { useEffect, useState, useTransition } from 'react'
 import {
+  Archive,
   Bookmark,
-  ExternalLink,
   FolderOpen,
+  Heart,
   Loader2,
   Shield,
   Sparkles,
@@ -54,22 +55,13 @@ export default function AdminPage() {
 
   return (
     <div className="flex flex-col gap-6">
-      <div className="flex items-center justify-between">
-        <h1 className="text-lg font-semibold">Admin Dashboard</h1>
-        <a
-          href={`${process.env.NEXT_PUBLIC_AUTH0_ISSUER_BASE_URL ?? '#'}/admin`}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="inline-flex items-center gap-1.5 rounded-md border border-border px-3 py-1.5 text-sm hover:bg-muted"
-        >
-          Auth0 Dashboard
-          <ExternalLink className="size-3.5" />
-        </a>
-      </div>
+      <h1 className="text-lg font-semibold">Admin Dashboard</h1>
 
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         <StatCard icon={Users} label="Users" value={stats.users} />
         <StatCard icon={Bookmark} label="Bookmarks" value={stats.bookmarks} />
+        <StatCard icon={Heart} label="Favorites" value={stats.favoriteBookmarks} />
+        <StatCard icon={Archive} label="Archived" value={stats.archivedBookmarks} />
         <StatCard icon={Tags} label="Tags" value={stats.tags} />
         <StatCard icon={FolderOpen} label="Collections" value={stats.collections} />
       </div>
@@ -94,17 +86,17 @@ export default function AdminPage() {
         </div>
       </div>
 
-      <div className="rounded-lg border border-border bg-card p-4">
-        <h2 className="mb-3 text-sm font-medium">Job Queue</h2>
-        <div className="grid gap-2 sm:grid-cols-4">
-          <StatRow label="Total Jobs" value={stats.jobs.total} />
-          <StatRow label="Completed" value={stats.jobs.completed} color="text-green-600" />
-          <StatRow label="Failed" value={stats.jobs.failed} color="text-red-600" />
-          <StatRow label="Processing" value={stats.jobs.processing} color="text-blue-600" />
-        </div>
-      </div>
-
       <div className="grid gap-4 sm:grid-cols-2">
+        <div className="rounded-lg border border-border bg-card p-4">
+          <h2 className="mb-3 text-sm font-medium">Job Queue</h2>
+          <div className="flex flex-col gap-2">
+            <StatRow label="Total" value={stats.jobs.total} />
+            <StatRow label="Completed" value={stats.jobs.completed} color="text-green-600" />
+            <StatRow label="Failed" value={stats.jobs.failed} color="text-red-600" />
+            <StatRow label="Processing" value={stats.jobs.processing} color="text-yellow-600" />
+          </div>
+        </div>
+
         <StatCard icon={Sparkles} label="Smart Lists" value={stats.smartLists} />
       </div>
     </div>

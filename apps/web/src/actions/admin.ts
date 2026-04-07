@@ -6,6 +6,8 @@ import type { ApiResponse } from '@mykb/shared'
 export interface AppStats {
   readonly users: number
   readonly bookmarks: number
+  readonly favoriteBookmarks: number
+  readonly archivedBookmarks: number
   readonly tags: number
   readonly collections: number
   readonly smartLists: number
