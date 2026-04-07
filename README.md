@@ -116,6 +116,10 @@ MyKB is deployed on an OCI VM with Caddy and PM2. See [docs/DEPLOYMENT.md](docs/
 
 Deployments are triggered manually via GitHub Actions workflow.
 
+## Acknowledgments
+
+- Landing page design inspired by [Karakeep](https://github.com/karakeep-app/karakeep)
+
 ## License
 
 MIT
