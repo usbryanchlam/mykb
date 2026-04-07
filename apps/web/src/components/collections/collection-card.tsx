@@ -1,7 +1,9 @@
 'use client'
 
+import { useState } from 'react'
 import { FolderOpen, Trash2 } from 'lucide-react'
 import Link from 'next/link'
+import { ConfirmDialog } from '@/components/ui/confirm-dialog'
 
 interface CollectionCardProps {
   readonly id: number
@@ -20,6 +22,8 @@ export function CollectionCard({
   bookmarksCount,
   onDelete,
 }: CollectionCardProps) {
+  const [confirmOpen, setConfirmOpen] = useState(false)
+
   return (
     <div className="group flex flex-col gap-2 rounded-lg border border-border bg-card p-4 transition-colors hover:bg-muted/50">
       <div className="flex items-start justify-between">
@@ -37,11 +41,7 @@ export function CollectionCard({
         </Link>
         <button
           type="button"
-          onClick={() => {
-            if (window.confirm(`Delete "${name}"? Bookmarks will not be deleted.`)) {
-              onDelete(id)
-            }
-          }}
+          onClick={() => setConfirmOpen(true)}
           className="ml-2 rounded p-1 text-muted-foreground opacity-0 transition-opacity hover:text-destructive group-hover:opacity-100"
           aria-label={`Delete collection ${name}`}
         >
@@ -51,6 +51,16 @@ export function CollectionCard({
       <span className="text-xs text-muted-foreground">
         {bookmarksCount} {bookmarksCount === 1 ? 'bookmark' : 'bookmarks'}
       </span>
+      <ConfirmDialog
+        open={confirmOpen}
+        onOpenChange={setConfirmOpen}
+        title={`Delete "${name}"`}
+        description="Bookmarks in this collection will not be deleted."
+        onConfirm={() => {
+          setConfirmOpen(false)
+          onDelete(id)
+        }}
+      />
     </div>
   )
 }

@@ -56,25 +56,38 @@ describe('CollectionCard', () => {
     expect(link).toBeTruthy()
   })
 
-  it('calls onDelete with confirm when delete clicked', () => {
-    const onDelete = vi.fn()
-    window.confirm = vi.fn(() => true)
-    const { container } = render(<CollectionCard {...defaultProps} onDelete={onDelete} />)
+  it('opens confirm dialog when delete clicked', () => {
+    const { container } = render(<CollectionCard {...defaultProps} />)
     const deleteBtn = container.querySelector(
       'button[aria-label="Delete collection Dev Resources"]',
     )!
     fireEvent.click(deleteBtn)
+    expect(document.body.textContent).toContain('Bookmarks in this collection will not be deleted')
+  })
+
+  it('calls onDelete when confirm dialog is confirmed', () => {
+    const onDelete = vi.fn()
+    const { container, getByRole } = render(
+      <CollectionCard {...defaultProps} onDelete={onDelete} />,
+    )
+    const deleteBtn = container.querySelector(
+      'button[aria-label="Delete collection Dev Resources"]',
+    )!
+    fireEvent.click(deleteBtn)
+    fireEvent.click(getByRole('button', { name: 'Delete' }))
     expect(onDelete).toHaveBeenCalledWith(1)
   })
 
-  it('does not call onDelete when confirm is cancelled', () => {
+  it('does not call onDelete when confirm dialog is cancelled', () => {
     const onDelete = vi.fn()
-    window.confirm = vi.fn(() => false)
-    const { container } = render(<CollectionCard {...defaultProps} onDelete={onDelete} />)
+    const { container, getByRole } = render(
+      <CollectionCard {...defaultProps} onDelete={onDelete} />,
+    )
     const deleteBtn = container.querySelector(
       'button[aria-label="Delete collection Dev Resources"]',
     )!
     fireEvent.click(deleteBtn)
+    fireEvent.click(getByRole('button', { name: 'Cancel' }))
     expect(onDelete).not.toHaveBeenCalled()
   })
 })

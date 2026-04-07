@@ -1,7 +1,9 @@
 'use client'
 
+import { useState } from 'react'
 import { Star, Archive, Trash2, ExternalLink } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import { ConfirmDialog } from '@/components/ui/confirm-dialog'
 import { cn } from '@/lib/utils'
 import { isSafeUrl } from '@/lib/bookmark-utils'
 
@@ -22,6 +24,8 @@ export function BookmarkActions({
   onToggleArchive,
   onDelete,
 }: BookmarkActionsProps) {
+  const [confirmOpen, setConfirmOpen] = useState(false)
+
   return (
     <div className="flex items-center gap-1">
       <Button
@@ -68,9 +72,7 @@ export function BookmarkActions({
         size="icon-xs"
         onClick={(e) => {
           e.stopPropagation()
-          if (window.confirm('Delete this bookmark? This cannot be undone.')) {
-            onDelete()
-          }
+          setConfirmOpen(true)
         }}
         aria-label="Delete bookmark"
         title="Delete bookmark"
@@ -78,6 +80,16 @@ export function BookmarkActions({
       >
         <Trash2 className="size-3.5" />
       </Button>
+      <ConfirmDialog
+        open={confirmOpen}
+        onOpenChange={setConfirmOpen}
+        title="Delete bookmark"
+        description="This cannot be undone. The bookmark will be permanently deleted."
+        onConfirm={() => {
+          setConfirmOpen(false)
+          onDelete()
+        }}
+      />
     </div>
   )
 }
