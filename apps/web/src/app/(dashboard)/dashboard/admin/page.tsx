@@ -5,7 +5,7 @@ import {
   Archive,
   Bookmark,
   FolderOpen,
-  Heart,
+  Star,
   Loader2,
   Shield,
   Sparkles,
@@ -60,7 +60,7 @@ export default function AdminPage() {
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         <StatCard icon={Users} label="Users" value={stats.users} />
         <StatCard icon={Bookmark} label="Bookmarks" value={stats.bookmarks} />
-        <StatCard icon={Heart} label="Favorites" value={stats.favoriteBookmarks} />
+        <StatCard icon={Star} label="Favorites" value={stats.favoriteBookmarks} />
         <StatCard icon={Archive} label="Archived" value={stats.archivedBookmarks} />
         <StatCard icon={Tags} label="Tags" value={stats.tags} />
         <StatCard icon={FolderOpen} label="Collections" value={stats.collections} />
