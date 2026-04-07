@@ -7,6 +7,7 @@ import type { SmartList, FilterQuery } from '@mykb/shared'
 import { listSmartLists, createSmartList, deleteSmartList } from '@/actions/smart-lists'
 import { FilterBuilder } from '@/components/smart-lists/filter-builder'
 import { Button } from '@/components/ui/button'
+import { ConfirmDialog } from '@/components/ui/confirm-dialog'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import {
@@ -24,6 +25,7 @@ export default function SmartListsPage() {
   const [loadError, setLoadError] = useState<string | null>(null)
   const [actionError, setActionError] = useState<string | null>(null)
   const [dialogOpen, setDialogOpen] = useState(false)
+  const [deleteTarget, setDeleteTarget] = useState<{ id: number; name: string } | null>(null)
   const [, startTransition] = useTransition()
 
   const fetchLists = useCallback(() => {
@@ -44,8 +46,10 @@ export default function SmartListsPage() {
     fetchLists()
   }, [fetchLists])
 
-  function handleDelete(id: number, name: string) {
-    if (!window.confirm(`Delete "${name}"?`)) return
+  function handleDeleteConfirm() {
+    if (!deleteTarget) return
+    const { id } = deleteTarget
+    setDeleteTarget(null)
     setActionError(null)
     startTransition(async () => {
       try {
@@ -129,7 +133,7 @@ export default function SmartListsPage() {
                 </Link>
                 <button
                   type="button"
-                  onClick={() => handleDelete(sl.id, sl.name)}
+                  onClick={() => setDeleteTarget({ id: sl.id, name: sl.name })}
                   className="ml-2 rounded p-1 text-muted-foreground opacity-0 transition-opacity hover:text-destructive group-hover:opacity-100"
                   aria-label={`Delete smart list ${sl.name}`}
                 >
@@ -145,6 +149,15 @@ export default function SmartListsPage() {
         open={dialogOpen}
         onOpenChange={setDialogOpen}
         onSuccess={fetchLists}
+      />
+      <ConfirmDialog
+        open={deleteTarget !== null}
+        onOpenChange={(open) => {
+          if (!open) setDeleteTarget(null)
+        }}
+        title={deleteTarget ? `Delete "${deleteTarget.name}"` : ''}
+        description="This smart list will be permanently deleted."
+        onConfirm={handleDeleteConfirm}
       />
     </>
   )

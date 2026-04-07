@@ -59,21 +59,32 @@ describe('BookmarkActions', () => {
     expect(onToggleArchive).toHaveBeenCalledOnce()
   })
 
-  it('calls onDelete after confirm when trash clicked', () => {
-    const onDelete = vi.fn()
-    window.confirm = vi.fn(() => true)
-    const { container } = render(<BookmarkActions {...defaultProps} onDelete={onDelete} />)
+  it('opens confirm dialog when trash clicked', () => {
+    const { container } = render(<BookmarkActions {...defaultProps} />)
 
     fireEvent.click(queryButton(container, 'Delete bookmark'))
+    expect(document.body.textContent).toContain('This cannot be undone')
+  })
+
+  it('calls onDelete when confirm dialog is confirmed', () => {
+    const onDelete = vi.fn()
+    const { container, getByRole } = render(
+      <BookmarkActions {...defaultProps} onDelete={onDelete} />,
+    )
+
+    fireEvent.click(queryButton(container, 'Delete bookmark'))
+    fireEvent.click(getByRole('button', { name: 'Delete' }))
     expect(onDelete).toHaveBeenCalledOnce()
   })
 
-  it('does not call onDelete when confirm is cancelled', () => {
+  it('does not call onDelete when confirm dialog is cancelled', () => {
     const onDelete = vi.fn()
-    window.confirm = vi.fn(() => false)
-    const { container } = render(<BookmarkActions {...defaultProps} onDelete={onDelete} />)
+    const { container, getByRole } = render(
+      <BookmarkActions {...defaultProps} onDelete={onDelete} />,
+    )
 
     fireEvent.click(queryButton(container, 'Delete bookmark'))
+    fireEvent.click(getByRole('button', { name: 'Cancel' }))
     expect(onDelete).not.toHaveBeenCalled()
   })
 })
