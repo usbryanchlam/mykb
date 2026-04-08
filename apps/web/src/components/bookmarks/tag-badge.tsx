@@ -16,7 +16,7 @@ export function TagBadge({ tag, onRemove }: TagBadgeProps) {
 
   return (
     <span className={`${baseClasses} ${colorClasses}`}>
-      {tag.isAiGenerated && <Sparkles className="size-3" />}
+      {tag.isAiGenerated ? <Sparkles className="size-3" /> : null}
       <Link
         href={`/dashboard/tags/${tag.slug}`}
         className="hover:underline"
