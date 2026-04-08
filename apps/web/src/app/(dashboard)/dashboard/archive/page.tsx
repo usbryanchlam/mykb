@@ -1,10 +1,13 @@
 'use client'
 
 import { Archive } from 'lucide-react'
+import { useAuth } from '@/hooks/use-auth'
 import { useBookmarks } from '@/hooks/use-bookmarks'
 import { BookmarkPageLayout } from '@/components/bookmarks/bookmark-page-layout'
 
 export default function ArchivePage() {
+  const { role } = useAuth()
+  const canEdit = role === 'admin' || role === 'editor'
   const {
     bookmarks,
     meta,
@@ -25,6 +28,7 @@ export default function ArchivePage() {
       emptyIcon={<Archive className="size-12 text-muted-foreground" />}
       emptyTitle="Archive is empty"
       emptyDescription="Archived bookmarks will appear here."
+      canEdit={canEdit}
       bookmarks={bookmarks}
       meta={meta}
       page={page}

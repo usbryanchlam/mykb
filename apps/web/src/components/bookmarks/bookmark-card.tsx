@@ -10,6 +10,7 @@ import { getDomain, formatRelativeDate, isSafeUrl, isSafeFaviconUrl } from '@/li
 
 interface BookmarkCardProps {
   readonly bookmark: Bookmark
+  readonly canEdit?: boolean
   readonly onToggleFavorite: (id: number) => void
   readonly onToggleArchive: (id: number) => void
   readonly onDelete: (id: number) => void
@@ -17,6 +18,7 @@ interface BookmarkCardProps {
 
 export function BookmarkCard({
   bookmark,
+  canEdit = true,
   onToggleFavorite,
   onToggleArchive,
   onDelete,
@@ -83,16 +85,18 @@ export function BookmarkCard({
         >
           {bookmark.url}
         </a>
-        <div className="opacity-0 transition-opacity group-hover:opacity-100">
-          <BookmarkActions
-            isFavorite={bookmark.isFavorite}
-            isArchived={bookmark.isArchived}
-            url={bookmark.url}
-            onToggleFavorite={() => onToggleFavorite(bookmark.id)}
-            onToggleArchive={() => onToggleArchive(bookmark.id)}
-            onDelete={() => onDelete(bookmark.id)}
-          />
-        </div>
+        {canEdit && (
+          <div className="opacity-0 transition-opacity group-hover:opacity-100">
+            <BookmarkActions
+              isFavorite={bookmark.isFavorite}
+              isArchived={bookmark.isArchived}
+              url={bookmark.url}
+              onToggleFavorite={() => onToggleFavorite(bookmark.id)}
+              onToggleArchive={() => onToggleArchive(bookmark.id)}
+              onDelete={() => onDelete(bookmark.id)}
+            />
+          </div>
+        )}
       </div>
     </article>
   )

@@ -11,6 +11,7 @@ interface CollectionCardProps {
   readonly description: string | null
   readonly icon: string | null
   readonly bookmarksCount: number
+  readonly canEdit?: boolean
   readonly onDelete: (id: number) => void
 }
 
@@ -20,6 +21,7 @@ export function CollectionCard({
   description,
   icon,
   bookmarksCount,
+  canEdit = true,
   onDelete,
 }: CollectionCardProps) {
   const [confirmOpen, setConfirmOpen] = useState(false)
@@ -39,14 +41,16 @@ export function CollectionCard({
             )}
           </div>
         </Link>
-        <button
-          type="button"
-          onClick={() => setConfirmOpen(true)}
-          className="ml-2 rounded p-1 text-muted-foreground opacity-0 transition-opacity hover:text-destructive group-hover:opacity-100"
-          aria-label={`Delete collection ${name}`}
-        >
-          <Trash2 className="size-3.5" />
-        </button>
+        {canEdit && (
+          <button
+            type="button"
+            onClick={() => setConfirmOpen(true)}
+            className="ml-2 rounded p-1 text-muted-foreground opacity-0 transition-opacity hover:text-destructive group-hover:opacity-100"
+            aria-label={`Delete collection ${name}`}
+          >
+            <Trash2 className="size-3.5" />
+          </button>
+        )}
       </div>
       <span className="text-xs text-muted-foreground">
         {bookmarksCount} {bookmarksCount === 1 ? 'bookmark' : 'bookmarks'}

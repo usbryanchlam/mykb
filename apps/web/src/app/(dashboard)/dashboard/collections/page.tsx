@@ -3,12 +3,15 @@
 import { useEffect, useState, useTransition } from 'react'
 import { FolderOpen, Plus } from 'lucide-react'
 import { listCollections, deleteCollection } from '@/actions/collections'
+import { useAuth } from '@/hooks/use-auth'
 import { getBookmarksCount, type CollectionWithCount } from '@/lib/collection-utils'
 import { CollectionCard } from '@/components/collections/collection-card'
 import { CreateCollectionDialog } from '@/components/collections/create-collection-dialog'
 import { Button } from '@/components/ui/button'
 
 export default function CollectionsPage() {
+  const { role } = useAuth()
+  const canEdit = role === 'admin' || role === 'editor'
   const [collections, setCollections] = useState<readonly CollectionWithCount[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [loadError, setLoadError] = useState<string | null>(null)
@@ -71,10 +74,12 @@ export default function CollectionsPage() {
         <p className="max-w-sm text-muted-foreground">
           Organize your bookmarks by creating collections.
         </p>
-        <Button onClick={() => setDialogOpen(true)}>
-          <Plus className="size-4" />
-          New Collection
-        </Button>
+        {canEdit && (
+          <Button onClick={() => setDialogOpen(true)}>
+            <Plus className="size-4" />
+            New Collection
+          </Button>
+        )}
         <CreateCollectionDialog
           open={dialogOpen}
           onOpenChange={setDialogOpen}
@@ -89,10 +94,12 @@ export default function CollectionsPage() {
       <div className="flex flex-col gap-4">
         <div className="flex items-center justify-between">
           <h1 className="text-lg font-semibold">Collections</h1>
-          <Button size="sm" onClick={() => setDialogOpen(true)}>
-            <Plus className="size-4" />
-            New Collection
-          </Button>
+          {canEdit && (
+            <Button size="sm" onClick={() => setDialogOpen(true)}>
+              <Plus className="size-4" />
+              New Collection
+            </Button>
+          )}
         </div>
         {actionError && <p className="text-sm text-destructive">{actionError}</p>}
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
@@ -104,6 +111,7 @@ export default function CollectionsPage() {
               description={c.description}
               icon={c.icon}
               bookmarksCount={getBookmarksCount(c)}
+              canEdit={canEdit}
               onDelete={handleDelete}
             />
           ))}

@@ -5,6 +5,7 @@ import { Loader2, Plus, Sparkles, Trash2 } from 'lucide-react'
 import Link from 'next/link'
 import type { SmartList, FilterQuery } from '@mykb/shared'
 import { listSmartLists, createSmartList, deleteSmartList } from '@/actions/smart-lists'
+import { useAuth } from '@/hooks/use-auth'
 import { FilterBuilder } from '@/components/smart-lists/filter-builder'
 import { Button } from '@/components/ui/button'
 import { ConfirmDialog } from '@/components/ui/confirm-dialog'
@@ -20,6 +21,8 @@ import {
 } from '@/components/ui/dialog'
 
 export default function SmartListsPage() {
+  const { role } = useAuth()
+  const canEdit = role === 'admin' || role === 'editor'
   const [smartLists, setSmartLists] = useState<readonly SmartList[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [loadError, setLoadError] = useState<string | null>(null)
@@ -86,10 +89,12 @@ export default function SmartListsPage() {
         <p className="max-w-sm text-muted-foreground">
           Create filtered views of your bookmarks based on tags, favorites, dates, and more.
         </p>
-        <Button onClick={() => setDialogOpen(true)}>
-          <Plus className="size-4" />
-          New Smart List
-        </Button>
+        {canEdit && (
+          <Button onClick={() => setDialogOpen(true)}>
+            <Plus className="size-4" />
+            New Smart List
+          </Button>
+        )}
         <CreateSmartListDialog
           open={dialogOpen}
           onOpenChange={setDialogOpen}
@@ -104,10 +109,12 @@ export default function SmartListsPage() {
       <div className="flex flex-col gap-4">
         <div className="flex items-center justify-between">
           <h1 className="text-lg font-semibold">Smart Lists</h1>
-          <Button size="sm" onClick={() => setDialogOpen(true)}>
-            <Plus className="size-4" />
-            New Smart List
-          </Button>
+          {canEdit && (
+            <Button size="sm" onClick={() => setDialogOpen(true)}>
+              <Plus className="size-4" />
+              New Smart List
+            </Button>
+          )}
         </div>
         {actionError && <p className="text-sm text-destructive">{actionError}</p>}
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
@@ -131,14 +138,16 @@ export default function SmartListsPage() {
                     )}
                   </div>
                 </Link>
-                <button
-                  type="button"
-                  onClick={() => setDeleteTarget({ id: sl.id, name: sl.name })}
-                  className="ml-2 rounded p-1 text-muted-foreground opacity-0 transition-opacity hover:text-destructive group-hover:opacity-100"
-                  aria-label={`Delete smart list ${sl.name}`}
-                >
-                  <Trash2 className="size-3.5" />
-                </button>
+                {canEdit && (
+                  <button
+                    type="button"
+                    onClick={() => setDeleteTarget({ id: sl.id, name: sl.name })}
+                    className="ml-2 rounded p-1 text-muted-foreground opacity-0 transition-opacity hover:text-destructive group-hover:opacity-100"
+                    aria-label={`Delete smart list ${sl.name}`}
+                  >
+                    <Trash2 className="size-3.5" />
+                  </button>
+                )}
               </div>
               <FilterSummary filter={sl.filterQuery} />
             </div>
