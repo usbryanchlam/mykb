@@ -5,17 +5,16 @@ import { useParams } from 'next/navigation'
 import type { Bookmark } from '@mykb/shared'
 import { ArrowLeft, FolderOpen, Loader2 } from 'lucide-react'
 import Link from 'next/link'
-import {
-  getCollection,
-  getCollectionBookmarks,
-  removeBookmarkFromCollection,
-} from '@/actions/collections'
+import { getCollection, getCollectionBookmarks } from '@/actions/collections'
+import { useAuth } from '@/hooks/use-auth'
 import type { CollectionWithCount } from '@/lib/collection-utils'
 import { toggleFavorite, toggleArchive, deleteBookmark } from '@/actions/bookmarks'
 import { BookmarkGrid } from '@/components/bookmarks/bookmark-grid'
 import { Button } from '@/components/ui/button'
 
 export default function CollectionDetailPage() {
+  const { role } = useAuth()
+  const canEdit = role === 'admin' || role === 'editor'
   const params = useParams<{ id: string }>()
   const collectionId = Number(params.id)
 
@@ -81,17 +80,6 @@ export default function CollectionDetailPage() {
     })
   }
 
-  function handleRemoveFromCollection(id: number) {
-    startTransition(async () => {
-      try {
-        await removeBookmarkFromCollection(collectionId, id)
-        setBookmarks(bookmarks.filter((b) => b.id !== id))
-      } catch {
-        // Silently handled
-      }
-    })
-  }
-
   if (isLoading) {
     return (
       <div className="flex flex-1 flex-col items-center justify-center gap-4">
@@ -141,6 +129,7 @@ export default function CollectionDetailPage() {
       ) : (
         <BookmarkGrid
           bookmarks={bookmarks}
+          canEdit={canEdit}
           onToggleFavorite={handleToggleFavorite}
           onToggleArchive={handleToggleArchive}
           onDelete={handleDelete}

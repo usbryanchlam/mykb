@@ -9,6 +9,7 @@ import type { Bookmark } from '@mykb/shared'
 
 interface ReaderViewProps {
   readonly bookmark: Bookmark
+  readonly canEdit?: boolean
   readonly onRescrape: () => void
 }
 
@@ -44,7 +45,7 @@ function ManualContentForm({ textareaRef, isPending, onSave, onCancel }: ManualC
 const FONT_SIZES = [14, 16, 18, 20, 22] as const
 const DEFAULT_FONT_INDEX = 1
 
-export function ReaderView({ bookmark, onRescrape }: ReaderViewProps) {
+export function ReaderView({ bookmark, canEdit = true, onRescrape }: ReaderViewProps) {
   const [content, setContent] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [fontIndex, setFontIndex] = useState(DEFAULT_FONT_INDEX)
@@ -154,28 +155,32 @@ export function ReaderView({ bookmark, onRescrape }: ReaderViewProps) {
             </span>
           )}
         </p>
-        <div className="flex gap-2">
-          <Button variant="outline" size="sm" onClick={handleRescrape} disabled={isPending}>
-            <RefreshCw className={`size-4 ${isPending ? 'animate-spin' : ''}`} />
-            Retry
-          </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => setShowManualInput(true)}
-            disabled={isPending || showManualInput}
-          >
-            <FileText className="size-4" />
-            Add content manually
-          </Button>
-        </div>
-        {showManualInput && (
-          <ManualContentForm
-            textareaRef={textareaRef}
-            isPending={isPending}
-            onSave={handleSaveContent}
-            onCancel={() => setShowManualInput(false)}
-          />
+        {canEdit && (
+          <>
+            <div className="flex gap-2">
+              <Button variant="outline" size="sm" onClick={handleRescrape} disabled={isPending}>
+                <RefreshCw className={`size-4 ${isPending ? 'animate-spin' : ''}`} />
+                Retry
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setShowManualInput(true)}
+                disabled={isPending || showManualInput}
+              >
+                <FileText className="size-4" />
+                Add content manually
+              </Button>
+            </div>
+            {showManualInput && (
+              <ManualContentForm
+                textareaRef={textareaRef}
+                isPending={isPending}
+                onSave={handleSaveContent}
+                onCancel={() => setShowManualInput(false)}
+              />
+            )}
+          </>
         )}
       </div>
     )
@@ -202,28 +207,32 @@ export function ReaderView({ bookmark, onRescrape }: ReaderViewProps) {
     return (
       <div className="flex flex-col items-center gap-4 rounded-lg border border-border bg-card p-6 text-center">
         <p className="text-sm text-muted-foreground">No content available.</p>
-        <div className="flex gap-2">
-          <Button variant="outline" size="sm" onClick={handleRescrape} disabled={isPending}>
-            <RefreshCw className={`size-4 ${isPending ? 'animate-spin' : ''}`} />
-            Rescrape
-          </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => setShowManualInput(true)}
-            disabled={isPending || showManualInput}
-          >
-            <FileText className="size-4" />
-            Add content manually
-          </Button>
-        </div>
-        {showManualInput && (
-          <ManualContentForm
-            textareaRef={textareaRef}
-            isPending={isPending}
-            onSave={handleSaveContent}
-            onCancel={() => setShowManualInput(false)}
-          />
+        {canEdit && (
+          <>
+            <div className="flex gap-2">
+              <Button variant="outline" size="sm" onClick={handleRescrape} disabled={isPending}>
+                <RefreshCw className={`size-4 ${isPending ? 'animate-spin' : ''}`} />
+                Rescrape
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setShowManualInput(true)}
+                disabled={isPending || showManualInput}
+              >
+                <FileText className="size-4" />
+                Add content manually
+              </Button>
+            </div>
+            {showManualInput && (
+              <ManualContentForm
+                textareaRef={textareaRef}
+                isPending={isPending}
+                onSave={handleSaveContent}
+                onCancel={() => setShowManualInput(false)}
+              />
+            )}
+          </>
         )}
       </div>
     )
@@ -293,10 +302,12 @@ export function ReaderView({ bookmark, onRescrape }: ReaderViewProps) {
           >
             <Plus className="size-3" />
           </Button>
-          <Button variant="outline" size="sm" onClick={handleRescrape} disabled={isPending}>
-            <RefreshCw className={`size-4 ${isPending ? 'animate-spin' : ''}`} />
-            Rescrape
-          </Button>
+          {canEdit && (
+            <Button variant="outline" size="sm" onClick={handleRescrape} disabled={isPending}>
+              <RefreshCw className={`size-4 ${isPending ? 'animate-spin' : ''}`} />
+              Rescrape
+            </Button>
+          )}
         </div>
       </div>
 

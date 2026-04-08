@@ -6,6 +6,7 @@ import type { Bookmark } from '@mykb/shared'
 import { ArrowLeft, Loader2, Sparkles } from 'lucide-react'
 import Link from 'next/link'
 import { getSmartList, resolveSmartListBookmarks } from '@/actions/smart-lists'
+import { useAuth } from '@/hooks/use-auth'
 import { toggleFavorite, toggleArchive, deleteBookmark } from '@/actions/bookmarks'
 import { BookmarkGrid } from '@/components/bookmarks/bookmark-grid'
 import { Pagination } from '@/components/bookmarks/pagination'
@@ -13,6 +14,8 @@ import { Button } from '@/components/ui/button'
 import type { SmartList, PaginationMeta } from '@mykb/shared'
 
 export default function SmartListDetailPage() {
+  const { role } = useAuth()
+  const canEdit = role === 'admin' || role === 'editor'
   const params = useParams<{ id: string }>()
   const listId = Number(params.id)
 
@@ -130,6 +133,7 @@ export default function SmartListDetailPage() {
         <>
           <BookmarkGrid
             bookmarks={bookmarks}
+            canEdit={canEdit}
             onToggleFavorite={handleToggleFavorite}
             onToggleArchive={handleToggleArchive}
             onDelete={handleDelete}

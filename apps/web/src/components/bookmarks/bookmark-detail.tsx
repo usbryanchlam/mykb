@@ -201,7 +201,7 @@ export function BookmarkDetail({
         </div>
       </div>
 
-      <ReaderView bookmark={bookmark} onRescrape={onRescrape} />
+      <ReaderView bookmark={bookmark} canEdit={canEdit} onRescrape={onRescrape} />
 
       {bookmark.safetyStatus === 'flagged' &&
         bookmark.safetyReasons &&
