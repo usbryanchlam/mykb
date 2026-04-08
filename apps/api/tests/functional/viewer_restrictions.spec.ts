@@ -68,7 +68,7 @@ test.group('Viewer role restrictions — write blocked', () => {
   })
 
   test('viewer cannot delete bookmark', async ({ client }) => {
-    const { token: editorToken, userId } = await createEditorToken(client)
+    const { userId } = await createEditorToken(client)
     const bm = await Bookmark.create({
       userId,
       url: `https://viewer-del-${randomUUID()}.example.com`,
@@ -80,7 +80,7 @@ test.group('Viewer role restrictions — write blocked', () => {
   })
 
   test('viewer cannot favorite bookmark', async ({ client }) => {
-    const { token: editorToken, userId } = await createEditorToken(client)
+    const { userId } = await createEditorToken(client)
     const bm = await Bookmark.create({
       userId,
       url: `https://viewer-fav-${randomUUID()}.example.com`,
@@ -92,7 +92,7 @@ test.group('Viewer role restrictions — write blocked', () => {
   })
 
   test('viewer cannot archive bookmark', async ({ client }) => {
-    const { token: editorToken, userId } = await createEditorToken(client)
+    const { userId } = await createEditorToken(client)
     const bm = await Bookmark.create({
       userId,
       url: `https://viewer-arc-${randomUUID()}.example.com`,
