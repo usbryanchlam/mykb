@@ -5,6 +5,7 @@ import { BookmarkCard } from '@/components/bookmarks/bookmark-card'
 
 interface BookmarkGridProps {
   readonly bookmarks: readonly Bookmark[]
+  readonly canEdit?: boolean
   readonly onToggleFavorite: (id: number) => void
   readonly onToggleArchive: (id: number) => void
   readonly onDelete: (id: number) => void
@@ -12,6 +13,7 @@ interface BookmarkGridProps {
 
 export function BookmarkGrid({
   bookmarks,
+  canEdit = true,
   onToggleFavorite,
   onToggleArchive,
   onDelete,
@@ -22,6 +24,7 @@ export function BookmarkGrid({
         <BookmarkCard
           key={bookmark.id}
           bookmark={bookmark}
+          canEdit={canEdit}
           onToggleFavorite={onToggleFavorite}
           onToggleArchive={onToggleArchive}
           onDelete={onDelete}

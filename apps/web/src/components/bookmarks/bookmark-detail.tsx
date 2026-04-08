@@ -127,14 +127,16 @@ export function BookmarkDetail({
                 Edit
               </Button>
             )}
-            <BookmarkActions
-              isFavorite={bookmark.isFavorite}
-              isArchived={bookmark.isArchived}
-              url={bookmark.url}
-              onToggleFavorite={onToggleFavorite}
-              onToggleArchive={onToggleArchive}
-              onDelete={onDelete}
-            />
+            {canEdit && (
+              <BookmarkActions
+                isFavorite={bookmark.isFavorite}
+                isArchived={bookmark.isArchived}
+                url={bookmark.url}
+                onToggleFavorite={onToggleFavorite}
+                onToggleArchive={onToggleArchive}
+                onDelete={onDelete}
+              />
+            )}
           </div>
         </div>
 

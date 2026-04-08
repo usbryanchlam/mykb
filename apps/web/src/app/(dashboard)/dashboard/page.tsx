@@ -2,12 +2,15 @@
 
 import { useState } from 'react'
 import { Bookmark as BookmarkIcon, Plus } from 'lucide-react'
+import { useAuth } from '@/hooks/use-auth'
 import { useBookmarks } from '@/hooks/use-bookmarks'
 import { BookmarkPageLayout } from '@/components/bookmarks/bookmark-page-layout'
 import { AddBookmarkDialog } from '@/components/bookmarks/add-bookmark-dialog'
 import { Button } from '@/components/ui/button'
 
 export default function DashboardPage() {
+  const { role } = useAuth()
+  const canEdit = role === 'admin' || role === 'editor'
   const [dialogOpen, setDialogOpen] = useState(false)
   const {
     bookmarks,
@@ -31,17 +34,22 @@ export default function DashboardPage() {
         emptyIcon={<BookmarkIcon className="size-12 text-muted-foreground" />}
         emptyTitle="No bookmarks yet"
         emptyDescription="Start building your knowledge base by adding your first bookmark."
+        canEdit={canEdit}
         emptyAction={
-          <Button onClick={() => setDialogOpen(true)}>
-            <Plus className="size-4" />
-            Add Bookmark
-          </Button>
+          canEdit ? (
+            <Button onClick={() => setDialogOpen(true)}>
+              <Plus className="size-4" />
+              Add Bookmark
+            </Button>
+          ) : undefined
         }
         headerActions={
-          <Button size="sm" onClick={() => setDialogOpen(true)}>
-            <Plus className="size-4" />
-            Add Bookmark
-          </Button>
+          canEdit ? (
+            <Button size="sm" onClick={() => setDialogOpen(true)}>
+              <Plus className="size-4" />
+              Add Bookmark
+            </Button>
+          ) : undefined
         }
         bookmarks={bookmarks}
         meta={meta}

@@ -4,10 +4,13 @@ import { useEffect, useState, useTransition } from 'react'
 import { Tags, Trash2 } from 'lucide-react'
 import Link from 'next/link'
 import { listTags, deleteTag } from '@/actions/tags'
+import { useAuth } from '@/hooks/use-auth'
 import { ConfirmDialog } from '@/components/ui/confirm-dialog'
 import { getTagBookmarksCount, type TagWithCount } from '@/lib/tag-utils'
 
 export default function TagsPage() {
+  const { role } = useAuth()
+  const canEdit = role === 'admin' || role === 'editor'
   const [tags, setTags] = useState<readonly TagWithCount[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [loadError, setLoadError] = useState<string | null>(null)
@@ -96,15 +99,17 @@ export default function TagsPage() {
                   {getTagBookmarksCount(tag) === 1 ? 'bookmark' : 'bookmarks'}
                 </span>
               </Link>
-              <button
-                type="button"
-                onClick={() => setDeleteTarget(tag)}
-                className="ml-2 rounded p-1 text-muted-foreground opacity-0 transition-opacity hover:text-destructive group-hover:opacity-100"
-                disabled={isPending}
-                aria-label={`Delete tag ${tag.name}`}
-              >
-                <Trash2 className="size-3.5" />
-              </button>
+              {canEdit && (
+                <button
+                  type="button"
+                  onClick={() => setDeleteTarget(tag)}
+                  className="ml-2 rounded p-1 text-muted-foreground opacity-0 transition-opacity hover:text-destructive group-hover:opacity-100"
+                  disabled={isPending}
+                  aria-label={`Delete tag ${tag.name}`}
+                >
+                  <Trash2 className="size-3.5" />
+                </button>
+              )}
             </div>
           ))}
         </div>

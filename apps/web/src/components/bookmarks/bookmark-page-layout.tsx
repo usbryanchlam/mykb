@@ -23,6 +23,7 @@ interface BookmarkPageLayoutProps {
   readonly error: string | null
   readonly lastAction: string | null
   readonly onPageChange: (page: number) => void
+  readonly canEdit?: boolean
   readonly onToggleFavorite: (id: number) => void
   readonly onToggleArchive: (id: number) => void
   readonly onDelete: (id: number) => void
@@ -42,6 +43,7 @@ export function BookmarkPageLayout({
   isLoading,
   error,
   lastAction,
+  canEdit = true,
   onPageChange,
   onToggleFavorite,
   onToggleArchive,
@@ -92,6 +94,7 @@ export function BookmarkPageLayout({
       {view === 'grid' ? (
         <BookmarkGrid
           bookmarks={bookmarks}
+          canEdit={canEdit}
           onToggleFavorite={onToggleFavorite}
           onToggleArchive={onToggleArchive}
           onDelete={onDelete}
@@ -99,6 +102,7 @@ export function BookmarkPageLayout({
       ) : (
         <BookmarkList
           bookmarks={bookmarks}
+          canEdit={canEdit}
           onToggleFavorite={onToggleFavorite}
           onToggleArchive={onToggleArchive}
           onDelete={onDelete}

@@ -8,6 +8,7 @@ import { getDomain, formatCompactDate, isSafeFaviconUrl } from '@/lib/bookmark-u
 
 interface BookmarkListProps {
   readonly bookmarks: readonly Bookmark[]
+  readonly canEdit?: boolean
   readonly onToggleFavorite: (id: number) => void
   readonly onToggleArchive: (id: number) => void
   readonly onDelete: (id: number) => void
@@ -15,6 +16,7 @@ interface BookmarkListProps {
 
 interface BookmarkListItemProps {
   readonly bookmark: Bookmark
+  readonly canEdit: boolean
   readonly onToggleFavorite: (id: number) => void
   readonly onToggleArchive: (id: number) => void
   readonly onDelete: (id: number) => void
@@ -22,6 +24,7 @@ interface BookmarkListItemProps {
 
 function BookmarkListItem({
   bookmark,
+  canEdit,
   onToggleFavorite,
   onToggleArchive,
   onDelete,
@@ -55,22 +58,25 @@ function BookmarkListItem({
         {formatCompactDate(bookmark.createdAt)}
       </span>
 
-      <div className="opacity-0 transition-opacity group-hover:opacity-100">
-        <BookmarkActions
-          isFavorite={bookmark.isFavorite}
-          isArchived={bookmark.isArchived}
-          url={bookmark.url}
-          onToggleFavorite={() => onToggleFavorite(bookmark.id)}
-          onToggleArchive={() => onToggleArchive(bookmark.id)}
-          onDelete={() => onDelete(bookmark.id)}
-        />
-      </div>
+      {canEdit && (
+        <div className="opacity-0 transition-opacity group-hover:opacity-100">
+          <BookmarkActions
+            isFavorite={bookmark.isFavorite}
+            isArchived={bookmark.isArchived}
+            url={bookmark.url}
+            onToggleFavorite={() => onToggleFavorite(bookmark.id)}
+            onToggleArchive={() => onToggleArchive(bookmark.id)}
+            onDelete={() => onDelete(bookmark.id)}
+          />
+        </div>
+      )}
     </div>
   )
 }
 
 export function BookmarkList({
   bookmarks,
+  canEdit = true,
   onToggleFavorite,
   onToggleArchive,
   onDelete,
@@ -81,6 +87,7 @@ export function BookmarkList({
         <BookmarkListItem
           key={bookmark.id}
           bookmark={bookmark}
+          canEdit={canEdit}
           onToggleFavorite={onToggleFavorite}
           onToggleArchive={onToggleArchive}
           onDelete={onDelete}
