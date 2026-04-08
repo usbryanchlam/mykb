@@ -5,11 +5,7 @@ import { useParams } from 'next/navigation'
 import type { Bookmark } from '@mykb/shared'
 import { ArrowLeft, FolderOpen, Loader2 } from 'lucide-react'
 import Link from 'next/link'
-import {
-  getCollection,
-  getCollectionBookmarks,
-  removeBookmarkFromCollection,
-} from '@/actions/collections'
+import { getCollection, getCollectionBookmarks } from '@/actions/collections'
 import { useAuth } from '@/hooks/use-auth'
 import type { CollectionWithCount } from '@/lib/collection-utils'
 import { toggleFavorite, toggleArchive, deleteBookmark } from '@/actions/bookmarks'
@@ -78,17 +74,6 @@ export default function CollectionDetailPage() {
       try {
         await deleteBookmark(id)
         fetchData()
-      } catch {
-        // Silently handled
-      }
-    })
-  }
-
-  function handleRemoveFromCollection(id: number) {
-    startTransition(async () => {
-      try {
-        await removeBookmarkFromCollection(collectionId, id)
-        setBookmarks(bookmarks.filter((b) => b.id !== id))
       } catch {
         // Silently handled
       }
