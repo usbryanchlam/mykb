@@ -10,12 +10,15 @@ import {
   getCollectionBookmarks,
   removeBookmarkFromCollection,
 } from '@/actions/collections'
+import { useAuth } from '@/hooks/use-auth'
 import type { CollectionWithCount } from '@/lib/collection-utils'
 import { toggleFavorite, toggleArchive, deleteBookmark } from '@/actions/bookmarks'
 import { BookmarkGrid } from '@/components/bookmarks/bookmark-grid'
 import { Button } from '@/components/ui/button'
 
 export default function CollectionDetailPage() {
+  const { role } = useAuth()
+  const canEdit = role === 'admin' || role === 'editor'
   const params = useParams<{ id: string }>()
   const collectionId = Number(params.id)
 
@@ -141,6 +144,7 @@ export default function CollectionDetailPage() {
       ) : (
         <BookmarkGrid
           bookmarks={bookmarks}
+          canEdit={canEdit}
           onToggleFavorite={handleToggleFavorite}
           onToggleArchive={handleToggleArchive}
           onDelete={handleDelete}
