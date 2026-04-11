@@ -1,6 +1,7 @@
 import { auth0 } from '@/lib/auth0'
 import { redirect } from 'next/navigation'
 import { Header } from '@/components/layout/header'
+import { ADMIN_EMAIL } from '@/lib/constants'
 
 export default async function Home() {
   const session = await auth0.getSession()
@@ -50,6 +51,17 @@ export default async function Home() {
                 </code>
               </p>
             </div>
+            <p className="mt-3 text-xs text-muted-foreground">
+              Note: the demo account is read-only. For full access (add, edit, delete), please
+              contact the administrator at{' '}
+              <a
+                href={`mailto:${ADMIN_EMAIL}`}
+                className="text-primary underline hover:text-primary/80"
+              >
+                {ADMIN_EMAIL}
+              </a>
+              .
+            </p>
             <a
               href="/auth/login"
               className="mt-4 inline-block rounded-md bg-primary px-5 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/80"
