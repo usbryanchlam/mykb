@@ -103,7 +103,12 @@ function ManualContentForm({
         <p className="text-xs text-green-600 dark:text-green-400">
           Rich formatting detected — headings, bold, and lists will be preserved.
         </p>
-      ) : null}
+      ) : (
+        <p className="text-xs text-muted-foreground">
+          Tip: copy and paste from the source to preserve formatting. Plain text will be saved
+          without styling.
+        </p>
+      )}
       <div className="flex gap-2">
         <Button size="sm" onClick={handleSave} disabled={isPending || !plainText.trim()}>
           {isPending ? <Loader2 className="size-4 animate-spin" /> : null}
