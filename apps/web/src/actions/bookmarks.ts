@@ -160,10 +160,14 @@ export async function rescrapeBookmark(id: number): Promise<ApiResponse<Bookmark
 export async function updateBookmarkContent(
   id: number,
   plainText: string,
+  content?: string,
 ): Promise<ApiResponse<Bookmark>> {
+  const body: Record<string, string> = { plain_text: plainText }
+  if (content) body.content = content
+
   const res = await apiFetch(`/api/bookmarks/${id}/content`, {
     method: 'PATCH',
-    body: JSON.stringify({ plain_text: plainText }),
+    body: JSON.stringify(body),
   })
 
   if (!res.ok) {

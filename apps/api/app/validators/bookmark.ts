@@ -21,6 +21,7 @@ export const updateBookmarkValidator = vine.compile(
 export const updateContentValidator = vine.compile(
   vine.object({
     plain_text: vine.string().trim().minLength(1).maxLength(100_000),
+    content: vine.string().maxLength(500_000).optional(),
   })
 )
 

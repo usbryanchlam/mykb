@@ -1,6 +1,6 @@
 'use client'
 
-import { useCallback, useEffect, useRef, useState, useTransition } from 'react'
+import { useCallback, useEffect, useState, useTransition } from 'react'
 import { FileText, Loader2, Minus, Plus, RefreshCw, ShieldAlert } from 'lucide-react'
 import DOMPurify from 'isomorphic-dompurify'
 import { getReaderContent, rescrapeBookmark, updateBookmarkContent } from '@/actions/bookmarks'
@@ -14,23 +14,84 @@ interface ReaderViewProps {
 }
 
 interface ManualContentFormProps {
-  readonly textareaRef: React.RefObject<HTMLTextAreaElement | null>
   readonly isPending: boolean
-  readonly onSave: () => void
+  readonly onSave: (plainText: string, richHtml?: string) => void
   readonly onCancel: () => void
 }
 
-function ManualContentForm({ textareaRef, isPending, onSave, onCancel }: ManualContentFormProps) {
+function ManualContentForm({ isPending, onSave, onCancel }: ManualContentFormProps) {
+  const [plainText, setPlainText] = useState('')
+  const [richHtml, setRichHtml] = useState<string | null>(null)
+
+  const handlePaste = (e: React.ClipboardEvent<HTMLTextAreaElement>) => {
+    setRichHtml(null)
+    const html = e.clipboardData.getData('text/html')
+    if (html) {
+      const sanitized = DOMPurify.sanitize(html, {
+        ALLOWED_TAGS: [
+          'p',
+          'h1',
+          'h2',
+          'h3',
+          'h4',
+          'h5',
+          'h6',
+          'ul',
+          'ol',
+          'li',
+          'blockquote',
+          'pre',
+          'code',
+          'em',
+          'strong',
+          'a',
+          'br',
+          'hr',
+          'table',
+          'thead',
+          'tbody',
+          'tr',
+          'th',
+          'td',
+          'span',
+          'div',
+        ],
+        ALLOWED_ATTR: ['href', 'src', 'alt', 'title'],
+        ALLOWED_URI_REGEXP: /^https:\/\//i,
+        ALLOW_DATA_ATTR: false,
+      })
+      if (sanitized.trim()) {
+        setRichHtml(sanitized)
+      }
+    }
+  }
+
+  const handleSave = () => {
+    const text = plainText.trim()
+    if (!text) return
+    onSave(text, richHtml ?? undefined)
+  }
+
   return (
     <div className="w-full space-y-3 text-left">
       <textarea
-        ref={textareaRef}
         className="min-h-[200px] w-full rounded-md border border-border bg-background px-3 py-2 text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
-        placeholder="Paste the article content here..."
+        placeholder="Paste the article content here (formatting will be preserved)..."
         disabled={isPending}
+        value={plainText}
+        onChange={(e) => {
+          setPlainText(e.target.value)
+          setRichHtml(null)
+        }}
+        onPaste={handlePaste}
       />
+      {richHtml ? (
+        <p className="text-xs text-green-600 dark:text-green-400">
+          Rich formatting detected — headings, bold, and lists will be preserved.
+        </p>
+      ) : null}
       <div className="flex gap-2">
-        <Button size="sm" onClick={onSave} disabled={isPending}>
+        <Button size="sm" onClick={handleSave} disabled={isPending || !plainText.trim()}>
           {isPending ? <Loader2 className="size-4 animate-spin" /> : null}
           Save
         </Button>
@@ -52,7 +113,6 @@ export function ReaderView({ bookmark, canEdit = true, onRescrape }: ReaderViewP
   const [initialLoading, setInitialLoading] = useState(true)
   const [isPending, startTransition] = useTransition()
   const [showManualInput, setShowManualInput] = useState(false)
-  const textareaRef = useRef<HTMLTextAreaElement>(null)
 
   const fetchContent = useCallback(() => {
     startTransition(async () => {
@@ -87,20 +147,20 @@ export function ReaderView({ bookmark, canEdit = true, onRescrape }: ReaderViewP
     })
   }, [bookmark.id, onRescrape])
 
-  const handleSaveContent = useCallback(() => {
-    const text = textareaRef.current?.value.trim()
-    if (!text) return
-
-    startTransition(async () => {
-      try {
-        await updateBookmarkContent(bookmark.id, text)
-        setShowManualInput(false)
-        onRescrape()
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'Failed to save content.')
-      }
-    })
-  }, [bookmark.id, onRescrape])
+  const handleSaveContent = useCallback(
+    (text: string, richHtml?: string) => {
+      startTransition(async () => {
+        try {
+          await updateBookmarkContent(bookmark.id, text, richHtml)
+          setShowManualInput(false)
+          onRescrape()
+        } catch (err) {
+          setError(err instanceof Error ? err.message : 'Failed to save content.')
+        }
+      })
+    },
+    [bookmark.id, onRescrape],
+  )
 
   const decreaseFontSize = useCallback(() => {
     setFontIndex((i) => Math.max(0, i - 1))
@@ -174,7 +234,6 @@ export function ReaderView({ bookmark, canEdit = true, onRescrape }: ReaderViewP
             </div>
             {showManualInput && (
               <ManualContentForm
-                textareaRef={textareaRef}
                 isPending={isPending}
                 onSave={handleSaveContent}
                 onCancel={() => setShowManualInput(false)}
@@ -226,7 +285,6 @@ export function ReaderView({ bookmark, canEdit = true, onRescrape }: ReaderViewP
             </div>
             {showManualInput && (
               <ManualContentForm
-                textareaRef={textareaRef}
                 isPending={isPending}
                 onSave={handleSaveContent}
                 onCancel={() => setShowManualInput(false)}

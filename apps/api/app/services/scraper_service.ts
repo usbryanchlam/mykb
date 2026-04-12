@@ -3,49 +3,13 @@ import { Readability } from '@mozilla/readability'
 import DOMPurify from 'isomorphic-dompurify'
 import { parseHTML } from 'linkedom'
 import { assertSafeUrl } from '#services/ssrf_guard'
+import { SANITIZE_CONFIG } from '#services/sanitize_config'
 
 const FETCH_TIMEOUT_MS = 15_000
 const MAX_BODY_BYTES = 10 * 1024 * 1024 // 10MB
 const MAX_REDIRECTS = 3
 const MAX_CONTENT_CHARS = 500_000 // 500KB cap for stored article HTML
 const MAX_PLAIN_TEXT_CHARS = 100_000 // 100KB cap for stored plain text
-
-const SANITIZE_CONFIG = {
-  ALLOWED_TAGS: [
-    'p',
-    'h1',
-    'h2',
-    'h3',
-    'h4',
-    'h5',
-    'h6',
-    'ul',
-    'ol',
-    'li',
-    'blockquote',
-    'pre',
-    'code',
-    'em',
-    'strong',
-    'a',
-    'img',
-    'br',
-    'hr',
-    'table',
-    'thead',
-    'tbody',
-    'tr',
-    'th',
-    'td',
-    'figure',
-    'figcaption',
-    'span',
-    'div',
-  ],
-  ALLOWED_ATTR: ['href', 'src', 'alt', 'title'],
-  ALLOWED_URI_REGEXP: /^https:\/\//i,
-  ALLOW_DATA_ATTR: false,
-}
 
 export interface ScrapeResult {
   readonly title: string | null
