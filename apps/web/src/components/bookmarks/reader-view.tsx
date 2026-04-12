@@ -1,7 +1,7 @@
 'use client'
 
 import { useCallback, useEffect, useRef, useState, useTransition } from 'react'
-import { FileText, Loader2, Minus, Plus, RefreshCw, ShieldAlert } from 'lucide-react'
+import { FileText, Loader2, Minus, Pencil, Plus, RefreshCw, ShieldAlert } from 'lucide-react'
 import DOMPurify from 'isomorphic-dompurify'
 import { getReaderContent, rescrapeBookmark, updateBookmarkContent } from '@/actions/bookmarks'
 import { Button } from '@/components/ui/button'
@@ -369,19 +369,38 @@ export function ReaderView({ bookmark, canEdit = true, onRescrape }: ReaderViewP
             <Plus className="size-3" />
           </Button>
           {canEdit && (
-            <Button variant="outline" size="sm" onClick={handleRescrape} disabled={isPending}>
-              <RefreshCw className={`size-4 ${isPending ? 'animate-spin' : ''}`} />
-              Rescrape
-            </Button>
+            <>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setShowManualInput(true)}
+                disabled={isPending || showManualInput}
+              >
+                <Pencil className="size-4" />
+                Edit content
+              </Button>
+              <Button variant="outline" size="sm" onClick={handleRescrape} disabled={isPending}>
+                <RefreshCw className={`size-4 ${isPending ? 'animate-spin' : ''}`} />
+                Rescrape
+              </Button>
+            </>
           )}
         </div>
       </div>
 
-      <article
-        className="prose prose-sm dark:prose-invert max-w-none overflow-hidden rounded-lg border border-border bg-card p-6 [&_figure]:max-w-full [&_img]:max-w-full [&_pre]:overflow-x-auto [&_table]:overflow-x-auto"
-        style={{ fontSize: `${FONT_SIZES[fontIndex]}px` }}
-        dangerouslySetInnerHTML={{ __html: safeHtml }}
-      />
+      {showManualInput ? (
+        <ManualContentForm
+          isPending={isPending}
+          onSave={handleSaveContent}
+          onCancel={() => setShowManualInput(false)}
+        />
+      ) : (
+        <article
+          className="prose prose-sm dark:prose-invert max-w-none overflow-hidden rounded-lg border border-border bg-card p-6 [&_figure]:max-w-full [&_img]:max-w-full [&_pre]:overflow-x-auto [&_table]:overflow-x-auto"
+          style={{ fontSize: `${FONT_SIZES[fontIndex]}px` }}
+          dangerouslySetInnerHTML={{ __html: safeHtml }}
+        />
+      )}
     </div>
   )
 }
