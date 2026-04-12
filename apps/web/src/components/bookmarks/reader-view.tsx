@@ -1,6 +1,6 @@
 'use client'
 
-import { useCallback, useEffect, useState, useTransition } from 'react'
+import { useCallback, useEffect, useRef, useState, useTransition } from 'react'
 import { FileText, Loader2, Minus, Plus, RefreshCw, ShieldAlert } from 'lucide-react'
 import DOMPurify from 'isomorphic-dompurify'
 import { getReaderContent, rescrapeBookmark, updateBookmarkContent } from '@/actions/bookmarks'
@@ -22,9 +22,9 @@ interface ManualContentFormProps {
 function ManualContentForm({ isPending, onSave, onCancel }: ManualContentFormProps) {
   const [plainText, setPlainText] = useState('')
   const [richHtml, setRichHtml] = useState<string | null>(null)
+  const pastedRef = useRef(false)
 
   const handlePaste = (e: React.ClipboardEvent<HTMLTextAreaElement>) => {
-    setRichHtml(null)
     const html = e.clipboardData.getData('text/html')
     if (html) {
       const sanitized = DOMPurify.sanitize(html, {
@@ -61,8 +61,11 @@ function ManualContentForm({ isPending, onSave, onCancel }: ManualContentFormPro
         ALLOW_DATA_ATTR: false,
       })
       if (sanitized.trim()) {
+        pastedRef.current = true
         setRichHtml(sanitized)
       }
+    } else {
+      setRichHtml(null)
     }
   }
 
@@ -81,7 +84,12 @@ function ManualContentForm({ isPending, onSave, onCancel }: ManualContentFormPro
         value={plainText}
         onChange={(e) => {
           setPlainText(e.target.value)
-          setRichHtml(null)
+          // Don't reset richHtml on the onChange triggered by paste
+          if (pastedRef.current) {
+            pastedRef.current = false
+          } else {
+            setRichHtml(null)
+          }
         }}
         onPaste={handlePaste}
       />
