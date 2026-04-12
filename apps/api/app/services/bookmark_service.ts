@@ -1,4 +1,6 @@
+import DOMPurify from 'isomorphic-dompurify'
 import BookmarkRepository from '#repositories/bookmark_repository'
+import { SANITIZE_CONFIG } from '#services/sanitize_config'
 import type Bookmark from '#models/bookmark'
 
 interface CreateBookmarkData {
@@ -84,7 +86,7 @@ export default class BookmarkService {
     } as Partial<Bookmark>)
   }
 
-  async setManualContent(id: number, userId: number, plainText: string) {
+  async setManualContent(id: number, userId: number, plainText: string, richContent?: string) {
     const bookmark = await this.repository.findById(id, userId)
 
     if (bookmark.scrapeStatus === 'processing') {
@@ -93,12 +95,16 @@ export default class BookmarkService {
       throw error
     }
 
+    const content = richContent
+      ? DOMPurify.sanitize(richContent, SANITIZE_CONFIG)
+      : plainText
+          .split(/\n\n+/)
+          .map((p) => `<p>${escapeHtml(p.trim())}</p>`)
+          .join('\n')
+
     return this.repository.update(bookmark, {
       plainText,
-      content: plainText
-        .split(/\n\n+/)
-        .map((p) => `<p>${escapeHtml(p.trim())}</p>`)
-        .join('\n'),
+      content,
       scrapeStatus: 'completed',
       scrapeError: null,
       aiStatus: 'pending',

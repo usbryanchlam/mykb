@@ -114,7 +114,12 @@ export default class BookmarksController {
       return response.badRequest({ success: false, data: null, error: 'Invalid bookmark id' })
     }
     const data = await updateContentValidator.validate(request.body())
-    const bookmark = await this.service.setManualContent(id, auth0User.id, data.plain_text)
+    const bookmark = await this.service.setManualContent(
+      id,
+      auth0User.id,
+      data.plain_text,
+      data.content
+    )
 
     this.pipeline.triggerAiPipeline(bookmark.id)
 

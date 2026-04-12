@@ -1,7 +1,7 @@
 'use client'
 
 import { useCallback, useEffect, useRef, useState, useTransition } from 'react'
-import { FileText, Loader2, Minus, Plus, RefreshCw, ShieldAlert } from 'lucide-react'
+import { FileText, Loader2, Minus, Pencil, Plus, RefreshCw, ShieldAlert } from 'lucide-react'
 import DOMPurify from 'isomorphic-dompurify'
 import { getReaderContent, rescrapeBookmark, updateBookmarkContent } from '@/actions/bookmarks'
 import { Button } from '@/components/ui/button'
@@ -14,23 +14,103 @@ interface ReaderViewProps {
 }
 
 interface ManualContentFormProps {
-  readonly textareaRef: React.RefObject<HTMLTextAreaElement | null>
+  readonly initialValue?: string
   readonly isPending: boolean
-  readonly onSave: () => void
+  readonly onSave: (plainText: string, richHtml?: string) => void
   readonly onCancel: () => void
 }
 
-function ManualContentForm({ textareaRef, isPending, onSave, onCancel }: ManualContentFormProps) {
+function ManualContentForm({
+  initialValue = '',
+  isPending,
+  onSave,
+  onCancel,
+}: ManualContentFormProps) {
+  const [plainText, setPlainText] = useState(initialValue)
+  const [richHtml, setRichHtml] = useState<string | null>(null)
+  const pastedRef = useRef(false)
+
+  const handlePaste = (e: React.ClipboardEvent<HTMLTextAreaElement>) => {
+    const html = e.clipboardData.getData('text/html')
+    if (html) {
+      const sanitized = DOMPurify.sanitize(html, {
+        ALLOWED_TAGS: [
+          'p',
+          'h1',
+          'h2',
+          'h3',
+          'h4',
+          'h5',
+          'h6',
+          'ul',
+          'ol',
+          'li',
+          'blockquote',
+          'pre',
+          'code',
+          'em',
+          'strong',
+          'a',
+          'br',
+          'hr',
+          'table',
+          'thead',
+          'tbody',
+          'tr',
+          'th',
+          'td',
+          'span',
+          'div',
+        ],
+        ALLOWED_ATTR: ['href', 'src', 'alt', 'title'],
+        ALLOWED_URI_REGEXP: /^https:\/\//i,
+        ALLOW_DATA_ATTR: false,
+      })
+      if (sanitized.trim()) {
+        pastedRef.current = true
+        setRichHtml(sanitized)
+      }
+    } else {
+      setRichHtml(null)
+    }
+  }
+
+  const handleSave = () => {
+    const text = plainText.trim()
+    if (!text) return
+    onSave(text, richHtml ?? undefined)
+  }
+
   return (
     <div className="w-full space-y-3 text-left">
       <textarea
-        ref={textareaRef}
         className="min-h-[200px] w-full rounded-md border border-border bg-background px-3 py-2 text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
-        placeholder="Paste the article content here..."
+        placeholder="Paste the article content here (formatting will be preserved)..."
         disabled={isPending}
+        value={plainText}
+        onChange={(e) => {
+          setPlainText(e.target.value)
+          // Don't reset richHtml on the onChange triggered by paste
+          if (pastedRef.current) {
+            pastedRef.current = false
+          } else {
+            setRichHtml(null)
+          }
+        }}
+        onPaste={handlePaste}
       />
+      {richHtml ? (
+        <p className="text-xs text-green-600 dark:text-green-400">
+          Rich formatting detected — headings, bold, and lists will be preserved.
+        </p>
+      ) : (
+        <p className="text-xs text-muted-foreground">
+          Tip: copy and paste from the source to preserve formatting. Plain text will be saved
+          without styling.
+        </p>
+      )}
       <div className="flex gap-2">
-        <Button size="sm" onClick={onSave} disabled={isPending}>
+        <Button size="sm" onClick={handleSave} disabled={isPending || !plainText.trim()}>
           {isPending ? <Loader2 className="size-4 animate-spin" /> : null}
           Save
         </Button>
@@ -52,7 +132,6 @@ export function ReaderView({ bookmark, canEdit = true, onRescrape }: ReaderViewP
   const [initialLoading, setInitialLoading] = useState(true)
   const [isPending, startTransition] = useTransition()
   const [showManualInput, setShowManualInput] = useState(false)
-  const textareaRef = useRef<HTMLTextAreaElement>(null)
 
   const fetchContent = useCallback(() => {
     startTransition(async () => {
@@ -87,20 +166,21 @@ export function ReaderView({ bookmark, canEdit = true, onRescrape }: ReaderViewP
     })
   }, [bookmark.id, onRescrape])
 
-  const handleSaveContent = useCallback(() => {
-    const text = textareaRef.current?.value.trim()
-    if (!text) return
-
-    startTransition(async () => {
-      try {
-        await updateBookmarkContent(bookmark.id, text)
-        setShowManualInput(false)
-        onRescrape()
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'Failed to save content.')
-      }
-    })
-  }, [bookmark.id, onRescrape])
+  const handleSaveContent = useCallback(
+    (text: string, richHtml?: string) => {
+      startTransition(async () => {
+        try {
+          await updateBookmarkContent(bookmark.id, text, richHtml)
+          setShowManualInput(false)
+          fetchContent()
+          onRescrape()
+        } catch (err) {
+          setError(err instanceof Error ? err.message : 'Failed to save content.')
+        }
+      })
+    },
+    [bookmark.id, fetchContent, onRescrape],
+  )
 
   const decreaseFontSize = useCallback(() => {
     setFontIndex((i) => Math.max(0, i - 1))
@@ -174,7 +254,6 @@ export function ReaderView({ bookmark, canEdit = true, onRescrape }: ReaderViewP
             </div>
             {showManualInput && (
               <ManualContentForm
-                textareaRef={textareaRef}
                 isPending={isPending}
                 onSave={handleSaveContent}
                 onCancel={() => setShowManualInput(false)}
@@ -226,7 +305,6 @@ export function ReaderView({ bookmark, canEdit = true, onRescrape }: ReaderViewP
             </div>
             {showManualInput && (
               <ManualContentForm
-                textareaRef={textareaRef}
                 isPending={isPending}
                 onSave={handleSaveContent}
                 onCancel={() => setShowManualInput(false)}
@@ -303,19 +381,39 @@ export function ReaderView({ bookmark, canEdit = true, onRescrape }: ReaderViewP
             <Plus className="size-3" />
           </Button>
           {canEdit && (
-            <Button variant="outline" size="sm" onClick={handleRescrape} disabled={isPending}>
-              <RefreshCw className={`size-4 ${isPending ? 'animate-spin' : ''}`} />
-              Rescrape
-            </Button>
+            <>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setShowManualInput(true)}
+                disabled={isPending || showManualInput}
+              >
+                <Pencil className="size-4" />
+                Edit content
+              </Button>
+              <Button variant="outline" size="sm" onClick={handleRescrape} disabled={isPending}>
+                <RefreshCw className={`size-4 ${isPending ? 'animate-spin' : ''}`} />
+                Rescrape
+              </Button>
+            </>
           )}
         </div>
       </div>
 
-      <article
-        className="prose prose-sm dark:prose-invert max-w-none overflow-hidden rounded-lg border border-border bg-card p-6 [&_figure]:max-w-full [&_img]:max-w-full [&_pre]:overflow-x-auto [&_table]:overflow-x-auto"
-        style={{ fontSize: `${FONT_SIZES[fontIndex]}px` }}
-        dangerouslySetInnerHTML={{ __html: safeHtml }}
-      />
+      {showManualInput ? (
+        <ManualContentForm
+          initialValue={bookmark.plainText ?? ''}
+          isPending={isPending}
+          onSave={handleSaveContent}
+          onCancel={() => setShowManualInput(false)}
+        />
+      ) : (
+        <article
+          className="prose prose-sm dark:prose-invert max-w-none overflow-hidden rounded-lg border border-border bg-card p-6 [&_figure]:max-w-full [&_img]:max-w-full [&_pre]:overflow-x-auto [&_table]:overflow-x-auto"
+          style={{ fontSize: `${FONT_SIZES[fontIndex]}px` }}
+          dangerouslySetInnerHTML={{ __html: safeHtml }}
+        />
+      )}
     </div>
   )
 }
