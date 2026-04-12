@@ -14,13 +14,19 @@ interface ReaderViewProps {
 }
 
 interface ManualContentFormProps {
+  readonly initialValue?: string
   readonly isPending: boolean
   readonly onSave: (plainText: string, richHtml?: string) => void
   readonly onCancel: () => void
 }
 
-function ManualContentForm({ isPending, onSave, onCancel }: ManualContentFormProps) {
-  const [plainText, setPlainText] = useState('')
+function ManualContentForm({
+  initialValue = '',
+  isPending,
+  onSave,
+  onCancel,
+}: ManualContentFormProps) {
+  const [plainText, setPlainText] = useState(initialValue)
   const [richHtml, setRichHtml] = useState<string | null>(null)
   const pastedRef = useRef(false)
 
@@ -390,6 +396,7 @@ export function ReaderView({ bookmark, canEdit = true, onRescrape }: ReaderViewP
 
       {showManualInput ? (
         <ManualContentForm
+          initialValue={bookmark.plainText ?? ''}
           isPending={isPending}
           onSave={handleSaveContent}
           onCancel={() => setShowManualInput(false)}
