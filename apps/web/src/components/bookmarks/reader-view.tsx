@@ -167,13 +167,14 @@ export function ReaderView({ bookmark, canEdit = true, onRescrape }: ReaderViewP
         try {
           await updateBookmarkContent(bookmark.id, text, richHtml)
           setShowManualInput(false)
+          fetchContent()
           onRescrape()
         } catch (err) {
           setError(err instanceof Error ? err.message : 'Failed to save content.')
         }
       })
     },
-    [bookmark.id, onRescrape],
+    [bookmark.id, fetchContent, onRescrape],
   )
 
   const decreaseFontSize = useCallback(() => {
