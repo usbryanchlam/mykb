@@ -120,7 +120,7 @@ export default function TagsPage() {
           if (!open) setDeleteTarget(null)
         }}
         title={deleteTarget ? `Delete tag "${deleteTarget.name}"` : ''}
-        description="This will remove the tag from all bookmarks."
+        description="This will remove the tag from all items."
         onConfirm={handleDeleteConfirm}
       />
     </>

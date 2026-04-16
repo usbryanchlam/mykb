@@ -59,7 +59,7 @@ export function CollectionCard({
         open={confirmOpen}
         onOpenChange={setConfirmOpen}
         title={`Delete "${name}"`}
-        description="Bookmarks in this collection will not be deleted."
+        description="Items in this collection will not be deleted."
         onConfirm={() => {
           setConfirmOpen(false)
           onDelete(id)

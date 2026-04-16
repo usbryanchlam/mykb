@@ -13,7 +13,7 @@ interface SearchBarProps {
 export function SearchBar({
   value,
   onChange,
-  placeholder = 'Search bookmarks...',
+  placeholder = 'Search knowledge...',
 }: SearchBarProps) {
   const inputRef = useRef<HTMLInputElement>(null)
   const router = useRouter()
@@ -60,7 +60,7 @@ export function SearchBar({
         onKeyDown={handleKeyDown}
         placeholder={placeholder}
         className="h-9 w-full rounded-md border border-border bg-background pl-9 pr-3 text-sm focus:outline-none focus:ring-2 focus:ring-ring md:pr-12"
-        aria-label="Search bookmarks"
+        aria-label="Search knowledge"
       />
       <kbd className="pointer-events-none absolute right-2 top-1/2 hidden -translate-y-1/2 rounded border border-border bg-muted px-1.5 text-[10px] font-medium text-muted-foreground md:inline-block">
         ⌘K

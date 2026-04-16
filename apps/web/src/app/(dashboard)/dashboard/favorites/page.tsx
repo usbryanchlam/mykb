@@ -27,7 +27,7 @@ export default function FavoritesPage() {
       loadingText="Loading favorites..."
       emptyIcon={<Star className="size-12 text-muted-foreground" />}
       emptyTitle="No favorites yet"
-      emptyDescription="Star your bookmarks to find them quickly here."
+      emptyDescription="Star your items to find them quickly here."
       canEdit={canEdit}
       bookmarks={bookmarks}
       meta={meta}

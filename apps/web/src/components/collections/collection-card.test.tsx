@@ -62,7 +62,7 @@ describe('CollectionCard', () => {
       'button[aria-label="Delete collection Dev Resources"]',
     )!
     fireEvent.click(deleteBtn)
-    expect(document.body.textContent).toContain('Bookmarks in this collection will not be deleted')
+    expect(document.body.textContent).toContain('Items in this collection will not be deleted')
   })
 
   it('calls onDelete when confirm dialog is confirmed', () => {

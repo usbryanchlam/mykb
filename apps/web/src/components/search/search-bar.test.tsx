@@ -11,7 +11,7 @@ vi.mock('next/navigation', () => ({
 describe('SearchBar', () => {
   it('renders input with search label', () => {
     const { container } = render(<SearchBar />)
-    const input = container.querySelector('input[aria-label="Search bookmarks"]')
+    const input = container.querySelector('input[aria-label="Search knowledge"]')
     expect(input).toBeTruthy()
   })
 

@@ -83,8 +83,8 @@ export function BookmarkActions({
       <ConfirmDialog
         open={confirmOpen}
         onOpenChange={setConfirmOpen}
-        title="Delete bookmark"
-        description="This cannot be undone. The bookmark will be permanently deleted."
+        title="Delete item"
+        description="This cannot be undone. This item will be permanently deleted."
         onConfirm={() => {
           setConfirmOpen(false)
           onDelete()

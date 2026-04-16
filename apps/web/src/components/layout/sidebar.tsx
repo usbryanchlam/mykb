@@ -17,7 +17,7 @@ import { SidebarNavItem } from '@/components/layout/sidebar-nav'
 import { useAuth } from '@/hooks/use-auth'
 
 const navItems = [
-  { href: '/dashboard', label: 'All Bookmarks', icon: Bookmark },
+  { href: '/dashboard', label: 'All Knowledge', icon: Bookmark },
   { href: '/dashboard/favorites', label: 'Favorites', icon: Star },
   { href: '/dashboard/archive', label: 'Archive', icon: Archive },
   { href: '/dashboard/collections', label: 'Collections', icon: FolderOpen },
