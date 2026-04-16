@@ -127,7 +127,7 @@ export default function SmartListDetailPage() {
       {bookmarks.length === 0 ? (
         <div className="flex flex-col items-center gap-2 py-12 text-center">
           <Sparkles className="size-10 text-muted-foreground" />
-          <p className="text-sm text-muted-foreground">No bookmarks match these filters.</p>
+          <p className="text-sm text-muted-foreground">No items match these filters.</p>
         </div>
       ) : (
         <>

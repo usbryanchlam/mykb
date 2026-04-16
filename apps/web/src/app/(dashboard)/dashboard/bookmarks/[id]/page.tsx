@@ -120,7 +120,7 @@ export default function BookmarkDetailPage() {
     return (
       <div className="flex flex-1 flex-col items-center justify-center gap-4">
         <Loader2 className="size-8 animate-spin text-muted-foreground" />
-        <p className="text-sm text-muted-foreground">Loading bookmark...</p>
+        <p className="text-sm text-muted-foreground">Loading...</p>
       </div>
     )
   }

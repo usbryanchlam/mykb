@@ -196,7 +196,7 @@ export function ReaderView({ bookmark, canEdit = true, onRescrape }: ReaderViewP
         <ShieldAlert className="size-8 text-red-500" />
         <h3 className="text-lg font-semibold text-red-800 dark:text-red-400">Content Flagged</h3>
         <p className="max-w-md text-sm text-red-700 dark:text-red-300">
-          This bookmark has been flagged for safety concerns. Reader view is not available.
+          This item has been flagged for safety concerns. Reader view is not available.
         </p>
         {bookmark.safetyReasons && bookmark.safetyReasons.length > 0 && (
           <ul className="mt-2 list-inside list-disc text-left text-sm text-red-600 dark:text-red-400">

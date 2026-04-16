@@ -53,7 +53,7 @@ export function CollectionCard({
         )}
       </div>
       <span className="text-xs text-muted-foreground">
-        {bookmarksCount} {bookmarksCount === 1 ? 'bookmark' : 'bookmarks'}
+        {bookmarksCount} {bookmarksCount === 1 ? 'item' : 'items'}
       </span>
       <ConfirmDialog
         open={confirmOpen}

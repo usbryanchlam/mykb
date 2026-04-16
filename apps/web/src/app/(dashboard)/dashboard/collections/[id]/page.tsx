@@ -124,7 +124,7 @@ export default function CollectionDetailPage() {
       {bookmarks.length === 0 ? (
         <div className="flex flex-col items-center gap-2 py-12 text-center">
           <FolderOpen className="size-10 text-muted-foreground" />
-          <p className="text-sm text-muted-foreground">No bookmarks in this collection yet.</p>
+          <p className="text-sm text-muted-foreground">No items in this collection yet.</p>
         </div>
       ) : (
         <BookmarkGrid

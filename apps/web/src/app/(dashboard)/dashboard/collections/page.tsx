@@ -72,7 +72,7 @@ export default function CollectionsPage() {
         <FolderOpen className="size-12 text-muted-foreground" />
         <h2 className="text-xl font-semibold">No collections yet</h2>
         <p className="max-w-sm text-muted-foreground">
-          Organize your bookmarks by creating collections.
+          Organize your knowledge by creating collections.
         </p>
         {canEdit && (
           <Button onClick={() => setDialogOpen(true)}>

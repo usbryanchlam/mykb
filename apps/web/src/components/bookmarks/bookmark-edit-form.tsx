@@ -92,7 +92,7 @@ export function BookmarkEditForm({ bookmark, onSuccess }: BookmarkEditFormProps)
       </div>
 
       <div className="rounded-lg border border-border bg-card p-6">
-        <h1 className="mb-6 text-xl font-semibold">Edit Bookmark</h1>
+        <h1 className="mb-6 text-xl font-semibold">Edit</h1>
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
           <div className="flex flex-col gap-2">
@@ -105,7 +105,7 @@ export function BookmarkEditForm({ bookmark, onSuccess }: BookmarkEditFormProps)
             <Input
               id="edit-title"
               type="text"
-              placeholder="Bookmark title"
+              placeholder="Title"
               value={title}
               onChange={(e) => {
                 setTitle(e.target.value)
@@ -128,7 +128,7 @@ export function BookmarkEditForm({ bookmark, onSuccess }: BookmarkEditFormProps)
             <Label htmlFor="edit-description">Description</Label>
             <textarea
               id="edit-description"
-              placeholder="Bookmark description"
+              placeholder="Description"
               value={description}
               onChange={(e) => {
                 setDescription(e.target.value)

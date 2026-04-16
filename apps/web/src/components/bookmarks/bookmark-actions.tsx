@@ -74,8 +74,8 @@ export function BookmarkActions({
           e.stopPropagation()
           setConfirmOpen(true)
         }}
-        aria-label="Delete bookmark"
-        title="Delete bookmark"
+        aria-label="Delete item"
+        title="Delete item"
         className="text-muted-foreground hover:text-destructive"
       >
         <Trash2 className="size-3.5" />

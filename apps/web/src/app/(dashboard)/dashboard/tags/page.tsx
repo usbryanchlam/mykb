@@ -68,8 +68,7 @@ export default function TagsPage() {
         <Tags className="size-12 text-muted-foreground" />
         <h2 className="text-xl font-semibold">No tags yet</h2>
         <p className="max-w-sm text-muted-foreground">
-          Tags will appear here when you add them to bookmarks or when AI generates them
-          automatically.
+          Tags will appear here when you add them to items or when AI generates them automatically.
         </p>
       </div>
     )
@@ -95,8 +94,7 @@ export default function TagsPage() {
                 />
                 <span className="truncate text-sm font-medium">{tag.name}</span>
                 <span className="shrink-0 text-xs text-muted-foreground">
-                  {getTagBookmarksCount(tag)}{' '}
-                  {getTagBookmarksCount(tag) === 1 ? 'bookmark' : 'bookmarks'}
+                  {getTagBookmarksCount(tag)} {getTagBookmarksCount(tag) === 1 ? 'item' : 'items'}
                 </span>
               </Link>
               {canEdit && (
