@@ -70,7 +70,7 @@ export function BookmarkEditForm({ bookmark, onSuccess }: BookmarkEditFormProps)
           const result = await updateBookmark(bookmark.id, input)
           onSuccess(result.data)
         } catch (err) {
-          setServerError(err instanceof Error ? err.message : 'Failed to update bookmark.')
+          setServerError(err instanceof Error ? err.message : 'Failed to update item.')
         }
       })
     },

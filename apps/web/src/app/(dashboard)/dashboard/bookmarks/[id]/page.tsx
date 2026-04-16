@@ -25,7 +25,7 @@ export default function BookmarkDetailPage() {
 
   const fetchBookmark = useCallback(() => {
     if (Number.isNaN(bookmarkId) || bookmarkId <= 0) {
-      setError('Invalid bookmark ID.')
+      setError('Invalid ID.')
       setInitialLoading(false)
       return
     }
@@ -41,7 +41,7 @@ export default function BookmarkDetailPage() {
       } catch (err) {
         // During polling, suppress transient errors (429, network blips)
         if (!isPollingRef.current) {
-          setError(err instanceof Error ? err.message : 'Failed to load bookmark.')
+          setError(err instanceof Error ? err.message : 'Failed to load item.')
         }
       } finally {
         setInitialLoading(false)
@@ -111,7 +111,7 @@ export default function BookmarkDetailPage() {
         await deleteBookmark(bookmarkId)
         router.push('/dashboard')
       } catch (err) {
-        setError(err instanceof Error ? err.message : 'Failed to delete bookmark.')
+        setError(err instanceof Error ? err.message : 'Failed to delete item.')
       }
     })
   }, [bookmarkId, router])

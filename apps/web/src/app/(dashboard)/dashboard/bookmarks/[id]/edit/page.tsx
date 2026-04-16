@@ -30,7 +30,7 @@ export default function BookmarkEditPage() {
     }
 
     if (Number.isNaN(bookmarkId) || bookmarkId <= 0) {
-      setError('Invalid bookmark ID.')
+      setError('Invalid ID.')
       setInitialLoading(false)
       return
     }
@@ -41,7 +41,7 @@ export default function BookmarkEditPage() {
         setBookmark(result.data)
         setError(null)
       } catch (err) {
-        setError(err instanceof Error ? err.message : 'Failed to load bookmark.')
+        setError(err instanceof Error ? err.message : 'Failed to load item.')
       } finally {
         setInitialLoading(false)
       }

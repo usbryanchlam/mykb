@@ -94,7 +94,7 @@ export function AddBookmarkDialog({ open, onOpenChange, onSuccess }: AddBookmark
           onOpenChange(false)
           onSuccess()
         } catch (err) {
-          setServerError(err instanceof Error ? err.message : 'Failed to create bookmark.')
+          setServerError(err instanceof Error ? err.message : 'Failed to create item.')
         }
       })
     },
