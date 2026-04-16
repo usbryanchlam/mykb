@@ -76,7 +76,7 @@ describe('Sidebar', () => {
   it('renders nav item labels', () => {
     mockUseAuth.mockReturnValue({ role: 'editor' })
     const { container } = render(<Sidebar />)
-    expect(container).toHaveTextContent('All Bookmarks')
+    expect(container).toHaveTextContent('All Knowledge')
     expect(container).toHaveTextContent('Favorites')
     expect(container).toHaveTextContent('Archive')
     expect(container).toHaveTextContent('Collections')

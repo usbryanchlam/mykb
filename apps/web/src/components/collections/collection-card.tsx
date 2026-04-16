@@ -53,13 +53,13 @@ export function CollectionCard({
         )}
       </div>
       <span className="text-xs text-muted-foreground">
-        {bookmarksCount} {bookmarksCount === 1 ? 'bookmark' : 'bookmarks'}
+        {bookmarksCount} {bookmarksCount === 1 ? 'item' : 'items'}
       </span>
       <ConfirmDialog
         open={confirmOpen}
         onOpenChange={setConfirmOpen}
         title={`Delete "${name}"`}
-        description="Bookmarks in this collection will not be deleted."
+        description="Items in this collection will not be deleted."
         onConfirm={() => {
           setConfirmOpen(false)
           onDelete(id)

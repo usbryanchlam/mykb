@@ -24,7 +24,7 @@ describe('BookmarkActions', () => {
     expect(queryButton(container, 'Add to favorites')).toBeTruthy()
     expect(queryButton(container, 'Archive')).toBeTruthy()
     expect(queryButton(container, 'Open in new tab')).toBeTruthy()
-    expect(queryButton(container, 'Delete bookmark')).toBeTruthy()
+    expect(queryButton(container, 'Delete item')).toBeTruthy()
   })
 
   it('shows "Remove from favorites" when favorited', () => {
@@ -62,7 +62,7 @@ describe('BookmarkActions', () => {
   it('opens confirm dialog when trash clicked', () => {
     const { container } = render(<BookmarkActions {...defaultProps} />)
 
-    fireEvent.click(queryButton(container, 'Delete bookmark'))
+    fireEvent.click(queryButton(container, 'Delete item'))
     expect(document.body.textContent).toContain('This cannot be undone')
   })
 
@@ -72,7 +72,7 @@ describe('BookmarkActions', () => {
       <BookmarkActions {...defaultProps} onDelete={onDelete} />,
     )
 
-    fireEvent.click(queryButton(container, 'Delete bookmark'))
+    fireEvent.click(queryButton(container, 'Delete item'))
     fireEvent.click(getByRole('button', { name: 'Delete' }))
     expect(onDelete).toHaveBeenCalledOnce()
   })
@@ -83,7 +83,7 @@ describe('BookmarkActions', () => {
       <BookmarkActions {...defaultProps} onDelete={onDelete} />,
     )
 
-    fireEvent.click(queryButton(container, 'Delete bookmark'))
+    fireEvent.click(queryButton(container, 'Delete item'))
     fireEvent.click(getByRole('button', { name: 'Cancel' }))
     expect(onDelete).not.toHaveBeenCalled()
   })

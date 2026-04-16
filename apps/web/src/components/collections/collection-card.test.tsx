@@ -40,14 +40,14 @@ describe('CollectionCard', () => {
     expect(container.textContent).toContain('Useful links for development')
   })
 
-  it('renders bookmark count', () => {
+  it('renders item count', () => {
     const { container } = render(<CollectionCard {...defaultProps} />)
-    expect(container.textContent).toContain('5 bookmarks')
+    expect(container.textContent).toContain('5 items')
   })
 
-  it('renders singular for 1 bookmark', () => {
+  it('renders singular for 1 item', () => {
     const { container } = render(<CollectionCard {...defaultProps} bookmarksCount={1} />)
-    expect(container.textContent).toContain('1 bookmark')
+    expect(container.textContent).toContain('1 item')
   })
 
   it('links to collection detail page', () => {
@@ -62,7 +62,7 @@ describe('CollectionCard', () => {
       'button[aria-label="Delete collection Dev Resources"]',
     )!
     fireEvent.click(deleteBtn)
-    expect(document.body.textContent).toContain('Bookmarks in this collection will not be deleted')
+    expect(document.body.textContent).toContain('Items in this collection will not be deleted')
   })
 
   it('calls onDelete when confirm dialog is confirmed', () => {

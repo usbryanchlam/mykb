@@ -83,7 +83,7 @@ export function CreateCollectionDialog({
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle>New Collection</DialogTitle>
-          <DialogDescription>Organize your bookmarks into a collection.</DialogDescription>
+          <DialogDescription>Organize your knowledge into a collection.</DialogDescription>
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">

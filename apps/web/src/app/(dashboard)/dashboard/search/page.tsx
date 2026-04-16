@@ -56,7 +56,7 @@ function SearchContent({ initialQuery }: { readonly initialQuery: string }) {
         <div className="flex flex-col items-center gap-2 py-12 text-center">
           <Search className="size-10 text-muted-foreground" />
           <p className="text-sm text-muted-foreground">
-            Type to search your bookmarks by title, description, content, or tags.
+            Type to search your knowledge by title, description, content, or tags.
           </p>
           <p className="text-xs text-muted-foreground">
             Press <kbd className="rounded border border-border bg-muted px-1 font-mono">⌘K</kbd>{' '}

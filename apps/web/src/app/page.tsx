@@ -31,7 +31,7 @@ export default async function Home() {
           <div className="mt-8 border-l-4 border-muted-foreground/20 pl-6">
             <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">MyKB</h2>
             <p className="mt-2 max-w-lg text-lg text-muted-foreground">
-              Your personal knowledge base for bookmarking, summarizing, and organizing web content.
+              Your personal knowledge base for capturing, summarizing, and organizing web content.
             </p>
           </div>
 

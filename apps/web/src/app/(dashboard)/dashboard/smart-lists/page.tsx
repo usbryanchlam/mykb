@@ -87,7 +87,7 @@ export default function SmartListsPage() {
         <Sparkles className="size-12 text-muted-foreground" />
         <h2 className="text-xl font-semibold">No smart lists yet</h2>
         <p className="max-w-sm text-muted-foreground">
-          Create filtered views of your bookmarks based on tags, favorites, dates, and more.
+          Create filtered views of your knowledge based on tags, favorites, dates, and more.
         </p>
         {canEdit && (
           <Button onClick={() => setDialogOpen(true)}>
@@ -187,8 +187,7 @@ function FilterSummary({ filter }: { readonly filter: FilterQuery }) {
   if (filter.dateFrom) parts.push(`from ${formatLocalDate(filter.dateFrom)}`)
   if (filter.dateTo) parts.push(`until ${formatLocalDate(filter.dateTo)}`)
 
-  if (parts.length === 0)
-    return <span className="text-xs text-muted-foreground">All bookmarks</span>
+  if (parts.length === 0) return <span className="text-xs text-muted-foreground">All items</span>
 
   return <span className="text-xs text-muted-foreground">{parts.join(' · ')}</span>
 }
@@ -247,7 +246,7 @@ function CreateSmartListDialog({
       <DialogContent className="sm:max-w-lg">
         <DialogHeader>
           <DialogTitle>New Smart List</DialogTitle>
-          <DialogDescription>Define filters to create a dynamic bookmark view.</DialogDescription>
+          <DialogDescription>Define filters to create a dynamic knowledge view.</DialogDescription>
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">

@@ -21,17 +21,17 @@ describe('SidebarNavItem', () => {
   it('renders link with label and correct href', () => {
     mockUsePathname.mockReturnValue('/other')
     const { container } = render(
-      <SidebarNavItem href="/dashboard" label="All Bookmarks" icon={Bookmark} />,
+      <SidebarNavItem href="/dashboard" label="All Knowledge" icon={Bookmark} />,
     )
     const link = container.querySelector('a')
     expect(link).toHaveAttribute('href', '/dashboard')
-    expect(link).toHaveTextContent('All Bookmarks')
+    expect(link).toHaveTextContent('All Knowledge')
   })
 
   it('applies active styles when pathname matches', () => {
     mockUsePathname.mockReturnValue('/dashboard')
     const { container } = render(
-      <SidebarNavItem href="/dashboard" label="All Bookmarks" icon={Bookmark} />,
+      <SidebarNavItem href="/dashboard" label="All Knowledge" icon={Bookmark} />,
     )
     const link = container.querySelector('a')
     expect(link?.className).toContain('bg-accent')
@@ -41,7 +41,7 @@ describe('SidebarNavItem', () => {
   it('applies inactive styles when pathname does not match', () => {
     mockUsePathname.mockReturnValue('/dashboard/favorites')
     const { container } = render(
-      <SidebarNavItem href="/dashboard" label="All Bookmarks" icon={Bookmark} />,
+      <SidebarNavItem href="/dashboard" label="All Knowledge" icon={Bookmark} />,
     )
     const link = container.querySelector('a')
     expect(link?.className).toContain('text-muted-foreground')

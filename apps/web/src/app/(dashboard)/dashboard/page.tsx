@@ -29,17 +29,17 @@ export default function DashboardPage() {
   return (
     <>
       <BookmarkPageLayout
-        title="All Bookmarks"
-        loadingText="Loading bookmarks..."
+        title="All Knowledge"
+        loadingText="Loading knowledge..."
         emptyIcon={<BookmarkIcon className="size-12 text-muted-foreground" />}
-        emptyTitle="No bookmarks yet"
-        emptyDescription="Start building your knowledge base by adding your first bookmark."
+        emptyTitle="No knowledge yet"
+        emptyDescription="Start building your knowledge base by adding your first item."
         canEdit={canEdit}
         emptyAction={
           canEdit ? (
             <Button onClick={() => setDialogOpen(true)}>
               <Plus className="size-4" />
-              Add Bookmark
+              Add Knowledge
             </Button>
           ) : undefined
         }
@@ -47,7 +47,7 @@ export default function DashboardPage() {
           canEdit ? (
             <Button size="sm" onClick={() => setDialogOpen(true)}>
               <Plus className="size-4" />
-              Add Bookmark
+              Add Knowledge
             </Button>
           ) : undefined
         }

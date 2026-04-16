@@ -27,7 +27,7 @@ export default function ArchivePage() {
       loadingText="Loading archive..."
       emptyIcon={<Archive className="size-12 text-muted-foreground" />}
       emptyTitle="Archive is empty"
-      emptyDescription="Archived bookmarks will appear here."
+      emptyDescription="Archived items will appear here."
       canEdit={canEdit}
       bookmarks={bookmarks}
       meta={meta}

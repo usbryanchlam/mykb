@@ -28,10 +28,10 @@ export default function TagBookmarksPage() {
   return (
     <BookmarkPageLayout
       title={`Tag: ${decodeURIComponent(slug)}`}
-      loadingText="Loading bookmarks..."
+      loadingText="Loading knowledge..."
       emptyIcon={<Tag className="size-12 text-muted-foreground" />}
-      emptyTitle="No bookmarks with this tag"
-      emptyDescription="Bookmarks tagged with this tag will appear here."
+      emptyTitle="No items with this tag"
+      emptyDescription="Items tagged with this tag will appear here."
       canEdit={canEdit}
       bookmarks={bookmarks}
       meta={meta}

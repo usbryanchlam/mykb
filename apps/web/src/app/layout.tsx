@@ -18,11 +18,11 @@ export const metadata: Metadata = {
     default: 'MyKB',
     template: '%s | MyKB',
   },
-  description: 'Personal knowledge base for bookmarking and organizing web content',
+  description: 'Personal knowledge base for capturing and organizing web content',
   icons: { icon: '/favicon.ico' },
   openGraph: {
     title: 'MyKB',
-    description: 'Personal knowledge base for bookmarking and organizing web content',
+    description: 'Personal knowledge base for capturing and organizing web content',
     type: 'website',
   },
   robots: { index: false, follow: false },

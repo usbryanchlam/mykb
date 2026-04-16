@@ -94,7 +94,7 @@ export function AddBookmarkDialog({ open, onOpenChange, onSuccess }: AddBookmark
           onOpenChange(false)
           onSuccess()
         } catch (err) {
-          setServerError(err instanceof Error ? err.message : 'Failed to create bookmark.')
+          setServerError(err instanceof Error ? err.message : 'Failed to create item.')
         }
       })
     },
@@ -105,7 +105,7 @@ export function AddBookmarkDialog({ open, onOpenChange, onSuccess }: AddBookmark
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>Add Bookmark</DialogTitle>
+          <DialogTitle>Add Knowledge</DialogTitle>
           <DialogDescription>Save a URL to your knowledge base.</DialogDescription>
         </DialogHeader>
 
@@ -163,7 +163,7 @@ export function AddBookmarkDialog({ open, onOpenChange, onSuccess }: AddBookmark
                   Adding...
                 </>
               ) : (
-                'Add Bookmark'
+                'Add Knowledge'
               )}
             </Button>
           </DialogFooter>
