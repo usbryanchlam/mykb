@@ -2,6 +2,7 @@ import { BaseJob } from '#jobs/base_job'
 import type { JobConfig } from '#jobs/base_job'
 import Bookmark from '#models/bookmark'
 import ScraperService from '#services/scraper_service'
+import YouTubeService, { isYouTubeUrl } from '#services/youtube_service'
 import StorageService from '#services/storage_service'
 import { assertSafeUrl } from '#services/ssrf_guard'
 
@@ -19,17 +20,20 @@ export default class ScrapeBookmarkJob extends BaseJob {
   readonly name = 'scrape-bookmark'
   readonly bookmarkId: number
   private readonly scraper: ScraperService
+  private readonly youtube: YouTubeService
   private readonly storage: StorageService
 
   constructor(
     bookmarkId: number,
     scraper: ScraperService = new ScraperService(),
+    youtube: YouTubeService = new YouTubeService(),
     storage: StorageService = new StorageService(),
     config: Partial<JobConfig> = {}
   ) {
     super(config)
     this.bookmarkId = bookmarkId
     this.scraper = scraper
+    this.youtube = youtube
     this.storage = storage
   }
 
@@ -40,7 +44,9 @@ export default class ScrapeBookmarkJob extends BaseJob {
     await bookmark.save()
 
     try {
-      const result = await this.scraper.scrape(bookmark.url)
+      const result = isYouTubeUrl(bookmark.url)
+        ? await this.youtube.scrape(bookmark.url)
+        : await this.scraper.scrape(bookmark.url)
 
       // Upload OG image as thumbnail if available and storage is configured
       const thumbnailKey = await this.uploadThumbnail(bookmark.id, result.ogImageUrl)
