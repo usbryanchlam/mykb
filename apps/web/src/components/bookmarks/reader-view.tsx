@@ -348,7 +348,7 @@ export function ReaderView({ bookmark, canEdit = true, onRescrape }: ReaderViewP
       'span',
       'div',
     ],
-    ALLOWED_ATTR: ['href', 'src', 'alt', 'title'],
+    ALLOWED_ATTR: ['href', 'src', 'alt', 'title', 'class'],
     ALLOWED_URI_REGEXP: /^https:\/\//i,
     ALLOW_DATA_ATTR: false,
   })
