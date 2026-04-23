@@ -1,6 +1,6 @@
 # MyKB
 
-Your personal knowledge base for bookmarking, summarizing, and organizing web content.
+Your personal knowledge base for capturing, summarizing, and organizing web content.
 
 **Live demo:** [mykb.bryanlam.dev](https://mykb.bryanlam.dev)
 
@@ -18,16 +18,18 @@ The entire application was built over the course of 3 weeks, totaling roughly 50
 
 ## Features
 
-- **Bookmark any URL** — Save links with automatic metadata extraction (title, description, favicon, open graph image)
+- **Save any URL** — Save links with automatic metadata extraction (title, description, favicon, open graph image)
+- **YouTube Transcripts** — Auto-extract transcripts from YouTube videos with timestamped Reader View
+- **Preview Thumbnails** — Knowledge cards display OG image previews with graceful fallbacks
 - **AI Summarization** — Auto-generated 2-3 sentence summaries powered by Google Gemini
-- **AI Tagging** — Automatically categorize bookmarks with relevant tags
-- **Manual Content Input** — Paste article content manually when scraping fails, with AI processing
+- **AI Tagging** — Automatically categorize items with relevant tags
+- **Rich Paste** — Paste article content with preserved formatting (headings, bold, lists)
 - **Reader View** — Clean, distraction-free reading with adjustable font size
-- **Collections** — Organize bookmarks into named groups
+- **Collections** — Organize knowledge into named groups
 - **Smart Lists** — Dynamic filtered views based on tags, favorites, dates, and more
 - **Full-text Search** — Search across titles, descriptions, and content
 - **Content Safety** — Automatic URL and content safety checks
-- **Favorites and Archive** — Star important bookmarks, archive ones you're done with
+- **Favorites and Archive** — Star important items, archive ones you're done with
 - **Dark Mode** — Full dark theme support
 - **Responsive Design** — Works on desktop, tablet, and mobile
 
@@ -108,7 +110,7 @@ pnpm --filter @mykb/api test
 pnpm --filter @mykb/web test
 ```
 
-Current test coverage: **371+ tests** (217 API, 154 web).
+Current test coverage: **416+ tests** (248 API, 168 web).
 
 ## Deployment
 

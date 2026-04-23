@@ -4,11 +4,12 @@
 
 Three enhancements to expand MyKB beyond URL bookmarking into a richer knowledge capture tool.
 
-| #   | Feature                       | Summary                                                                      |
-| --- | ----------------------------- | ---------------------------------------------------------------------------- |
-| E1  | Rich paste detection          | Preserve formatting (headings, bold, lists) when pasting content manually    |
-| E2  | User-facing "Knowledge" label | Rename "Bookmarks" → "Knowledge" in all user-facing text (no code/DB rename) |
-| E3  | YouTube transcript scraping   | Auto-extract transcripts from YouTube video links                            |
+| #   | Feature                       | Summary                                                                      | Status        |
+| --- | ----------------------------- | ---------------------------------------------------------------------------- | ------------- |
+| E1  | Rich paste detection          | Preserve formatting (headings, bold, lists) when pasting content manually    | Merged (#133) |
+| E2  | User-facing "Knowledge" label | Rename "Bookmarks" → "Knowledge" in all user-facing text (no code/DB rename) | Merged (#149) |
+| E3  | YouTube transcript scraping   | Auto-extract transcripts from YouTube video links                            | Merged (#150) |
+| E4  | Card preview thumbnails       | Display OG image previews on knowledge cards with graceful fallbacks         | Merged (#155) |
 
 ---
 
@@ -272,25 +273,24 @@ Add CSS for timestamp spans in the reader view:
 
 ---
 
-## PR Strategy
+## PR History
 
-| PR   | Feature                                         | Estimated Files |
-| ---- | ----------------------------------------------- | --------------- |
-| PR A | E2: Rename user-facing labels to "Knowledge"    | ~10 files       |
-| PR B | E1: Rich paste detection in ManualContentForm   | ~4 files        |
-| PR C | E3: YouTube transcript service + scraper branch | ~5 files        |
-| PR D | E3: YouTube transcript Reader View styling      | ~2 files        |
-
-**Order:** E2 → E1 → E3 (label rename first since it's UI-only, then paste detection, then YouTube which is the most complex)
+| PR   | Feature                                       | Files | Status |
+| ---- | --------------------------------------------- | ----- | ------ |
+| #133 | E1: Rich paste detection in ManualContentForm | 4     | Merged |
+| #149 | E2: Rename user-facing labels to "Knowledge"  | 31    | Merged |
+| #150 | E3: YouTube transcript scraping + Reader View | 9     | Merged |
+| #155 | E4: Card preview thumbnails                   | 9     | Merged |
 
 ---
 
 ## Success Criteria
 
-- [ ] Pasting rich content (from browser) preserves headings, bold, lists in Reader View
-- [ ] Plain text paste still works as before
-- [ ] User-facing text says "Knowledge" instead of "Bookmarks"
-- [ ] YouTube video URLs are detected and transcript is extracted automatically
-- [ ] YouTube transcript appears in Reader View with timestamps
-- [ ] AI summary and tags are generated from YouTube transcripts
-- [ ] All existing tests pass, new tests cover the additions
+- [x] Pasting rich content (from browser) preserves headings, bold, lists in Reader View
+- [x] Plain text paste still works as before
+- [x] User-facing text says "Knowledge" instead of "Bookmarks"
+- [x] YouTube video URLs are detected and transcript is extracted automatically
+- [x] YouTube transcript appears in Reader View with timestamps
+- [x] AI summary and tags are generated from YouTube transcripts
+- [x] Knowledge cards display preview thumbnails (OG image or stored thumbnail)
+- [x] All existing tests pass, new tests cover the additions
