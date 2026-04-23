@@ -23,6 +23,7 @@ export interface Bookmark {
   readonly faviconUrl: string | null
   readonly ogImageUrl: string | null
   readonly thumbnailKey: string | null
+  readonly thumbnailUrl: string | null
   readonly screenshotKey: string | null
   readonly isFavorite: boolean
   readonly isArchived: boolean

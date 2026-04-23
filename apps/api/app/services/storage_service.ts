@@ -1,6 +1,19 @@
 import { createHmac, createHash } from 'node:crypto'
 import env from '#start/env'
 
+/**
+ * Resolves a storage key to a public URL without instantiating StorageService.
+ * Returns null if storage is not configured or the key is null.
+ */
+export function resolvePublicUrl(key: string | null): string | null {
+  if (!key) return null
+  const namespace = env.get('OCI_OBJECT_STORAGE_NAMESPACE')
+  const bucket = env.get('OCI_OBJECT_STORAGE_BUCKET')
+  const region = env.get('OCI_REGION') ?? 'us-ashburn-1'
+  if (!namespace || !bucket) return null
+  return `https://objectstorage.${region}.oraclecloud.com/n/${namespace}/b/${bucket}/o/${encodeURIComponent(key)}`
+}
+
 interface StorageConfig {
   readonly namespace: string
   readonly bucket: string

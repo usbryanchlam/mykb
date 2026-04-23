@@ -4,6 +4,7 @@ import type { Bookmark } from '@mykb/shared'
 import { Globe } from 'lucide-react'
 import Link from 'next/link'
 import { BookmarkActions } from '@/components/bookmarks/bookmark-actions'
+import { BookmarkThumbnail } from '@/components/bookmarks/bookmark-thumbnail'
 import { StatusBadge } from '@/components/bookmarks/status-badge'
 import { TagBadge } from '@/components/bookmarks/tag-badge'
 import { getDomain, formatRelativeDate, isSafeUrl, isSafeFaviconUrl } from '@/lib/bookmark-utils'
@@ -32,6 +33,12 @@ export function BookmarkCard({
 
   return (
     <article className="group flex flex-col gap-3 rounded-lg border border-border bg-card p-4 transition-colors hover:bg-muted/50">
+      <BookmarkThumbnail
+        thumbnailUrl={bookmark.thumbnailUrl}
+        ogImageUrl={bookmark.ogImageUrl}
+        alt={title}
+        className="-mx-4 -mt-4 mb-1 rounded-t-lg"
+      />
       <div className="flex items-start justify-between gap-2">
         <div className="flex items-center gap-2 text-xs text-muted-foreground">
           {isSafeFaviconUrl(bookmark.faviconUrl) ? (

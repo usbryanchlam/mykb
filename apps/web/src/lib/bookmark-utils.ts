@@ -25,6 +25,19 @@ export function isSafeFaviconUrl(url: string | null): url is string {
 }
 
 /**
+ * Validates that an image URL uses HTTPS only.
+ * Used for OG images and thumbnails displayed on cards.
+ */
+export function isSafeImageUrl(url: string | null): url is string {
+  if (!url) return false
+  try {
+    return new URL(url).protocol === 'https:'
+  } catch {
+    return false
+  }
+}
+
+/**
  * Extracts the hostname from a URL string.
  */
 export function getDomain(url: string): string {

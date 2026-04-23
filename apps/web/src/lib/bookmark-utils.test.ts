@@ -2,6 +2,7 @@ import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest'
 import {
   isSafeUrl,
   isSafeFaviconUrl,
+  isSafeImageUrl,
   getDomain,
   formatRelativeDate,
   formatCompactDate,
@@ -56,6 +57,36 @@ describe('isSafeFaviconUrl', () => {
 
   it('rejects javascript: protocol', () => {
     expect(isSafeFaviconUrl('javascript:void(0)')).toBe(false)
+  })
+})
+
+describe('isSafeImageUrl', () => {
+  it('accepts https urls', () => {
+    expect(isSafeImageUrl('https://example.com/image.jpg')).toBe(true)
+  })
+
+  it('rejects http urls', () => {
+    expect(isSafeImageUrl('http://example.com/image.jpg')).toBe(false)
+  })
+
+  it('rejects javascript: protocol', () => {
+    expect(isSafeImageUrl('javascript:alert(1)')).toBe(false)
+  })
+
+  it('rejects data: URIs', () => {
+    expect(isSafeImageUrl('data:image/png;base64,abc')).toBe(false)
+  })
+
+  it('returns false for null', () => {
+    expect(isSafeImageUrl(null)).toBe(false)
+  })
+
+  it('returns false for empty string', () => {
+    expect(isSafeImageUrl('')).toBe(false)
+  })
+
+  it('returns false for invalid URL', () => {
+    expect(isSafeImageUrl('not-a-url')).toBe(false)
   })
 })
 
