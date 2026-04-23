@@ -33,6 +33,7 @@ function createBookmark(overrides: Partial<Bookmark> = {}): Bookmark {
     faviconUrl: null,
     ogImageUrl: null,
     thumbnailKey: null,
+    thumbnailUrl: null,
     screenshotKey: null,
     isFavorite: false,
     isArchived: false,
