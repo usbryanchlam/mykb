@@ -1,5 +1,5 @@
 import { test } from '@japa/runner'
-import StorageService from '#services/storage_service'
+import StorageService, { resolvePublicUrl } from '#services/storage_service'
 
 test.group('StorageService', () => {
   test('isConfigured returns false when env vars are missing', ({ assert }) => {
@@ -41,5 +41,16 @@ test.group('StorageService', () => {
     } catch (err) {
       assert.include((err as Error).message, 'not configured')
     }
+  })
+})
+
+test.group('resolvePublicUrl', () => {
+  test('returns null for null key', ({ assert }) => {
+    assert.isNull(resolvePublicUrl(null))
+  })
+
+  test('returns null when storage is not configured', ({ assert }) => {
+    // In test env, OCI vars are not set
+    assert.isNull(resolvePublicUrl('thumbnails/1.jpg'))
   })
 })

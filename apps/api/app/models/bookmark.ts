@@ -1,9 +1,10 @@
-import { BaseModel, belongsTo, column, manyToMany } from '@adonisjs/lucid/orm'
+import { BaseModel, belongsTo, column, computed, manyToMany } from '@adonisjs/lucid/orm'
 import type { BelongsTo, ManyToMany } from '@adonisjs/lucid/types/relations'
 import { DateTime } from 'luxon'
 import type { AiStatus, SafetyStatus, ScrapeStatus } from '@mykb/shared'
 import User from '#models/user'
 import Tag from '#models/tag'
+import { resolvePublicUrl } from '#services/storage_service'
 
 export default class Bookmark extends BaseModel {
   @column({ isPrimary: true })
@@ -38,6 +39,11 @@ export default class Bookmark extends BaseModel {
 
   @column()
   declare thumbnailKey: string | null
+
+  @computed()
+  get thumbnailUrl(): string | null {
+    return resolvePublicUrl(this.thumbnailKey)
+  }
 
   @column()
   declare screenshotKey: string | null
